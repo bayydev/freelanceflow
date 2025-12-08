@@ -108,7 +108,7 @@ Funcionalidades exclusivas com modelo de assinatura.
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/bayddev/freelanceflow.git
+git clone https://github.com/bayydev/freelanceflow.git
 cd freelanceflow
 ```
 
