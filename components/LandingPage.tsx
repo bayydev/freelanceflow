@@ -79,7 +79,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         <div className="flex items-center gap-3">
-                            <img src="/assets/freelanceflowlogo.png" alt="FreelanceFlow" className="w-12 h-12" />
+                            <img src="/freelanceflowlogo.png" alt="FreelanceFlow" className="w-12 h-12" />
                             <span className="font-black text-xl tracking-tight">FreelanceFlow</span>
                         </div>
                         <button
@@ -408,7 +408,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                         {/* Logo */}
                         <div className="flex items-center gap-3">
-                            <img src="/assets/freelanceflowlogo.png" alt="FreelanceFlow" className="w-10 h-10" />
+                            <img src="/freelanceflowlogo.png" alt="FreelanceFlow" className="w-10 h-10" />
                             <span className="font-bold text-lg">FreelanceFlow</span>
                         </div>
 
