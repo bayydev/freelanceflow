@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import {
     LayoutGrid, DollarSign, ArrowRight, CheckCircle2, Star, Users,
     TrendingUp, Twitter, Instagram, Linkedin, Mail, Clock, Target,
-    Calculator, FileText, GraduationCap, X
+    Calculator, FileText, GraduationCap, X, Rocket, Sparkles, Crown,
+    Circle, Calendar
 } from 'lucide-react';
 
 interface LandingPageProps {
@@ -134,42 +135,119 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     </button>
                 </div>
 
-                {/* App Window Preview */}
-                <div className="relative max-w-4xl mx-auto mt-16">
-                    <div className="app-window rounded-2xl p-1">
-                        <div className="bg-cyber-panel rounded-xl p-6 sm:p-10">
-                            {/* Window Header Dots */}
-                            <div className="flex gap-2 mb-6">
-                                <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                                <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                                <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
-                            </div>
+                {/* MacBook Mockup */}
+                <div className="relative max-w-5xl mx-auto mt-16 px-4">
+                    {/* MacBook Frame */}
+                    <div className="relative">
+                        {/* Screen Bezel */}
+                        <div className="bg-[#1a1a1a] rounded-t-2xl p-3 pb-0 shadow-2xl">
+                            {/* Camera notch */}
+                            <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-slate-800 border border-slate-700"></div>
 
-                            {/* Dashboard Stats */}
-                            <div className="grid grid-cols-3 gap-4 mb-6">
-                                <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-4 text-center">
-                                    <p className="text-3xl font-mono font-bold text-cyan-400">12</p>
-                                    <p className="text-xs text-slate-500 mt-1">Leads Ativos</p>
+                            {/* Screen Content - FIEL AO DASHBOARD REAL */}
+                            <div className="bg-cyber-dark rounded-t-lg overflow-hidden border border-slate-800">
+                                {/* App Header - Igual ao Dashboard real */}
+                                <div className="bg-cyber-panel/50 border-b border-slate-800 px-3 py-2 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        {/* Avatar com iniciais */}
+                                        <div className="w-6 h-6 bg-cyber-primary/20 rounded-md flex items-center justify-center border border-cyber-primary text-cyber-primary font-bold text-[8px]">
+                                            ZF
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <span className="text-[10px] font-bold text-slate-100 uppercase">zé flow</span>
+                                            <span className="text-[8px] bg-yellow-500/20 text-yellow-400 px-1 rounded border border-yellow-500/30 font-bold flex items-center gap-0.5">
+                                                <Crown size={8} /> PRO
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="text-[8px] bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white px-2 py-0.5 rounded font-bold hidden sm:block">SEJA PRO</div>
+                                    </div>
                                 </div>
-                                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 text-center">
-                                    <p className="text-3xl font-mono font-bold text-emerald-400">R$ 8.5k</p>
-                                    <p className="text-xs text-slate-500 mt-1">Este Mês</p>
-                                </div>
-                                <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-4 text-center">
-                                    <p className="text-3xl font-mono font-bold text-purple-400">85%</p>
-                                    <p className="text-xs text-slate-500 mt-1">Conversão</p>
-                                </div>
-                            </div>
 
-                            {/* Progress Bar */}
-                            <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-                                <div className="h-full w-3/4 bg-gradient-to-r from-cyber-primary to-cyber-secondary rounded-full" />
+                                {/* App Body - Protocolo do Dia */}
+                                <div className="p-3 min-h-[260px]">
+                                    {/* Header do Protocolo */}
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center gap-2">
+                                            <Target size={12} className="text-cyber-primary" />
+                                            <span className="text-[10px] font-bold text-slate-100">Protocolo do Dia</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 text-[8px] font-mono bg-slate-900 border border-slate-700 px-2 py-0.5 rounded">
+                                            <span className="text-cyber-primary">B2B</span>
+                                            <span className="text-slate-500">/</span>
+                                            <span className="text-slate-500">B2C</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Info de horário */}
+                                    <div className="bg-slate-900/50 border border-slate-800 rounded px-2 py-1 flex items-center justify-between text-[8px] text-slate-400 font-mono mb-3">
+                                        <div className="flex items-center gap-1"><Calendar size={10} /><span>Seg-Sex</span></div>
+                                        <div className="flex items-center gap-1"><Clock size={10} /><span>09:00 - 18:00</span></div>
+                                    </div>
+
+                                    {/* Blocos de Tarefas - Estilo real */}
+                                    <div className="space-y-2">
+                                        {/* Bloco 1 - Completo */}
+                                        <div className="bg-slate-900/30 border border-emerald-900/50 rounded-lg p-2 opacity-80">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                                                    <CheckCircle2 size={12} />
+                                                </div>
+                                                <div className="w-6 h-6 rounded bg-emerald-500/20 flex items-center justify-center">
+                                                    <Mail size={10} className="text-emerald-400" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-[9px] font-bold text-emerald-400 line-through">Prospecção Ativa</p>
+                                                </div>
+                                                <span className="text-[8px] font-mono text-slate-500 bg-slate-950 px-1 rounded">09:00 - 10:30</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Bloco 2 - Ativo */}
+                                        <div className="bg-slate-900 border border-cyber-primary rounded-lg p-2 shadow-lg shadow-cyan-900/20 relative">
+                                            <div className="absolute top-0 left-0 w-0.5 h-full bg-cyber-primary rounded-l"></div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-5 h-5 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-600 hover:text-white hover:bg-cyber-primary transition-all">
+                                                    <Circle size={12} />
+                                                </div>
+                                                <div className="w-6 h-6 rounded bg-cyan-500/20 flex items-center justify-center">
+                                                    <Users size={10} className="text-cyan-400" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-[9px] font-bold text-slate-100">Follow-up de Leads</p>
+                                                </div>
+                                                <span className="text-[8px] font-mono text-slate-500 bg-slate-950 px-1 rounded">10:30 - 12:00</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Bloco 3 - Pendente */}
+                                        <div className="bg-cyber-panel border border-slate-700 rounded-lg p-2">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-5 h-5 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-600">
+                                                    <Circle size={12} />
+                                                </div>
+                                                <div className="w-6 h-6 rounded bg-purple-500/20 flex items-center justify-center">
+                                                    <FileText size={10} className="text-purple-400" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-[9px] font-bold text-slate-300">Criação de Propostas</p>
+                                                </div>
+                                                <span className="text-[8px] font-mono text-slate-500 bg-slate-950 px-1 rounded">14:00 - 16:00</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <p className="text-xs text-slate-500 mt-2 text-center">Meta mensal: 75% concluída</p>
                         </div>
+
+                        {/* MacBook Bottom/Keyboard area */}
+                        <div className="bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] h-4 rounded-b-lg"></div>
+                        <div className="bg-[#1a1a1a] h-2 mx-auto w-1/4 rounded-b-xl"></div>
                     </div>
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-cyber-dark to-transparent" />
+
+                    {/* Reflection/Shadow */}
+                    <div className="absolute inset-x-0 -bottom-8 h-16 bg-gradient-to-t from-transparent via-cyber-primary/5 to-transparent blur-xl"></div>
                 </div>
             </section>
 
@@ -292,30 +370,30 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* Social Proof */}
-            <section className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-950/50">
+            < section className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-950/50" >
                 <div className="max-w-4xl mx-auto">
                     <div className="flex flex-wrap justify-center items-center gap-8 text-slate-400">
                         <div className="flex items-center gap-3">
-                            <Users size={24} className="text-cyber-primary" />
-                            <span className="text-lg font-semibold">+500 Freelancers</span>
+                            <Rocket size={24} className="text-cyber-primary" />
+                            <span className="text-lg font-semibold">Lançamento Exclusivo</span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Star size={24} className="text-yellow-400 fill-yellow-400" />
-                            <span className="text-lg font-semibold">4.9/5 Avaliação</span>
+                            <Crown size={24} className="text-yellow-400" />
+                            <span className="text-lg font-semibold">5 Vagas de Membro Fundador</span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <TrendingUp size={24} className="text-emerald-400" />
-                            <span className="text-lg font-semibold">+R$ 150k Faturados</span>
+                            <Sparkles size={24} className="text-emerald-400" />
+                            <span className="text-lg font-semibold">PRO Vitalício por R$ 19,90</span>
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* Pricing Section */}
-            <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8">
+            < section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8" >
                 <div className="max-w-5xl mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl sm:text-4xl font-black mb-4">
@@ -352,7 +430,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         {/* Pro Plan */}
                         <div className="relative bg-gradient-to-b from-cyber-primary/10 to-cyber-secondary/10 border-2 border-cyber-primary rounded-2xl p-8 shadow-[0_0_40px_rgba(6,182,212,0.15)]">
                             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyber-primary to-cyan-400 text-black font-bold text-xs px-4 py-1 rounded-full uppercase tracking-wider">
-                                Mais Popular
+                                Recomendado
                             </div>
                             <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
                                 PRO <Star size={18} className="text-yellow-400 fill-yellow-400" />
@@ -380,17 +458,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
 
             {/* Final CTA */}
-            <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50">
+            < section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50" >
                 <div className="max-w-3xl mx-auto text-center">
                     <h2 className="text-3xl sm:text-4xl font-black mb-6">
                         Pronto para
                         <span className="bg-gradient-to-r from-cyber-primary to-cyber-secondary bg-clip-text text-transparent"> Decolar</span>?
                     </h2>
                     <p className="text-slate-400 mb-10 max-w-xl mx-auto">
-                        Junte-se a centenas de freelancers que já transformaram suas carreiras com o FreelanceFlow.
+                        Seja um dos primeiros a experimentar a plataforma e ganhe acesso vitalício como Membro Fundador.
                     </p>
                     <button
                         onClick={onGetStarted}
@@ -400,10 +478,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>
-            </section>
+            </section >
 
             {/* Footer */}
-            <footer className="border-t border-slate-800 py-12 px-4">
+            < footer className="border-t border-slate-800 py-12 px-4" >
                 <div className="max-w-7xl mx-auto">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                         {/* Logo */}
@@ -442,119 +520,125 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         </p>
                     </div>
                 </div>
-            </footer>
+            </footer >
 
             {/* Terms Modal */}
-            {showTerms && (
-                <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowTerms(false)} />
-                    <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-                        <div className="p-6 border-b border-slate-700 flex justify-between items-center">
-                            <h2 className="text-xl font-black text-white">Termos de Uso</h2>
-                            <button onClick={() => setShowTerms(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
-                        </div>
-                        <div className="p-6 overflow-y-auto text-slate-300 text-sm space-y-4">
-                            <p className="text-slate-400 text-xs">Última atualização: Dezembro de 2025</p>
+            {
+                showTerms && (
+                    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+                        <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowTerms(false)} />
+                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+                            <div className="p-6 border-b border-slate-700 flex justify-between items-center">
+                                <h2 className="text-xl font-black text-white">Termos de Uso</h2>
+                                <button onClick={() => setShowTerms(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
+                            </div>
+                            <div className="p-6 overflow-y-auto text-slate-300 text-sm space-y-4">
+                                <p className="text-slate-400 text-xs">Última atualização: Dezembro de 2025</p>
 
-                            <h3 className="text-cyber-primary font-bold">1. Aceitação dos Termos</h3>
-                            <p>Ao acessar e usar o FreelanceFlow, você concorda com estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não poderá acessar o serviço.</p>
+                                <h3 className="text-cyber-primary font-bold">1. Aceitação dos Termos</h3>
+                                <p>Ao acessar e usar o FreelanceFlow, você concorda com estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não poderá acessar o serviço.</p>
 
-                            <h3 className="text-cyber-primary font-bold">2. Descrição do Serviço</h3>
-                            <p>O FreelanceFlow é uma plataforma de produtividade para freelancers criativos que oferece ferramentas de gestão de projetos, clientes, finanças e desenvolvimento de carreira.</p>
+                                <h3 className="text-cyber-primary font-bold">2. Descrição do Serviço</h3>
+                                <p>O FreelanceFlow é uma plataforma de produtividade para freelancers criativos que oferece ferramentas de gestão de projetos, clientes, finanças e desenvolvimento de carreira.</p>
 
-                            <h3 className="text-cyber-primary font-bold">3. Contas de Usuário</h3>
-                            <p>Você é responsável por manter a confidencialidade de sua conta e senha. Você concorda em notificar imediatamente sobre qualquer uso não autorizado de sua conta.</p>
+                                <h3 className="text-cyber-primary font-bold">3. Contas de Usuário</h3>
+                                <p>Você é responsável por manter a confidencialidade de sua conta e senha. Você concorda em notificar imediatamente sobre qualquer uso não autorizado de sua conta.</p>
 
-                            <h3 className="text-cyber-primary font-bold">4. Planos e Pagamentos</h3>
-                            <p>O FreelanceFlow oferece planos gratuitos e pagos. Os pagamentos são processados de forma segura através de nossos parceiros de pagamento. Você pode cancelar sua assinatura a qualquer momento.</p>
+                                <h3 className="text-cyber-primary font-bold">4. Planos e Pagamentos</h3>
+                                <p>O FreelanceFlow oferece planos gratuitos e pagos. Os pagamentos são processados de forma segura através de nossos parceiros de pagamento. Você pode cancelar sua assinatura a qualquer momento.</p>
 
-                            <h3 className="text-cyber-primary font-bold">5. Uso Aceitável</h3>
-                            <p>Você concorda em usar o serviço apenas para fins legais e de acordo com estes termos. É proibido usar o serviço para qualquer atividade ilegal ou não autorizada.</p>
+                                <h3 className="text-cyber-primary font-bold">5. Uso Aceitável</h3>
+                                <p>Você concorda em usar o serviço apenas para fins legais e de acordo com estes termos. É proibido usar o serviço para qualquer atividade ilegal ou não autorizada.</p>
 
-                            <h3 className="text-cyber-primary font-bold">6. Propriedade Intelectual</h3>
-                            <p>Todo o conteúdo, funcionalidades e design do FreelanceFlow são protegidos por direitos autorais e outras leis de propriedade intelectual.</p>
+                                <h3 className="text-cyber-primary font-bold">6. Propriedade Intelectual</h3>
+                                <p>Todo o conteúdo, funcionalidades e design do FreelanceFlow são protegidos por direitos autorais e outras leis de propriedade intelectual.</p>
 
-                            <h3 className="text-cyber-primary font-bold">7. Limitação de Responsabilidade</h3>
-                            <p>O FreelanceFlow é fornecido "como está". Não garantimos que o serviço será ininterrupto, seguro ou livre de erros.</p>
+                                <h3 className="text-cyber-primary font-bold">7. Limitação de Responsabilidade</h3>
+                                <p>O FreelanceFlow é fornecido "como está". Não garantimos que o serviço será ininterrupto, seguro ou livre de erros.</p>
 
-                            <h3 className="text-cyber-primary font-bold">8. Contato</h3>
-                            <p>Para dúvidas sobre estes termos, entre em contato conosco através do suporte.</p>
+                                <h3 className="text-cyber-primary font-bold">8. Contato</h3>
+                                <p>Para dúvidas sobre estes termos, entre em contato conosco através do suporte.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
             {/* Support Modal */}
-            {showSupport && (
-                <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowSupport(false)} />
-                    <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
-                        <div className="p-6 border-b border-slate-700 flex justify-between items-center">
-                            <h2 className="text-xl font-black text-white">Suporte</h2>
-                            <button onClick={() => setShowSupport(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
-                        </div>
-                        <div className="p-6 text-slate-300 text-sm space-y-6">
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                                <h3 className="text-cyber-primary font-bold mb-2">Email</h3>
-                                <p className="text-slate-400">Para dúvidas, sugestões ou problemas técnicos:</p>
-                                <a href="mailto:contato.visualcaua@gmail.com" className="text-cyber-primary hover:underline">contato.visualcaua@gmail.com</a>
+            {
+                showSupport && (
+                    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+                        <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowSupport(false)} />
+                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
+                            <div className="p-6 border-b border-slate-700 flex justify-between items-center">
+                                <h2 className="text-xl font-black text-white">Suporte</h2>
+                                <button onClick={() => setShowSupport(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
                             </div>
+                            <div className="p-6 text-slate-300 text-sm space-y-6">
+                                <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                                    <h3 className="text-cyber-primary font-bold mb-2">Email</h3>
+                                    <p className="text-slate-400">Para dúvidas, sugestões ou problemas técnicos:</p>
+                                    <a href="mailto:contato.visualcaua@gmail.com" className="text-cyber-primary hover:underline">contato.visualcaua@gmail.com</a>
+                                </div>
 
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                                <h3 className="text-cyber-primary font-bold mb-2">WhatsApp</h3>
-                                <p className="text-slate-400">Atendimento rápido de segunda a sexta, das 9h às 18h:</p>
-                                <a href="https://wa.me/5527992241844" target="_blank" rel="noopener noreferrer" className="text-cyber-primary hover:underline">(27) 99224-1844</a>
-                            </div>
+                                <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                                    <h3 className="text-cyber-primary font-bold mb-2">WhatsApp</h3>
+                                    <p className="text-slate-400">Atendimento rápido de segunda a sexta, das 9h às 18h:</p>
+                                    <a href="https://wa.me/5527992241844" target="_blank" rel="noopener noreferrer" className="text-cyber-primary hover:underline">(27) 99224-1844</a>
+                                </div>
 
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-                                <h3 className="text-cyber-primary font-bold mb-2">Tempo de Resposta</h3>
-                                <p className="text-slate-400">Respondemos todas as mensagens em até 24 horas úteis. Usuários PRO têm prioridade no atendimento.</p>
+                                <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                                    <h3 className="text-cyber-primary font-bold mb-2">Tempo de Resposta</h3>
+                                    <p className="text-slate-400">Respondemos todas as mensagens em até 24 horas úteis. Usuários PRO têm prioridade no atendimento.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
             {/* Privacy Modal */}
-            {showPrivacy && (
-                <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowPrivacy(false)} />
-                    <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-                        <div className="p-6 border-b border-slate-700 flex justify-between items-center">
-                            <h2 className="text-xl font-black text-white">Política de Privacidade</h2>
-                            <button onClick={() => setShowPrivacy(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
-                        </div>
-                        <div className="p-6 overflow-y-auto text-slate-300 text-sm space-y-4">
-                            <p className="text-slate-400 text-xs">Última atualização: Dezembro de 2025</p>
+            {
+                showPrivacy && (
+                    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+                        <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowPrivacy(false)} />
+                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+                            <div className="p-6 border-b border-slate-700 flex justify-between items-center">
+                                <h2 className="text-xl font-black text-white">Política de Privacidade</h2>
+                                <button onClick={() => setShowPrivacy(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
+                            </div>
+                            <div className="p-6 overflow-y-auto text-slate-300 text-sm space-y-4">
+                                <p className="text-slate-400 text-xs">Última atualização: Dezembro de 2025</p>
 
-                            <h3 className="text-cyber-primary font-bold">1. Informações que Coletamos</h3>
-                            <p>Coletamos informações que você nos fornece diretamente, como nome, email e dados de pagamento. Também coletamos dados de uso para melhorar nossos serviços.</p>
+                                <h3 className="text-cyber-primary font-bold">1. Informações que Coletamos</h3>
+                                <p>Coletamos informações que você nos fornece diretamente, como nome, email e dados de pagamento. Também coletamos dados de uso para melhorar nossos serviços.</p>
 
-                            <h3 className="text-cyber-primary font-bold">2. Como Usamos suas Informações</h3>
-                            <p>Usamos suas informações para: fornecer e manter nosso serviço, processar pagamentos, enviar comunicações importantes e melhorar a experiência do usuário.</p>
+                                <h3 className="text-cyber-primary font-bold">2. Como Usamos suas Informações</h3>
+                                <p>Usamos suas informações para: fornecer e manter nosso serviço, processar pagamentos, enviar comunicações importantes e melhorar a experiência do usuário.</p>
 
-                            <h3 className="text-cyber-primary font-bold">3. Armazenamento de Dados</h3>
-                            <p>Seus dados são armazenados de forma segura em servidores protegidos. Utilizamos criptografia e outras medidas de segurança para proteger suas informações.</p>
+                                <h3 className="text-cyber-primary font-bold">3. Armazenamento de Dados</h3>
+                                <p>Seus dados são armazenados de forma segura em servidores protegidos. Utilizamos criptografia e outras medidas de segurança para proteger suas informações.</p>
 
-                            <h3 className="text-cyber-primary font-bold">4. Compartilhamento de Dados</h3>
-                            <p>Não vendemos ou compartilhamos suas informações pessoais com terceiros, exceto quando necessário para processar pagamentos ou cumprir obrigações legais.</p>
+                                <h3 className="text-cyber-primary font-bold">4. Compartilhamento de Dados</h3>
+                                <p>Não vendemos ou compartilhamos suas informações pessoais com terceiros, exceto quando necessário para processar pagamentos ou cumprir obrigações legais.</p>
 
-                            <h3 className="text-cyber-primary font-bold">5. Seus Direitos</h3>
-                            <p>Você tem o direito de acessar, corrigir ou excluir seus dados pessoais. Para exercer esses direitos, entre em contato com nosso suporte.</p>
+                                <h3 className="text-cyber-primary font-bold">5. Seus Direitos</h3>
+                                <p>Você tem o direito de acessar, corrigir ou excluir seus dados pessoais. Para exercer esses direitos, entre em contato com nosso suporte.</p>
 
-                            <h3 className="text-cyber-primary font-bold">6. Cookies</h3>
-                            <p>Usamos cookies para melhorar sua experiência e analisar o uso do serviço. Você pode configurar seu navegador para recusar cookies.</p>
+                                <h3 className="text-cyber-primary font-bold">6. Cookies</h3>
+                                <p>Usamos cookies para melhorar sua experiência e analisar o uso do serviço. Você pode configurar seu navegador para recusar cookies.</p>
 
-                            <h3 className="text-cyber-primary font-bold">7. Alterações nesta Política</h3>
-                            <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas por email ou através do serviço.</p>
+                                <h3 className="text-cyber-primary font-bold">7. Alterações nesta Política</h3>
+                                <p>Podemos atualizar esta política periodicamente. Notificaremos sobre mudanças significativas por email ou através do serviço.</p>
 
-                            <h3 className="text-cyber-primary font-bold">8. Contato</h3>
-                            <p>Para questões sobre privacidade, entre em contato através do suporte ou pelo email: contato.visualcaua@gmail.com</p>
+                                <h3 className="text-cyber-primary font-bold">8. Contato</h3>
+                                <p>Para questões sobre privacidade, entre em contato através do suporte ou pelo email: contato.visualcaua@gmail.com</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 };
 
