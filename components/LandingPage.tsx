@@ -25,14 +25,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         },
         {
             icon: Target,
-            title: "Pipeline de Leads",
-            description: "Gerencie leads em um kanban visual. Nunca perca um follow-up.",
+            title: "Qualificador de Leads",
+            description: "Classifique leads como HOT, WARM ou COLD automaticamente. Priorize quem mais importa.",
+            color: "from-orange-500 to-red-500"
+        },
+        {
+            icon: Users,
+            title: "CRM de Bolso",
+            description: "Gerencie seus leads em um kanban visual. Ilimitado e gratuito para todos.",
             color: "from-emerald-500 to-green-500"
         },
         {
             icon: Calculator,
             title: "Calculadora de Preços",
-            description: "Precifique projetos com confiança. Gere propostas profissionais.",
+            description: "Precifique projetos com confiança. Nunca mais cobre errado.",
             color: "from-purple-500 to-violet-500"
         },
         {
@@ -56,20 +62,22 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
     ];
 
     const freeFeatures = [
+        "Protocolo do Dia completo",
+        "Qualificador de Leads ilimitado",
+        "CRM de Bolso ilimitado",
         "3 Módulos da Mentoria",
-        "Protocolo do Dia",
-        "Pipeline de Leads (limitado)",
-        "Timer Pomodoro"
+        "Timer Pomodoro",
+        "Vitória do Dia"
     ];
 
     const proFeatures = [
         "Tudo do plano Free +",
-        "+6 Módulos Extras da Mentoria",
-        "Pipeline Ilimitado + Scripts",
-        "Calculadora de Preços Completa",
+        "+6 Módulos Avançados de Vendas",
+        "Scripts de Vendas (Sales Playbook)",
+        "Calculadora de Preços PRO",
         "Gerador de Contratos PDF",
         "Módulo Financeiro Completo",
-        "Suporte Prioritário"
+        "Suporte Prioritário via WhatsApp"
     ];
 
     return (
@@ -317,6 +325,77 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </div>
             </section>
 
+            {/* MENTORIA & CARREIRA - Seção de Destaque */}
+            <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                {/* Background Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-cyber-secondary/10 to-transparent" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyber-secondary/20 rounded-full blur-[150px]" />
+
+                <div className="relative max-w-5xl mx-auto">
+                    <div className="text-center mb-12">
+                        <div className="inline-flex items-center gap-2 bg-cyber-secondary/20 border border-cyber-secondary/30 text-cyber-secondary px-4 py-2 rounded-full text-sm font-bold mb-6">
+                            <GraduationCap size={18} />
+                            O DIFERENCIAL DO FREELANCEFLOW
+                        </div>
+                        <h2 className="text-4xl sm:text-5xl font-black mb-6">
+                            Mentoria & Carreira<br />
+                            <span className="bg-gradient-to-r from-cyber-secondary via-purple-400 to-pink-500 bg-clip-text text-transparent">
+                                Aprenda a Vender Como Profissional
+                            </span>
+                        </h2>
+                        <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+                            9 módulos estratégicos para você sair do zero e conquistar clientes que pagam o que seu trabalho realmente vale.
+                        </p>
+                    </div>
+
+                    {/* Resultado Real */}
+                    <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 rounded-2xl p-8 mb-12 text-center">
+                        <p className="text-slate-400 text-sm uppercase tracking-wider mb-2">DO ZERO AOS PRIMEIROS CLIENTES</p>
+                        <div className="flex items-center justify-center gap-4 flex-wrap">
+                            <span className="text-5xl sm:text-6xl font-black text-emerald-400">R$ 793,86</span>
+                            <span className="text-2xl text-slate-300 font-bold">em 15 dias</span>
+                        </div>
+                        <p className="text-white font-semibold mt-3">Resultado real de um iniciante saindo do R$ 0</p>
+                        <p className="text-slate-400 mt-1">Usando Facebook Library + Instagram para prospecção ativa</p>
+                    </div>
+
+                    {/* Os 9 Módulos */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+                        {[
+                            { num: "01", title: "Mentalidade de Vendedor", free: true },
+                            { num: "02", title: "Definindo seu Posicionamento", free: true },
+                            { num: "03", title: "Prospecção Ativa", free: true },
+                            { num: "04", title: "Facebook Library Hacks", free: false },
+                            { num: "05", title: "Instagram como Ferramenta de Vendas", free: false },
+                            { num: "06", title: "Abordagem e Scripts", free: false },
+                            { num: "07", title: "Precificação Estratégica", free: false },
+                            { num: "08", title: "Negociação e Fechamento", free: false },
+                            { num: "09", title: "Contratos High-Ticket", free: false }
+                        ].map((mod, idx) => (
+                            <div key={idx} className={`flex items-center gap-4 p-4 rounded-xl border ${mod.free ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-900/50 border-slate-800'}`}>
+                                <span className={`text-2xl font-black ${mod.free ? 'text-emerald-400' : 'text-slate-600'}`}>{mod.num}</span>
+                                <div>
+                                    <p className={`font-bold ${mod.free ? 'text-white' : 'text-slate-300'}`}>{mod.title}</p>
+                                    {mod.free && <span className="text-[10px] uppercase text-emerald-400 font-bold">Grátis</span>}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="text-center">
+                        <button
+                            onClick={onGetStarted}
+                            className="group bg-gradient-to-r from-cyber-secondary to-purple-500 text-white font-black px-10 py-5 rounded-xl text-lg transition-all hover:shadow-neon-pink hover:scale-105 inline-flex items-center gap-3"
+                        >
+                            <GraduationCap size={24} />
+                            QUERO APRENDER A VENDER
+                            <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+                        </button>
+                        <p className="text-slate-500 text-sm mt-4">3 módulos grátis para você começar agora</p>
+                    </div>
+                </div>
+            </section>
+
             {/* Floating UI Demo Section */}
             <section className="py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
                 <div className="max-w-6xl mx-auto">
@@ -372,28 +451,40 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 </div>
             </section >
 
-            {/* Social Proof */}
-            < section className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-950/50" >
-                <div className="max-w-4xl mx-auto">
-                    <div className="flex flex-wrap justify-center items-center gap-8 text-slate-400">
-                        <div className="flex items-center gap-3">
-                            <Rocket size={24} className="text-cyber-primary" />
-                            <span className="text-lg font-semibold">Lançamento Exclusivo</span>
+            {/* Call to Action - ANTES do Pricing para mostrar valor primeiro */}
+            < section className="py-20 px-4 sm:px-6 lg:px-8" >
+                <div className="max-w-4xl mx-auto text-center">
+                    <h2 className="text-3xl sm:text-4xl font-black mb-6">
+                        Por que Freelancers Escolhem o
+                        <span className="bg-gradient-to-r from-cyber-primary to-cyber-secondary bg-clip-text text-transparent"> FreelanceFlow</span>?
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                        <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                            <div className="text-4xl font-black text-cyber-primary mb-2">100%</div>
+                            <p className="text-slate-400 text-sm">CRM e Qualificador gratuitos e ilimitados</p>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <Crown size={24} className="text-yellow-400" />
-                            <span className="text-lg font-semibold">5 Vagas de Membro Fundador</span>
+                        <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                            <div className="text-4xl font-black text-cyber-secondary mb-2">9</div>
+                            <p className="text-slate-400 text-sm">Módulos de mentoria para escalar sua carreira</p>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <Sparkles size={24} className="text-emerald-400" />
-                            <span className="text-lg font-semibold">PRO Vitalício por R$ 19,90</span>
+                        <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+                            <div className="text-4xl font-black text-emerald-400 mb-2">24h</div>
+                            <p className="text-slate-400 text-sm">Suporte dedicado para usuários PRO</p>
                         </div>
                     </div>
+                    <button
+                        onClick={onGetStarted}
+                        className="group bg-gradient-to-r from-cyber-secondary to-purple-500 text-white font-black px-10 py-5 rounded-xl text-lg transition-all hover:shadow-neon-pink hover:scale-105 flex items-center justify-center gap-2 mx-auto"
+                    >
+                        COMEÇAR AGORA - É GRÁTIS
+                        <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    <p className="text-slate-500 text-sm mt-4">Não precisa de cartão de crédito</p>
                 </div>
             </section >
 
-            {/* Pricing Section */}
-            < section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8" >
+            {/* Pricing Section - AGORA vem por último antes do footer */}
+            < section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50" >
                 <div className="max-w-5xl mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl sm:text-4xl font-black mb-4">
@@ -414,7 +505,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                             <ul className="space-y-3 mb-8">
                                 {freeFeatures.map((feature, idx) => (
                                     <li key={idx} className="flex items-center gap-3 text-slate-300 text-sm">
-                                        <CheckCircle2 size={18} className="text-slate-500 shrink-0" />
+                                        <CheckCircle2 size={18} className="text-cyber-primary shrink-0" />
                                         {feature}
                                     </li>
                                 ))}
@@ -457,26 +548,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                             <p className="text-center text-xs text-slate-500 mt-3">Cancele a qualquer momento</p>
                         </div>
                     </div>
-                </div>
-            </section >
-
-            {/* Final CTA */}
-            < section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50" >
-                <div className="max-w-3xl mx-auto text-center">
-                    <h2 className="text-3xl sm:text-4xl font-black mb-6">
-                        Pronto para
-                        <span className="bg-gradient-to-r from-cyber-primary to-cyber-secondary bg-clip-text text-transparent"> Decolar</span>?
-                    </h2>
-                    <p className="text-slate-400 mb-10 max-w-xl mx-auto">
-                        Seja um dos primeiros a experimentar a plataforma e ganhe acesso vitalício como Membro Fundador.
-                    </p>
-                    <button
-                        onClick={onGetStarted}
-                        className="group bg-gradient-to-r from-cyber-secondary to-purple-500 text-white font-black px-10 py-5 rounded-xl text-lg transition-all hover:shadow-neon-pink hover:scale-105 flex items-center justify-center gap-2 mx-auto"
-                    >
-                        CRIAR MINHA CONTA GRÁTIS
-                        <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
-                    </button>
                 </div>
             </section >
 

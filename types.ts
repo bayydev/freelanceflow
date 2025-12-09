@@ -104,3 +104,35 @@ export interface ContractData {
     valid_until: string;
   };
 }
+
+// Lead Qualification Types
+export type LeadTemperature = 'HOT' | 'WARM' | 'COLD';
+
+export type LeadSource = 'instagram' | 'google_maps' | 'facebook' | 'indicacao' | 'outro';
+
+export interface QualificationAnswers {
+  hasDigitalPresence: 'yes' | 'partial' | 'no';
+  postFrequency: 'daily' | 'weekly' | 'rarely';
+  visualQuality: 'poor' | 'average' | 'professional';
+  paidAds: 'yes' | 'maybe' | 'no';
+  engagement: 'high' | 'medium' | 'low';
+  nicheMatch: 'exact' | 'related' | 'different';
+}
+
+export interface QualifiedLead {
+  id: string;
+  user_id: string;
+  business_name: string;
+  whatsapp?: string;
+  instagram_handle?: string;
+  city: string;
+  category: string;
+  source: LeadSource;
+  score: number;
+  temperature: LeadTemperature;
+  answers: QualificationAnswers;
+  notes?: string;
+  created_at: string;
+  qualified_at?: string;
+  moved_to_crm: boolean;
+}

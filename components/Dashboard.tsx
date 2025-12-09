@@ -2,12 +2,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { User, TimeBlock, Task, NicheType, BlockStatus } from '../types';
 import { generateSchedule, BLOCK_ICONS, BLOCK_COLORS } from '../constants';
-import { LogOut, Plus, Trash2, CheckCircle2, Circle, Star, Target, LayoutDashboard, ListTodo, RefreshCw, Crown, Wallet, Calendar, Clock, X, XCircle, AlertCircle, Moon, ArrowRight, Sunrise, Zap } from 'lucide-react';
+import { LogOut, Plus, Trash2, CheckCircle2, Circle, Star, Target, LayoutDashboard, ListTodo, RefreshCw, Crown, Wallet, Calendar, Clock, X, XCircle, AlertCircle, Moon, ArrowRight, Sunrise, Zap, Users } from 'lucide-react';
 import Pomodoro from './Pomodoro';
 import DailyWin from './DailyWin';
 import Pipeline from './Pipeline';
 import FinanceModule from './FinanceModule';
 import PricingCalculator from './PricingCalculator';
+import LeadQualifier from './LeadQualifier';
 import confetti from 'canvas-confetti';
 import { supabase } from '../services/supabase';
 
@@ -19,19 +20,19 @@ interface DashboardProps {
 }
 
 const getTodayDateKey = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 const getInitials = (name: string) => {
-    const names = name.trim().split(' ');
-    if (names.length >= 2) {
-        return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
+  const names = name.trim().split(' ');
+  if (names.length >= 2) {
+    return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+  }
+  return name.substring(0, 2).toUpperCase();
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, onRequestUpgrade }) => {
@@ -39,89 +40,97 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [activeBlock, setActiveBlock] = useState<TimeBlock | null>(null);
-  const [rightPanelTab, setRightPanelTab] = useState<'TOOLS' | 'CRM' | 'FINANCE'>('TOOLS');
+  const [rightPanelTab, setRightPanelTab] = useState<'TOOLS' | 'CRM' | 'FINANCE' | 'QUALIFIER'>('TOOLS');
   const [customBlockTask, setCustomBlockTask] = useState('');
-  
+
   const [isStandbyMode, setIsStandbyMode] = useState(false);
   const [isOvertime, setIsOvertime] = useState(false);
 
   const fetchDailyProgress = async (baseSchedule: TimeBlock[]): Promise<TimeBlock[]> => {
-      const todayKey = getTodayDateKey();
-      
-      try {
-          const { data, error } = await supabase
-            .from('daily_progress')
-            .select('completed_blocks, failed_blocks')
-            .eq('user_id', user.id)
-            .eq('date', todayKey)
-            .maybeSingle();
+    const todayKey = getTodayDateKey();
 
-          if (data) {
-              return baseSchedule.map(block => {
-                  if (data.completed_blocks?.includes(block.id)) {
-                      return { ...block, status: 'COMPLETED' };
-                  }
-                  if (data.failed_blocks?.includes(block.id)) {
-                      return { ...block, status: 'FAILED' };
-                  }
-                  return block;
-              });
+    try {
+      const { data, error } = await supabase
+        .from('daily_progress')
+        .select('completed_blocks, failed_blocks, block_custom_tasks')
+        .eq('user_id', user.id)
+        .eq('date', todayKey)
+        .maybeSingle();
+
+      if (data) {
+        const customTasks = data.block_custom_tasks || {};
+        return baseSchedule.map(block => {
+          let updatedBlock = { ...block };
+
+          // Apply custom tasks if any exist for this block
+          if (customTasks[block.id]) {
+            updatedBlock.suggestedTasks = customTasks[block.id];
           }
-          return baseSchedule;
-      } catch (e) {
-          console.error("Erro ao carregar progresso diário", e);
-          return baseSchedule;
+
+          if (data.completed_blocks?.includes(block.id)) {
+            updatedBlock.status = 'COMPLETED';
+          }
+          if (data.failed_blocks?.includes(block.id)) {
+            updatedBlock.status = 'FAILED';
+          }
+          return updatedBlock;
+        });
       }
+      return baseSchedule;
+    } catch (e) {
+      console.error("Erro ao carregar progresso diário", e);
+      return baseSchedule;
+    }
   };
 
   const saveCompletedBlock = async (blockId: string) => {
-      const todayKey = getTodayDateKey();
-      
-      const { data } = await supabase
-        .from('daily_progress')
-        .select('completed_blocks')
-        .eq('user_id', user.id)
-        .eq('date', todayKey)
-        .maybeSingle();
-      
-      const currentCompleted = data?.completed_blocks || [];
-      if (!currentCompleted.includes(blockId)) {
-          const newCompleted = [...currentCompleted, blockId];
-          await supabase.from('daily_progress').upsert({
-              user_id: user.id,
-              date: todayKey,
-              completed_blocks: newCompleted
-          }, { onConflict: 'user_id, date' });
-      }
+    const todayKey = getTodayDateKey();
+
+    const { data } = await supabase
+      .from('daily_progress')
+      .select('completed_blocks')
+      .eq('user_id', user.id)
+      .eq('date', todayKey)
+      .maybeSingle();
+
+    const currentCompleted = data?.completed_blocks || [];
+    if (!currentCompleted.includes(blockId)) {
+      const newCompleted = [...currentCompleted, blockId];
+      await supabase.from('daily_progress').upsert({
+        user_id: user.id,
+        date: todayKey,
+        completed_blocks: newCompleted
+      }, { onConflict: 'user_id, date' });
+    }
   };
 
   const saveFailedBlocks = async (blockIds: string[]) => {
-      if (blockIds.length === 0) return;
-      const todayKey = getTodayDateKey();
-      
-      const { data } = await supabase
-        .from('daily_progress')
-        .select('failed_blocks')
-        .eq('user_id', user.id)
-        .eq('date', todayKey)
-        .maybeSingle();
+    if (blockIds.length === 0) return;
+    const todayKey = getTodayDateKey();
 
-      const currentFailed = data?.failed_blocks || [];
-      const newFailed = Array.from(new Set([...currentFailed, ...blockIds]));
-      
-      await supabase.from('daily_progress').upsert({
-          user_id: user.id,
-          date: todayKey,
-          failed_blocks: newFailed
-      }, { onConflict: 'user_id, date' });
+    const { data } = await supabase
+      .from('daily_progress')
+      .select('failed_blocks')
+      .eq('user_id', user.id)
+      .eq('date', todayKey)
+      .maybeSingle();
+
+    const currentFailed = data?.failed_blocks || [];
+    const newFailed = Array.from(new Set([...currentFailed, ...blockIds]));
+
+    await supabase.from('daily_progress').upsert({
+      user_id: user.id,
+      date: todayKey,
+      failed_blocks: newFailed
+    }, { onConflict: 'user_id, date' });
   };
 
   const checkStandbyMode = useCallback(() => {
     if (!user.workStart || !user.workEnd) return false;
-    
+
     const now = new Date();
     const currentMins = now.getHours() * 60 + now.getMinutes();
-    
+
     const [startH, startM] = user.workStart.split(':').map(Number);
     const startMins = startH * 60 + startM;
 
@@ -137,17 +146,17 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
 
     if (user.niche) {
       const generated = generateSchedule(user.niche, user.roles, user.workStart, user.workEnd);
-      
+
       fetchDailyProgress(generated).then(hydratedSchedule => {
-          setSchedule(hydratedSchedule);
-          if (hydratedSchedule.length > 0) {
-             if (activeBlock) {
-                 const found = hydratedSchedule.find(b => b.id === activeBlock.id);
-                 setActiveBlock(found || hydratedSchedule[0]);
-             } else {
-                 setActiveBlock(hydratedSchedule[0]);
-             }
+        setSchedule(hydratedSchedule);
+        if (hydratedSchedule.length > 0) {
+          if (activeBlock) {
+            const found = hydratedSchedule.find(b => b.id === activeBlock.id);
+            setActiveBlock(found || hydratedSchedule[0]);
+          } else {
+            setActiveBlock(hydratedSchedule[0]);
           }
+        }
       });
     }
     fetchTasks();
@@ -155,54 +164,54 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
 
   useEffect(() => {
     const checkTimeFailures = async () => {
-        const isStandby = checkStandbyMode();
-        if (isStandby !== isStandbyMode) setIsStandbyMode(isStandby);
+      const isStandby = checkStandbyMode();
+      if (isStandby !== isStandbyMode) setIsStandbyMode(isStandby);
 
-        if (isOvertime) return;
+      if (isOvertime) return;
 
-        if (schedule.length === 0) return;
-        
-        const now = new Date();
-        const currentHours = now.getHours();
-        const currentMinutes = now.getMinutes();
-        const currentTimeInMinutes = currentHours * 60 + currentMinutes;
+      if (schedule.length === 0) return;
 
-        let hasChanges = false;
-        const updatedSchedule = [...schedule];
-        const failedIds: string[] = [];
+      const now = new Date();
+      const currentHours = now.getHours();
+      const currentMinutes = now.getMinutes();
+      const currentTimeInMinutes = currentHours * 60 + currentMinutes;
 
-        updatedSchedule.forEach(block => {
-            if (block.status === 'PENDING') {
-                const [endH, endM] = block.endTime.split(':').map(Number);
-                const endTimeInMinutes = endH * 60 + endM;
+      let hasChanges = false;
+      const updatedSchedule = [...schedule];
+      const failedIds: string[] = [];
 
-                if (currentTimeInMinutes > endTimeInMinutes + 1) {
-                    block.status = 'FAILED';
-                    hasChanges = true;
-                    failedIds.push(block.id);
-                }
-            }
-        });
+      updatedSchedule.forEach(block => {
+        if (block.status === 'PENDING') {
+          const [endH, endM] = block.endTime.split(':').map(Number);
+          const endTimeInMinutes = endH * 60 + endM;
 
-        if (hasChanges) {
-            setSchedule(updatedSchedule);
-            await saveFailedBlocks(failedIds);
+          if (currentTimeInMinutes > endTimeInMinutes + 1) {
+            block.status = 'FAILED';
+            hasChanges = true;
+            failedIds.push(block.id);
+          }
         }
+      });
+
+      if (hasChanges) {
+        setSchedule(updatedSchedule);
+        await saveFailedBlocks(failedIds);
+      }
     };
 
-    const intervalId = setInterval(checkTimeFailures, 60000); 
+    const intervalId = setInterval(checkTimeFailures, 60000);
     const timeoutId = setTimeout(checkTimeFailures, 2000);
 
     return () => {
-        clearInterval(intervalId);
-        clearTimeout(timeoutId);
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
     };
   }, [schedule, checkStandbyMode, isStandbyMode, isOvertime]);
 
 
   const handleMarkBlockComplete = async (blockId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     const blockIndex = schedule.findIndex(b => b.id === blockId);
     if (blockIndex === -1) return;
     const block = schedule[blockIndex];
@@ -214,18 +223,18 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
     setSchedule(updatedSchedule);
 
     confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.7 },
-        colors: ['#06b6d4', '#d946ef']
+      particleCount: 50,
+      spread: 60,
+      origin: { y: 0.7 },
+      colors: ['#06b6d4', '#d946ef']
     });
-    
+
     await saveCompletedBlock(blockId);
   };
 
   const fetchTasks = async () => {
-      const { data } = await supabase.from('tasks').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-      if(data) setTasks(data as Task[]);
+    const { data } = await supabase.from('tasks').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+    if (data) setTasks(data as Task[]);
   };
 
   const handleAddQuickTask = async (e: React.FormEvent) => {
@@ -243,11 +252,11 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
     setTasks(prevTasks => prevTasks.map(t => t.id === id ? { ...t, completed: newStatus } : t));
 
     try {
-        const { error } = await supabase.from('tasks').update({ completed: newStatus }).eq('id', id);
-        if (error) throw error;
+      const { error } = await supabase.from('tasks').update({ completed: newStatus }).eq('id', id);
+      if (error) throw error;
     } catch (error) {
-        console.error("Erro ao atualizar status:", error);
-        setTasks(prevTasks => prevTasks.map(t => t.id === id ? { ...t, completed: !newStatus } : t));
+      console.error("Erro ao atualizar status:", error);
+      setTasks(prevTasks => prevTasks.map(t => t.id === id ? { ...t, completed: !newStatus } : t));
     }
   };
 
@@ -256,30 +265,53 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
     await supabase.from('tasks').delete().eq('id', id);
   };
 
-  const addCustomTaskToBlock = (e: React.FormEvent) => {
+  const saveCustomTasks = async (updatedSchedule: TimeBlock[]) => {
+    const todayKey = getTodayDateKey();
+    const customTasksMap: Record<string, string[]> = {};
+
+    updatedSchedule.forEach(block => {
+      if (block.suggestedTasks && block.suggestedTasks.length > 0) {
+        customTasksMap[block.id] = block.suggestedTasks;
+      }
+    });
+
+    try {
+      await supabase.from('daily_progress').upsert({
+        user_id: user.id,
+        date: todayKey,
+        block_custom_tasks: customTasksMap
+      }, { onConflict: 'user_id, date' });
+    } catch (e) {
+      console.error("Erro ao salvar tarefas customizadas", e);
+    }
+  };
+
+  const addCustomTaskToBlock = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeBlock || !customBlockTask.trim()) return;
     const updatedSchedule = schedule.map(block => {
-        if (block.id === activeBlock.id) {
-            return { ...block, suggestedTasks: [...block.suggestedTasks, customBlockTask] };
-        }
-        return block;
+      if (block.id === activeBlock.id) {
+        return { ...block, suggestedTasks: [...block.suggestedTasks, customBlockTask] };
+      }
+      return block;
     });
     setSchedule(updatedSchedule);
     setCustomBlockTask('');
+    await saveCustomTasks(updatedSchedule);
   };
 
-  const removeTaskFromBlock = (taskIndex: number) => {
-      if (!activeBlock) return;
-      const updatedSchedule = schedule.map(block => {
-          if (block.id === activeBlock.id) {
-              const newTasks = [...block.suggestedTasks];
-              newTasks.splice(taskIndex, 1);
-              return { ...block, suggestedTasks: newTasks };
-          }
-          return block;
-      });
-      setSchedule(updatedSchedule);
+  const removeTaskFromBlock = async (taskIndex: number) => {
+    if (!activeBlock) return;
+    const updatedSchedule = schedule.map(block => {
+      if (block.id === activeBlock.id) {
+        const newTasks = [...block.suggestedTasks];
+        newTasks.splice(taskIndex, 1);
+        return { ...block, suggestedTasks: newTasks };
+      }
+      return block;
+    });
+    setSchedule(updatedSchedule);
+    await saveCustomTasks(updatedSchedule);
   };
 
   const toggleNiche = () => {
@@ -295,28 +327,28 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
       <header className="border-b border-cyber-border bg-cyber-panel/50 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-             {/* AVATAR COM INICIAIS */}
-             <div className="w-8 h-8 bg-cyber-primary/20 rounded-lg flex items-center justify-center border border-cyber-primary text-cyber-primary font-bold text-xs shadow-neon-cyan shrink-0">
-                 {getInitials(user.name)}
-             </div>
+            {/* AVATAR COM INICIAIS */}
+            <div className="w-8 h-8 bg-cyber-primary/20 rounded-lg flex items-center justify-center border border-cyber-primary text-cyber-primary font-bold text-xs shadow-neon-cyan shrink-0">
+              {getInitials(user.name)}
+            </div>
             <div className="overflow-hidden">
               <div className="flex items-center gap-2">
-                 <h1 className="font-bold text-sm text-slate-100 uppercase tracking-wider truncate max-w-[120px] sm:max-w-none">{user.name}</h1>
-                 {user.isPremium ? (
-                     <span className="text-[10px] bg-yellow-500/20 text-yellow-400 px-1 rounded border border-yellow-500/30 font-bold animate-pulse flex items-center gap-1 shrink-0">
-                         <Crown size={10} /> PRO
-                     </span>
-                 ) : (
-                     <span className="text-[10px] bg-slate-800 px-1 rounded text-slate-400 shrink-0">FREE</span>
-                 )}
+                <h1 className="font-bold text-sm text-slate-100 uppercase tracking-wider truncate max-w-[120px] sm:max-w-none">{user.name}</h1>
+                {user.isPremium ? (
+                  <span className="text-[10px] bg-yellow-500/20 text-yellow-400 px-1 rounded border border-yellow-500/30 font-bold animate-pulse flex items-center gap-1 shrink-0">
+                    <Crown size={10} /> PRO
+                  </span>
+                ) : (
+                  <span className="text-[10px] bg-slate-800 px-1 rounded text-slate-400 shrink-0">FREE</span>
+                )}
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
-             
-             {!user.isPremium && (
-                 <button onClick={onRequestUpgrade} className="text-[10px] sm:text-xs bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white px-3 py-1.5 rounded font-bold hover:shadow-neon-pink transition-all whitespace-nowrap">SEJA PRO</button>
-             )}
+
+            {!user.isPremium && (
+              <button onClick={onRequestUpgrade} className="text-[10px] sm:text-xs bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white px-3 py-1.5 rounded font-bold hover:shadow-neon-pink transition-all whitespace-nowrap">SEJA PRO</button>
+            )}
             <button onClick={onLogout} className="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-red-400 transition-colors" title="Sair"><LogOut size={18} /></button>
           </div>
         </div>
@@ -337,179 +369,187 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
           </div>
 
           <div className="bg-slate-900/50 border border-slate-800 rounded-lg px-4 py-2 flex items-center justify-between text-xs text-slate-400 font-mono">
-              <div className="flex items-center gap-2"><Calendar size={14} /><span>{user.workDays?.join(', ') || 'Seg-Sex'}</span></div>
-              <div className="flex items-center gap-2"><Clock size={14} /><span>{user.workStart || '09:00'} - {user.workEnd || '18:00'}</span></div>
+            <div className="flex items-center gap-2"><Calendar size={14} /><span>{user.workDays?.join(', ') || 'Seg-Sex'}</span></div>
+            <div className="flex items-center gap-2"><Clock size={14} /><span>{user.workStart || '09:00'} - {user.workEnd || '18:00'}</span></div>
           </div>
 
           {shouldShowStandby ? (
-              // --- VIEW DE STANDBY (FORA DE EXPEDIENTE) ---
-              <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 flex flex-col items-center justify-center text-center min-h-[400px] animate-fade-in relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cyber-primary/5 pointer-events-none" />
-                  
-                  <div className="w-20 h-20 bg-indigo-500/10 rounded-full flex items-center justify-center mb-6 border border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.2)]">
-                      {(new Date().getHours()) < 12 ? (
-                         <Sunrise size={40} className="text-indigo-400 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
-                      ) : (
-                         <Moon size={40} className="text-indigo-400 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
-                      )}
-                  </div>
-                  
-                  <h3 className="text-2xl font-black text-slate-100 mb-2 tracking-tight uppercase">
-                      Fora do Expediente
-                  </h3>
-                  
-                  <p className="text-slate-400 max-w-md mb-8 leading-relaxed">
-                      Você configurou sua janela de trabalho entre <span className="text-indigo-400 font-mono font-bold">{user.workStart}</span> e <span className="text-indigo-400 font-mono font-bold">{user.workEnd}</span>.
-                      <br/><br/>
-                      Não tente forçar a produtividade se estiver cansado. Mas se for necessário, ative o modo extra.
-                  </p>
+            // --- VIEW DE STANDBY (FORA DE EXPEDIENTE) ---
+            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 flex flex-col items-center justify-center text-center min-h-[400px] animate-fade-in relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cyber-primary/5 pointer-events-none" />
 
-                  <div className="flex flex-col gap-4 w-full max-w-sm z-10">
-                      <button 
-                        onClick={() => setIsOvertime(true)}
-                        className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg shadow-lg shadow-indigo-900/50 flex items-center justify-center gap-2 transition-all"
-                      >
-                          <Zap size={18} /> INICIAR SESSÃO EXTRA (OVERTIME)
-                      </button>
-
-                      <div className="flex gap-2">
-                        <button 
-                            onClick={() => setRightPanelTab('CRM')}
-                            className="flex-1 py-3 bg-slate-800 border border-slate-700 rounded-lg hover:border-slate-500 text-xs text-slate-400 font-bold hover:text-white transition-all"
-                        >
-                            ORGANIZAR CRM
-                        </button>
-                        <button 
-                            onClick={() => setRightPanelTab('FINANCE')}
-                            className="flex-1 py-3 bg-slate-800 border border-slate-700 rounded-lg hover:border-slate-500 text-xs text-slate-400 font-bold hover:text-white transition-all"
-                        >
-                            FINANÇAS
-                        </button>
-                      </div>
-                  </div>
-              </div>
-          ) : (
-              // --- VIEW NORMAL DE TAREFAS ---
-              <div className="space-y-4">
-                {isOvertime && (
-                    <div className="bg-indigo-500/10 border border-indigo-500/40 p-3 rounded-lg flex items-center gap-2 mb-4 animate-pulse">
-                        <Zap size={16} className="text-indigo-400" />
-                        <p className="text-sm text-indigo-300 font-bold">MODO OVERTIME ATIVO: Foco total, finalize rápido.</p>
-                    </div>
+              <div className="w-20 h-20 bg-indigo-500/10 rounded-full flex items-center justify-center mb-6 border border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.2)]">
+                {(new Date().getHours()) < 12 ? (
+                  <Sunrise size={40} className="text-indigo-400 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+                ) : (
+                  <Moon size={40} className="text-indigo-400 drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
                 )}
+              </div>
 
-                {schedule.map((block) => {
-                  const Icon = BLOCK_ICONS[block.type];
-                  const isActive = activeBlock?.id === block.id;
-                  const isCompleted = block.status === 'COMPLETED';
-                  const isFailed = block.status === 'FAILED';
-                  
-                  return (
-                    <div 
-                      key={block.id}
-                      onClick={() => setActiveBlock(block)}
-                      className={`relative p-5 rounded-xl border transition-all cursor-pointer group overflow-hidden ${
-                        isActive 
-                          ? 'bg-slate-900 border-cyber-primary shadow-lg shadow-cyan-900/20' 
-                          : isCompleted
-                            ? 'bg-slate-900/30 border-emerald-900/50 opacity-70'
-                            : isFailed
-                                ? 'bg-red-900/10 border-red-900/50 opacity-60'
-                                : 'bg-cyber-panel border-cyber-border hover:border-slate-600'
+              <h3 className="text-2xl font-black text-slate-100 mb-2 tracking-tight uppercase">
+                Fora do Expediente
+              </h3>
+
+              <p className="text-slate-400 max-w-md mb-8 leading-relaxed">
+                Você configurou sua janela de trabalho entre <span className="text-indigo-400 font-mono font-bold">{user.workStart}</span> e <span className="text-indigo-400 font-mono font-bold">{user.workEnd}</span>.
+                <br /><br />
+                Não tente forçar a produtividade se estiver cansado. Mas se for necessário, ative o modo extra.
+              </p>
+
+              <div className="flex flex-col gap-4 w-full max-w-sm z-10">
+                <button
+                  onClick={() => setIsOvertime(true)}
+                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg shadow-lg shadow-indigo-900/50 flex items-center justify-center gap-2 transition-all"
+                >
+                  <Zap size={18} /> INICIAR SESSÃO EXTRA (OVERTIME)
+                </button>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setRightPanelTab('CRM')}
+                    className="flex-1 py-3 bg-slate-800 border border-slate-700 rounded-lg hover:border-slate-500 text-xs text-slate-400 font-bold hover:text-white transition-all"
+                  >
+                    ORGANIZAR CRM
+                  </button>
+                  <button
+                    onClick={() => setRightPanelTab('FINANCE')}
+                    className="flex-1 py-3 bg-slate-800 border border-slate-700 rounded-lg hover:border-slate-500 text-xs text-slate-400 font-bold hover:text-white transition-all"
+                  >
+                    FINANÇAS
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            // --- VIEW NORMAL DE TAREFAS ---
+            <div className="space-y-4">
+              {isOvertime && (
+                <div className="bg-indigo-500/10 border border-indigo-500/40 p-3 rounded-lg flex items-center gap-2 mb-4 animate-pulse">
+                  <Zap size={16} className="text-indigo-400" />
+                  <p className="text-sm text-indigo-300 font-bold">MODO OVERTIME ATIVO: Foco total, finalize rápido.</p>
+                </div>
+              )}
+
+              {schedule.map((block) => {
+                const Icon = BLOCK_ICONS[block.type];
+                const isActive = activeBlock?.id === block.id;
+                const isCompleted = block.status === 'COMPLETED';
+                const isFailed = block.status === 'FAILED';
+
+                return (
+                  <div
+                    key={block.id}
+                    onClick={() => setActiveBlock(block)}
+                    className={`relative p-5 rounded-xl border transition-all cursor-pointer group overflow-hidden ${isActive
+                      ? 'bg-slate-900 border-cyber-primary shadow-lg shadow-cyan-900/20'
+                      : isCompleted
+                        ? 'bg-slate-900/30 border-emerald-900/50 opacity-70'
+                        : isFailed
+                          ? 'bg-red-900/10 border-red-900/50 opacity-60'
+                          : 'bg-cyber-panel border-cyber-border hover:border-slate-600'
                       }`}
-                    >
-                      {isActive && <div className="absolute top-0 left-0 w-1 h-full bg-cyber-primary" />}
-                      
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-4 w-full">
-                          <button
-                            onClick={(e) => handleMarkBlockComplete(block.id, e)}
-                            disabled={isCompleted || isFailed}
-                            className={`p-2 rounded-full transition-all flex-shrink-0 ${
-                              isCompleted 
-                                ? 'text-cyber-success bg-cyber-success/10 cursor-default' 
-                                : isFailed
-                                    ? 'text-red-500 bg-red-500/10 cursor-default'
-                                    : 'text-slate-600 hover:text-white bg-slate-800/50 hover:bg-cyber-primary hover:shadow-neon-cyan'
-                            }`}
-                          >
-                             {isCompleted && <CheckCircle2 size={24} />}
-                             {isFailed && <XCircle size={24} />}
-                             {!isCompleted && !isFailed && <Circle size={24} />}
-                          </button>
+                  >
+                    {isActive && <div className="absolute top-0 left-0 w-1 h-full bg-cyber-primary" />}
 
-                          <div className={`p-3 rounded-lg flex-shrink-0 ${isFailed ? 'text-red-500 bg-red-900/20' : BLOCK_COLORS[block.type]}`}>
-                            <Icon size={20} />
-                          </div>
-                          
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between flex-wrap gap-2">
-                              <h3 className={`font-bold truncate ${isActive ? 'text-slate-100' : 'text-slate-300'} ${isCompleted ? 'line-through decoration-emerald-500/50 text-emerald-500' : ''} ${isFailed ? 'line-through decoration-red-500/50 text-red-500' : ''}`}>
-                                {block.title}
-                              </h3>
-                              <div className="flex items-center gap-2">
-                                {isFailed && (
-                                    <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
-                                        FALHA
-                                    </span>
-                                )}
-                                <span className="text-xs font-mono text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
-                                    {block.startTime} - {block.endTime}
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-4 w-full">
+                        <button
+                          onClick={(e) => handleMarkBlockComplete(block.id, e)}
+                          disabled={isCompleted || isFailed}
+                          className={`p-2 rounded-full transition-all flex-shrink-0 ${isCompleted
+                            ? 'text-cyber-success bg-cyber-success/10 cursor-default'
+                            : isFailed
+                              ? 'text-red-500 bg-red-500/10 cursor-default'
+                              : 'text-slate-600 hover:text-white bg-slate-800/50 hover:bg-cyber-primary hover:shadow-neon-cyan'
+                            }`}
+                        >
+                          {isCompleted && <CheckCircle2 size={24} />}
+                          {isFailed && <XCircle size={24} />}
+                          {!isCompleted && !isFailed && <Circle size={24} />}
+                        </button>
+
+                        <div className={`p-3 rounded-lg flex-shrink-0 ${isFailed ? 'text-red-500 bg-red-900/20' : BLOCK_COLORS[block.type]}`}>
+                          <Icon size={20} />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between flex-wrap gap-2">
+                            <h3 className={`font-bold truncate ${isActive ? 'text-slate-100' : 'text-slate-300'} ${isCompleted ? 'line-through decoration-emerald-500/50 text-emerald-500' : ''} ${isFailed ? 'line-through decoration-red-500/50 text-red-500' : ''}`}>
+                              {block.title}
+                            </h3>
+                            <div className="flex items-center gap-2">
+                              {isFailed && (
+                                <span className="text-[10px] font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                                  FALHA
                                 </span>
-                              </div>
+                              )}
+                              <span className="text-xs font-mono text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                                {block.startTime} - {block.endTime}
+                              </span>
                             </div>
-                            <p className={`text-sm mt-1 max-w-md line-clamp-2 ${isCompleted || isFailed ? 'text-slate-600' : 'text-slate-400'}`}>
-                              {isFailed ? "Você perdeu o prazo deste bloco." : block.description}
-                            </p>
+                          </div>
+                          <p className={`text-sm mt-1 max-w-md line-clamp-2 ${isCompleted || isFailed ? 'text-slate-600' : 'text-slate-400'}`}>
+                            {isFailed ? "Você perdeu o prazo deste bloco." : block.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {isActive && !isCompleted && !isFailed && (
+                      <div className="mt-4 pl-0 sm:pl-[80px] animate-fade-in space-y-4 cursor-default" onClick={e => e.stopPropagation()}>
+                        {block.actionableTip && (
+                          <div className="bg-indigo-500/10 border border-indigo-500/30 p-3 rounded-lg">
+                            <p className="text-xs text-indigo-300 font-semibold mb-1 flex items-center gap-1"><Star size={12} /> DICA TÁTICA:</p>
+                            <p className="text-sm text-slate-300 italic">"{block.actionableTip}"</p>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-xs text-slate-500 mb-2 uppercase font-bold tracking-wider">Passo a Passo (Editável):</p>
+                          <div className="flex flex-col gap-2">
+                            {block.suggestedTasks.map((task, i) => (
+                              <div key={i} className="flex items-center gap-2 group/task">
+                                <span className="text-xs px-3 py-2 rounded bg-slate-800 text-slate-300 border border-slate-700 flex-1">{task}</span>
+                                <button onClick={() => removeTaskFromBlock(i)} className="text-slate-600 hover:text-red-500 opacity-0 group-hover/task:opacity-100 transition-opacity p-1"><X size={14} /></button>
+                              </div>
+                            ))}
+                            <form onSubmit={addCustomTaskToBlock} className="flex gap-2 mt-1">
+                              <input type="text" placeholder="+ Adicionar etapa..." className="flex-1 bg-transparent border-b border-slate-700 text-xs text-slate-300 focus:border-cyber-primary outline-none py-1" value={customBlockTask} onChange={(e) => setCustomBlockTask(e.target.value)} />
+                              <button type="submit" disabled={!customBlockTask} className="text-cyber-primary disabled:opacity-30 hover:text-cyber-secondary"><Plus size={16} /></button>
+                            </form>
                           </div>
                         </div>
                       </div>
-
-                      {isActive && !isCompleted && !isFailed && (
-                        <div className="mt-4 pl-0 sm:pl-[80px] animate-fade-in space-y-4 cursor-default" onClick={e => e.stopPropagation()}>
-                           {block.actionableTip && (
-                             <div className="bg-indigo-500/10 border border-indigo-500/30 p-3 rounded-lg">
-                                <p className="text-xs text-indigo-300 font-semibold mb-1 flex items-center gap-1"><Star size={12} /> DICA TÁTICA:</p>
-                                <p className="text-sm text-slate-300 italic">"{block.actionableTip}"</p>
-                             </div>
-                           )}
-                           <div>
-                               <p className="text-xs text-slate-500 mb-2 uppercase font-bold tracking-wider">Passo a Passo (Editável):</p>
-                               <div className="flex flex-col gap-2">
-                                  {block.suggestedTasks.map((task, i) => (
-                                    <div key={i} className="flex items-center gap-2 group/task">
-                                        <span className="text-xs px-3 py-2 rounded bg-slate-800 text-slate-300 border border-slate-700 flex-1">{task}</span>
-                                        <button onClick={() => removeTaskFromBlock(i)} className="text-slate-600 hover:text-red-500 opacity-0 group-hover/task:opacity-100 transition-opacity p-1"><X size={14} /></button>
-                                    </div>
-                                  ))}
-                                  <form onSubmit={addCustomTaskToBlock} className="flex gap-2 mt-1">
-                                      <input type="text" placeholder="+ Adicionar etapa..." className="flex-1 bg-transparent border-b border-slate-700 text-xs text-slate-300 focus:border-cyber-primary outline-none py-1" value={customBlockTask} onChange={(e) => setCustomBlockTask(e.target.value)} />
-                                      <button type="submit" disabled={!customBlockTask} className="text-cyber-primary disabled:opacity-30 hover:text-cyber-secondary"><Plus size={16} /></button>
-                                  </form>
-                               </div>
-                           </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           )}
         </section>
 
         <aside className="space-y-6">
+          {/* Primary Tabs */}
           <div className="flex p-1 bg-cyber-panel border border-cyber-border rounded-lg">
-            <button onClick={() => setRightPanelTab('TOOLS')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded text-xs font-bold transition-all ${rightPanelTab === 'TOOLS' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}><LayoutDashboard size={14} /></button>
-            <button onClick={() => setRightPanelTab('CRM')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded text-xs font-bold transition-all ${rightPanelTab === 'CRM' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}><ListTodo size={14} /></button>
-            <button onClick={() => setRightPanelTab('FINANCE')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded text-xs font-bold transition-all ${rightPanelTab === 'FINANCE' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}><Wallet size={14} /></button>
+            <button onClick={() => setRightPanelTab('TOOLS')} className={`flex-1 flex items-center justify-center gap-1 py-2 rounded text-xs font-bold transition-all ${rightPanelTab === 'TOOLS' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
+              <LayoutDashboard size={12} />
+            </button>
+            <button onClick={() => setRightPanelTab('QUALIFIER')} className={`flex-1 flex items-center justify-center gap-1 py-2 rounded text-xs font-bold transition-all ${rightPanelTab === 'QUALIFIER' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
+              <Target size={12} />
+            </button>
+            <button onClick={() => setRightPanelTab('CRM')} className={`flex-1 flex items-center justify-center gap-1 py-2 rounded text-xs font-bold transition-all ${rightPanelTab === 'CRM' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
+              <Users size={12} />
+            </button>
+            <button onClick={() => setRightPanelTab('FINANCE')} className={`flex-1 flex items-center justify-center gap-1 py-2 rounded text-xs font-bold transition-all ${rightPanelTab === 'FINANCE' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
+              <Wallet size={12} />
+            </button>
           </div>
 
           {rightPanelTab === 'TOOLS' && (
             <div className="space-y-6 animate-fade-in">
               <Pomodoro />
-              <DailyWin 
-                disabled={!allBlocksCompleted} 
-                userId={user.id} 
+              <DailyWin
+                disabled={!allBlocksCompleted}
+                userId={user.id}
               />
               <div className="bg-cyber-panel border border-cyber-border rounded-xl p-6">
                 <h3 className="font-bold text-slate-100 mb-4">Tarefas Avulsas</h3>
@@ -532,16 +572,38 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
               </div>
             </div>
           )}
-          {rightPanelTab === 'CRM' && <div className="animate-fade-in"><Pipeline userId={user.id} niche={user.niche} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} /></div>}
-          {rightPanelTab === 'FINANCE' && <div className="animate-fade-in space-y-6"><PricingCalculator userId={user.id} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} /><FinanceModule userId={user.id} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} /></div>}
+
+          {rightPanelTab === 'QUALIFIER' && (
+            <div className="animate-fade-in">
+              <LeadQualifier
+                userId={user.id}
+                isPremium={user.isPremium}
+                onRequestUpgrade={onRequestUpgrade}
+                onMoveToCRM={() => setRightPanelTab('CRM')}
+              />
+            </div>
+          )}
+
+          {rightPanelTab === 'CRM' && (
+            <div className="animate-fade-in">
+              <Pipeline userId={user.id} niche={user.niche} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} />
+            </div>
+          )}
+
+          {rightPanelTab === 'FINANCE' && (
+            <div className="animate-fade-in space-y-6">
+              <PricingCalculator userId={user.id} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} />
+              <FinanceModule userId={user.id} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} />
+            </div>
+          )}
         </aside>
 
       </main>
 
       <footer className="max-w-7xl mx-auto px-4 py-6 text-center border-t border-slate-900 mt-8">
-          <p className="text-[10px] text-slate-600 font-mono uppercase tracking-widest">
-              Todos os direitos reservados à Freelance Flow, 2025.
-          </p>
+        <p className="text-[10px] text-slate-600 font-mono uppercase tracking-widest">
+          Todos os direitos reservados à Freelance Flow, 2025.
+        </p>
       </footer>
     </div>
   );

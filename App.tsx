@@ -206,7 +206,7 @@ const App: React.FC = () => {
     if (showLanding) {
       return <LandingPage onGetStarted={() => setShowLanding(false)} />;
     }
-    return <Auth />;
+    return <Auth onBack={() => setShowLanding(true)} />;
   }
 
   if (!user || !user.onboarded) {

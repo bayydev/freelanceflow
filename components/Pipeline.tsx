@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Lead, LeadStatus, NicheType, ContractData } from '../types';
 import { Plus, DollarSign, User, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, GraduationCap, MapPin, Calendar as CalendarIcon, Fingerprint } from 'lucide-react';
 import { jsPDF } from "jspdf";
@@ -12,7 +13,7 @@ interface PipelineProps {
   onRequestUpgrade?: () => void;
 }
 
-const MAX_FREE_LEADS = 10;
+const MAX_FREE_LEADS = 10; // Legacy constant - not used anymore (CRM is now free)
 
 // --- SALES PLAYBOOK JSON ---
 const SALES_PLAYBOOK = {
@@ -524,25 +525,16 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
           type="text"
           value={newLeadName}
           onChange={(e) => setNewLeadName(e.target.value)}
-          placeholder={!isPremium && leads.length >= MAX_FREE_LEADS ? "Limite Free atingido (10/10)" : "Nome do novo cliente..."}
-          disabled={!isPremium && leads.length >= MAX_FREE_LEADS}
-          className="flex-1 bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyber-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          placeholder="Nome do novo cliente..."
+          className="flex-1 bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyber-primary"
         />
         <button
           type="submit"
-          disabled={!isPremium && leads.length >= MAX_FREE_LEADS}
-          className={`p-2 rounded-lg transition-colors ${!isPremium && leads.length >= MAX_FREE_LEADS ? 'bg-slate-800 text-slate-600' : 'bg-slate-800 text-slate-200 hover:bg-slate-700'}`}
+          className="p-2 rounded-lg transition-colors bg-slate-800 text-slate-200 hover:bg-slate-700"
         >
-          {(!isPremium && leads.length >= MAX_FREE_LEADS) ? <Lock size={18} /> : <Plus size={18} />}
+          <Plus size={18} />
         </button>
       </form>
-
-      {!isPremium && (
-        <div className="mb-4 px-3 py-2 bg-slate-900 border border-slate-800 rounded text-xs text-slate-500 flex justify-between items-center">
-          <span>Leads usados: {leads.length} / {MAX_FREE_LEADS}</span>
-          <span className="text-cyber-primary cursor-pointer hover:underline" onClick={onRequestUpgrade}>Aumentar Limite</span>
-        </div>
-      )}
 
       <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
         {loading && <div className="text-center py-4"><Loader2 className="animate-spin inline text-cyber-primary" /></div>}
@@ -601,8 +593,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
           <button
             onClick={openContractModal}
             className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all group ${isPremium
-                ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-cyber-primary cursor-pointer'
-                : 'bg-slate-900/40 border-slate-800 opacity-60 hover:opacity-100 cursor-pointer'
+              ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-cyber-primary cursor-pointer'
+              : 'bg-slate-900/40 border-slate-800 opacity-60 hover:opacity-100 cursor-pointer'
               }`}
             title={isPremium ? "Baixar Contrato Modelo" : "Funcionalidade PRO"}
           >
@@ -616,8 +608,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
               else onRequestUpgrade?.();
             }}
             className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all group ${isPremium
-                ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-cyber-primary cursor-pointer'
-                : 'bg-slate-900/40 border-slate-800 opacity-60 hover:opacity-100 cursor-pointer'
+              ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-cyber-primary cursor-pointer'
+              : 'bg-slate-900/40 border-slate-800 opacity-60 hover:opacity-100 cursor-pointer'
               }`}
             title="Funcionalidade PRO"
           >
@@ -643,8 +635,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
       </div>
 
       {/* SALES PLAYBOOK MODAL */}
-      {showScripts && isPremium && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      {showScripts && isPremium && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowScripts(false)} />
           <div className="relative bg-cyber-panel border border-cyber-primary w-full max-w-4xl rounded-2xl shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh] animate-fade-in">
 
@@ -666,8 +658,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
                   key={mode.id}
                   onClick={() => setActiveScriptMode(mode.id)}
                   className={`flex-1 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${activeScriptMode === mode.id
-                      ? 'bg-slate-900 text-cyber-primary border-b-2 border-cyber-primary'
-                      : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900/50'
+                    ? 'bg-slate-900 text-cyber-primary border-b-2 border-cyber-primary'
+                    : 'text-slate-500 hover:text-slate-300 hover:bg-slate-900/50'
                     }`}
                 >
                   {mode.id.includes('b2b') ? <Sun size={14} className="sm:w-4 sm:h-4" /> : <Moon size={14} className="sm:w-4 sm:h-4" />}
@@ -809,12 +801,13 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Contract Generator Form Modal */}
-      {showContractForm && isPremium && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      {showContractForm && isPremium && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-cyber-dark/90 backdrop-blur-sm" onClick={() => setShowContractForm(false)} />
           <div className="relative bg-cyber-panel border border-cyber-primary w-full max-w-2xl rounded-2xl shadow-2xl p-6 overflow-y-auto max-h-[90vh] animate-fade-in">
             <div className="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
@@ -995,7 +988,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* MENTORSHIP MODAL */}

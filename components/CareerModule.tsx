@@ -8,6 +8,7 @@ interface CareerModuleProps {
     onClose: () => void;
     isPremium: boolean;
     onRequestUpgrade?: () => void;
+    embedded?: boolean;
 }
 
 // Interface para o formulário de métricas
@@ -310,7 +311,7 @@ Designers generalistas competem por preço. Designers nichos competem por valor.
     }
 ];
 
-const CareerModule: React.FC<CareerModuleProps> = ({ isOpen, onClose, isPremium, onRequestUpgrade }) => {
+const CareerModule: React.FC<CareerModuleProps> = ({ isOpen, onClose, isPremium, onRequestUpgrade, embedded = false }) => {
     const [completedModules, setCompletedModules] = useState<string[]>([]);
     // No mobile, se activeModuleId for null, mostra a lista. Se tiver ID, mostra o conteúdo.
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
@@ -466,11 +467,11 @@ const CareerModule: React.FC<CareerModuleProps> = ({ isOpen, onClose, isPremium,
 
     if (!isOpen) return null;
 
-    return ReactDOM.createPortal(
-        <div className="fixed inset-0 z-[70] flex items-center justify-center sm:p-4">
-            <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={onClose} />
+    const content = (
+        <div className={embedded ? "bg-cyber-panel border border-cyber-border rounded-xl overflow-hidden" : "fixed inset-0 z-[70] flex items-center justify-center sm:p-4"}>
+            {!embedded && <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={onClose} />}
 
-            <div className="relative bg-cyber-panel border-0 sm:border border-cyber-primary w-full max-w-6xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col h-full sm:h-[90vh] animate-fade-in">
+            <div className={`relative bg-cyber-panel ${embedded ? '' : 'border-0 sm:border border-cyber-primary w-full max-w-6xl sm:rounded-2xl shadow-2xl'} overflow-hidden flex flex-col ${embedded ? 'h-[600px]' : 'h-full sm:h-[90vh]'} animate-fade-in`}>
 
                 {/* Header */}
                 <div className="p-4 sm:p-6 border-b border-slate-700 bg-slate-900/80 flex justify-between items-start shrink-0 z-10">
@@ -794,9 +795,10 @@ const CareerModule: React.FC<CareerModuleProps> = ({ isOpen, onClose, isPremium,
 
                 </div>
             </div>
-        </div>,
-        document.body
+        </div>
     );
+
+    return embedded ? content : ReactDOM.createPortal(content, document.body);
 };
 
 export default CareerModule;
