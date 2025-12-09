@@ -63,6 +63,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
     const freeFeatures = [
         "Protocolo do Dia completo",
+        "Calculadora de Preços",
         "Qualificador de Leads ilimitado",
         "CRM de Bolso ilimitado",
         "3 Módulos da Mentoria",
