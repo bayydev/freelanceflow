@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { supabase } from './services/supabase';
 import Onboarding from './components/Onboarding';
 import Dashboard from './components/Dashboard';
@@ -245,6 +246,9 @@ const App: React.FC = () => {
       />
 
       {isAdminConsoleOpen && <AdminConsole onClose={() => setIsAdminConsoleOpen(false)} />}
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </>
   );
 };
