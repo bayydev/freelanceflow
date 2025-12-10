@@ -182,7 +182,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onSuccess,
                                 </div>
                                 <div className="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
                                     <Check className="text-cyber-success shrink-0" size={20} />
-                                    <span className="text-slate-200 text-xs sm:text-sm font-bold">Mentoria & Carreira (9 Módulos Completos)</span>
+                                    <span className="text-slate-200 text-xs sm:text-sm font-bold">Mentoria de Vendas Completa (9 aulas, 3 módulos)</span>
                                 </div>
                                 <div className="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border border-slate-800">
                                     <Check className="text-cyber-success shrink-0" size={20} />

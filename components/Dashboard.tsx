@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { User, TimeBlock, Task, NicheType, BlockStatus } from '../types';
 import { generateSchedule, BLOCK_ICONS, BLOCK_COLORS } from '../constants';
-import { LogOut, Plus, Trash2, CheckCircle2, Circle, Star, Target, LayoutDashboard, ListTodo, RefreshCw, Crown, Wallet, Calendar, Clock, X, XCircle, AlertCircle, Moon, ArrowRight, Sunrise, Zap, Users } from 'lucide-react';
+import { LogOut, Plus, Trash2, CheckCircle2, Circle, Star, Target, LayoutDashboard, ListTodo, RefreshCw, Crown, Wallet, Calendar, Clock, X, XCircle, AlertCircle, Moon, ArrowRight, Sunrise, Zap, Users, GraduationCap } from 'lucide-react';
 import Pomodoro from './Pomodoro';
 import DailyWin from './DailyWin';
 import Pipeline from './Pipeline';
@@ -17,6 +17,7 @@ interface DashboardProps {
   onLogout: () => void;
   onUpdateNiche: (niche: NicheType) => void;
   onRequestUpgrade: () => void;
+  onOpenLearningHub: () => void;
 }
 
 const getTodayDateKey = () => {
@@ -35,7 +36,7 @@ const getInitials = (name: string) => {
   return name.substring(0, 2).toUpperCase();
 };
 
-const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, onRequestUpgrade }) => {
+const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, onRequestUpgrade, onOpenLearningHub }) => {
   const [schedule, setSchedule] = useState<TimeBlock[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -345,6 +346,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
+            <button
+              onClick={onOpenLearningHub}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] sm:text-xs font-bold rounded hover:shadow-neon-pink transition-all"
+            >
+              <GraduationCap size={14} />
+              <span className="hidden sm:inline">ACADEMIA</span>
+            </button>
 
             {!user.isPremium && (
               <button onClick={onRequestUpgrade} className="text-[10px] sm:text-xs bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white px-3 py-1.5 rounded font-bold hover:shadow-neon-pink transition-all whitespace-nowrap">SEJA PRO</button>

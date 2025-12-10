@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Lead, LeadStatus, NicheType, ContractData } from '../types';
-import { Plus, DollarSign, User, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, GraduationCap, MapPin, Calendar as CalendarIcon, Fingerprint } from 'lucide-react';
+import { Plus, DollarSign, User, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, MapPin, Calendar as CalendarIcon, Fingerprint } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import { supabase } from '../services/supabase';
-import CareerModule from './CareerModule';
 
 interface PipelineProps {
   userId: string;
@@ -92,9 +91,6 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
     company: '',
     portfolio: 'meuportfolio.com/exemplo'
   });
-
-  // Mentorship State
-  const [showMentorship, setShowMentorship] = useState(false);
 
   // Contract State
   const [showContractForm, setShowContractForm] = useState(false);
@@ -625,13 +621,6 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
             </div>
           </button>
         </div>
-
-        <button
-          onClick={() => setShowMentorship(true)}
-          className="w-full bg-gradient-to-r from-cyber-primary/20 to-cyber-secondary/20 hover:from-cyber-primary/30 hover:to-cyber-secondary/30 border border-slate-700 text-slate-200 font-bold py-3 rounded-lg hover:shadow-neon-cyan transition-all flex items-center justify-center gap-2 uppercase tracking-wide text-xs group"
-        >
-          <GraduationCap size={16} className="text-cyber-primary group-hover:text-white transition-colors" /> MENTORIA & CARREIRA
-        </button>
       </div>
 
       {/* SALES PLAYBOOK MODAL */}
@@ -991,9 +980,6 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
         </div>,
         document.body
       )}
-
-      {/* MENTORSHIP MODAL */}
-      <CareerModule isOpen={showMentorship} onClose={() => setShowMentorship(false)} isPremium={isPremium} onRequestUpgrade={onRequestUpgrade} />
 
     </div>
   );

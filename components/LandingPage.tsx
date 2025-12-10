@@ -55,27 +55,26 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         },
         {
             icon: GraduationCap,
-            title: "Mentoria & Carreira",
-            description: "9 módulos exclusivos para sair do zero aos contratos high-ticket.",
+            title: "Academia FreelanceFlow",
+            description: "Photoshop (18 aulas grátis) + Mentoria de Vendas (9 aulas). Aprenda e venda.",
             color: "from-indigo-500 to-purple-500"
         }
     ];
 
     const freeFeatures = [
+        "Curso Photoshop Essencial (18 aulas)",
+        "3 Módulos da Mentoria de Vendas",
         "Protocolo do Dia completo",
         "Calculadora de Preços",
         "Qualificador de Leads ilimitado",
         "CRM de Bolso ilimitado",
-        "3 Módulos da Mentoria",
-        "Timer Pomodoro",
-        "Vitória do Dia"
+        "Timer Pomodoro"
     ];
 
     const proFeatures = [
         "Tudo do plano Free +",
-        "+6 Módulos Avançados de Vendas",
+        "+6 Módulos Avançados da Mentoria",
         "Scripts de Vendas (Sales Playbook)",
-        "Calculadora de Preços PRO",
         "Gerador de Contratos PDF",
         "Módulo Financeiro Completo",
         "Suporte Prioritário via WhatsApp"
@@ -345,7 +344,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                             </span>
                         </h2>
                         <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-                            9 módulos estratégicos para você sair do zero e conquistar clientes que pagam o que seu trabalho realmente vale.
+                            9 aulas em 3 módulos estratégicos para você sair do zero e conquistar clientes que pagam o que seu trabalho realmente vale.
                         </p>
                     </div>
 
@@ -360,27 +359,58 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         <p className="text-slate-400 mt-1">Usando Facebook Library + Instagram para prospecção ativa</p>
                     </div>
 
-                    {/* Os 9 Módulos */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-                        {[
-                            { num: "01", title: "Mentalidade de Vendedor", free: true },
-                            { num: "02", title: "Definindo seu Posicionamento", free: true },
-                            { num: "03", title: "Prospecção Ativa", free: true },
-                            { num: "04", title: "Facebook Library Hacks", free: false },
-                            { num: "05", title: "Instagram como Ferramenta de Vendas", free: false },
-                            { num: "06", title: "Abordagem e Scripts", free: false },
-                            { num: "07", title: "Precificação Estratégica", free: false },
-                            { num: "08", title: "Negociação e Fechamento", free: false },
-                            { num: "09", title: "Contratos High-Ticket", free: false }
-                        ].map((mod, idx) => (
-                            <div key={idx} className={`flex items-center gap-4 p-4 rounded-xl border ${mod.free ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-900/50 border-slate-800'}`}>
-                                <span className={`text-2xl font-black ${mod.free ? 'text-emerald-400' : 'text-slate-600'}`}>{mod.num}</span>
-                                <div>
-                                    <p className={`font-bold ${mod.free ? 'text-white' : 'text-slate-300'}`}>{mod.title}</p>
-                                    {mod.free && <span className="text-[10px] uppercase text-emerald-400 font-bold">Grátis</span>}
-                                </div>
+                    {/* Os 9 Módulos organizados em 3 grupos */}
+                    <div className="space-y-6 mb-12">
+                        {/* Módulo 1: Prospecção */}
+                        <div>
+                            <p className="text-cyber-primary text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 1: Prospecção (Grátis)</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {[
+                                    { num: "01", title: "Como Prospectar Clientes" },
+                                    { num: "02", title: "Comunicação com Clientes" },
+                                    { num: "03", title: "Seu Estilo Pessoal" }
+                                ].map((mod, idx) => (
+                                    <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                                        <span className="text-xl font-black text-emerald-400">{mod.num}</span>
+                                        <p className="font-bold text-white text-sm">{mod.title}</p>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        </div>
+
+                        {/* Módulo 2: Qualificação */}
+                        <div>
+                            <p className="text-slate-500 text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 2: Qualificação (PRO)</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {[
+                                    { num: "04", title: "Descobrindo Seu Cliente Ideal" },
+                                    { num: "05", title: "Qualificação BANT" },
+                                    { num: "06", title: "Qualificação CHAMP" }
+                                ].map((mod, idx) => (
+                                    <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/50 border border-slate-800">
+                                        <span className="text-xl font-black text-slate-600">{mod.num}</span>
+                                        <p className="font-bold text-slate-300 text-sm">{mod.title}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Módulo 3: Conversão */}
+                        <div>
+                            <p className="text-slate-500 text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 3: Conversão (PRO)</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {[
+                                    { num: "07", title: "Portfólio e Apresentação" },
+                                    { num: "08", title: "Nicho de Mercado" },
+                                    { num: "09", title: "Métricas e Validação" }
+                                ].map((mod, idx) => (
+                                    <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/50 border border-slate-800">
+                                        <span className="text-xl font-black text-slate-600">{mod.num}</span>
+                                        <p className="font-bold text-slate-300 text-sm">{mod.title}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
                     <div className="text-center">
@@ -392,7 +422,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                             QUERO APRENDER A VENDER
                             <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
                         </button>
-                        <p className="text-slate-500 text-sm mt-4">3 módulos grátis para você começar agora</p>
+                        <p className="text-slate-500 text-sm mt-4">+ Curso Photoshop Essencial (18 aulas) 100% grátis</p>
                     </div>
                 </div>
             </section>
@@ -407,46 +437,93 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         <p className="text-slate-400">Notificações e atualizações em tempo real</p>
                     </div>
 
-                    {/* Floating Cards */}
-                    <div className="relative h-80 flex items-center justify-center">
-                        {/* Card 1: Pagamento Recebido */}
-                        <div className="absolute left-4 md:left-1/4 top-4 glass rounded-xl p-4 animate-float shadow-lg max-w-[200px]">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
-                                    <CheckCircle2 size={20} className="text-emerald-400" />
+                    {/* Floating Cards - Responsive Layout */}
+                    {/* Mobile: stacked grid, Desktop: absolute floating */}
+                    <div className="relative md:h-80">
+                        {/* Mobile Layout */}
+                        <div className="flex flex-col gap-4 md:hidden">
+                            {/* Card 1: Pagamento Recebido */}
+                            <div className="glass rounded-xl p-4 shadow-lg">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                                        <CheckCircle2 size={20} className="text-emerald-400" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-white">Pagamento Recebido</p>
+                                        <p className="text-xs text-slate-400">Agora mesmo</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-bold text-white">Pagamento Recebido</p>
-                                    <p className="text-xs text-slate-400">Agora mesmo</p>
-                                </div>
+                                <p className="text-2xl font-mono font-bold text-emerald-400">+R$ 2.500</p>
                             </div>
-                            <p className="text-2xl font-mono font-bold text-emerald-400">+R$ 2.500</p>
+
+                            {/* Card 2: Novo Lead */}
+                            <div className="glass rounded-xl p-4 shadow-lg">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 bg-cyber-primary/20 rounded-full flex items-center justify-center">
+                                        <Users size={20} className="text-cyber-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-white">Novo Lead</p>
+                                        <p className="text-xs text-slate-400">Pipeline</p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-slate-300">Guilherme Dias</p>
+                            </div>
+
+                            {/* Card 3: Progress Bar */}
+                            <div className="glass rounded-xl p-4 shadow-lg">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="text-sm font-bold text-white">Bloco: Prospecção</p>
+                                    <span className="text-xs text-emerald-400 font-bold">100%</span>
+                                </div>
+                                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div className="h-full w-full bg-gradient-to-r from-cyber-primary to-emerald-400 rounded-full" />
+                                </div>
+                                <p className="text-xs text-slate-400 mt-2">Concluído</p>
+                            </div>
                         </div>
 
-                        {/* Card 2: Novo Cliente */}
-                        <div className="absolute right-4 md:right-1/4 top-8 glass rounded-xl p-4 animate-float-delayed shadow-lg max-w-[200px]">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-10 h-10 bg-cyber-primary/20 rounded-full flex items-center justify-center">
-                                    <Users size={20} className="text-cyber-primary" />
+                        {/* Desktop Layout - Absolute positioning */}
+                        <div className="hidden md:flex items-center justify-center h-80">
+                            {/* Card 1: Pagamento Recebido */}
+                            <div className="absolute left-1/4 top-4 glass rounded-xl p-4 animate-float shadow-lg max-w-[200px]">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                                        <CheckCircle2 size={20} className="text-emerald-400" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-white">Pagamento Recebido</p>
+                                        <p className="text-xs text-slate-400">Agora mesmo</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-bold text-white">Novo Lead</p>
-                                    <p className="text-xs text-slate-400">Pipeline</p>
-                                </div>
+                                <p className="text-2xl font-mono font-bold text-emerald-400">+R$ 2.500</p>
                             </div>
-                            <p className="text-sm text-slate-300">Guilherme Dias</p>
-                        </div>
 
-                        {/* Card 3: Progress Bar */}
-                        <div className="absolute left-1/2 -translate-x-1/2 bottom-4 glass rounded-xl p-4 animate-float-delayed-2 shadow-lg w-64">
-                            <div className="flex items-center justify-between mb-2">
-                                <p className="text-sm font-bold text-white">Bloco: Prospecção</p>
-                                <span className="text-xs text-emerald-400 font-bold">100%</span>
+                            {/* Card 2: Novo Cliente */}
+                            <div className="absolute right-1/4 top-8 glass rounded-xl p-4 animate-float-delayed shadow-lg max-w-[200px]">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 bg-cyber-primary/20 rounded-full flex items-center justify-center">
+                                        <Users size={20} className="text-cyber-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-white">Novo Lead</p>
+                                        <p className="text-xs text-slate-400">Pipeline</p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-slate-300">Guilherme Dias</p>
                             </div>
-                            <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                                <div className="h-full w-full bg-gradient-to-r from-cyber-primary to-emerald-400 rounded-full" />
+
+                            {/* Card 3: Progress Bar */}
+                            <div className="absolute left-1/2 -translate-x-1/2 bottom-4 glass rounded-xl p-4 animate-float-delayed-2 shadow-lg w-64">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="text-sm font-bold text-white">Bloco: Prospecção</p>
+                                    <span className="text-xs text-emerald-400 font-bold">100%</span>
+                                </div>
+                                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div className="h-full w-full bg-gradient-to-r from-cyber-primary to-emerald-400 rounded-full" />
+                                </div>
+                                <p className="text-xs text-slate-400 mt-2">Concluído</p>
                             </div>
-                            <p className="text-xs text-slate-400 mt-2">Concluído</p>
                         </div>
                     </div>
                 </div>
@@ -461,12 +538,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                         <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
-                            <div className="text-4xl font-black text-cyber-primary mb-2">100%</div>
-                            <p className="text-slate-400 text-sm">CRM e Qualificador gratuitos e ilimitados</p>
+                            <div className="text-4xl font-black text-cyber-primary mb-2">27</div>
+                            <p className="text-slate-400 text-sm">Aulas na Academia (18 Photoshop + 9 Vendas)</p>
                         </div>
                         <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
-                            <div className="text-4xl font-black text-cyber-secondary mb-2">9</div>
-                            <p className="text-slate-400 text-sm">Módulos de mentoria para escalar sua carreira</p>
+                            <div className="text-4xl font-black text-cyber-secondary mb-2">100%</div>
+                            <p className="text-slate-400 text-sm">CRM e Qualificador gratuitos e ilimitados</p>
                         </div>
                         <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
                             <div className="text-4xl font-black text-emerald-400 mb-2">24h</div>

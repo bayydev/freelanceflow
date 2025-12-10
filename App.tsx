@@ -7,6 +7,7 @@ import Auth from './components/Auth';
 import LandingPage from './components/LandingPage';
 import PremiumModal from './components/PremiumModal';
 import AdminConsole from './components/AdminConsole';
+import LearningHub from './components/LearningHub';
 import { User, NicheType, RoleType } from './types';
 import { Loader2, ShieldAlert } from 'lucide-react';
 
@@ -22,6 +23,7 @@ const App: React.FC = () => {
   const [showLanding, setShowLanding] = useState(true);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isAdminConsoleOpen, setIsAdminConsoleOpen] = useState(false);
+  const [showLearningHub, setShowLearningHub] = useState(false);
 
   useEffect(() => {
     // 1. Verifica sessão ativa inicial
@@ -219,22 +221,33 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Dashboard
-        user={user}
-        onUpdateNiche={handleUpdateNiche}
-        onLogout={handleLogout}
-        onRequestUpgrade={() => setIsPremiumModalOpen(true)}
-      />
+      {showLearningHub ? (
+        <LearningHub
+          user={user}
+          onBack={() => setShowLearningHub(false)}
+          onRequestUpgrade={() => setIsPremiumModalOpen(true)}
+        />
+      ) : (
+        <>
+          <Dashboard
+            user={user}
+            onUpdateNiche={handleUpdateNiche}
+            onLogout={handleLogout}
+            onRequestUpgrade={() => setIsPremiumModalOpen(true)}
+            onOpenLearningHub={() => setShowLearningHub(true)}
+          />
 
-      {/* Botão Admin - Só aparece se o email estiver na lista ADMIN_EMAILS */}
-      {isAdmin && (
-        <button
-          onClick={() => setIsAdminConsoleOpen(true)}
-          className="fixed bottom-4 left-4 bg-red-900 text-red-100 p-3 rounded-full shadow-lg shadow-red-900/50 hover:bg-red-700 transition-all z-50 border border-red-500 animate-pulse"
-          title="Painel do Dono"
-        >
-          <ShieldAlert size={20} />
-        </button>
+          {/* Botão Admin - Só aparece se o email estiver na lista ADMIN_EMAILS */}
+          {isAdmin && (
+            <button
+              onClick={() => setIsAdminConsoleOpen(true)}
+              className="fixed bottom-4 left-4 bg-red-900 text-red-100 p-3 rounded-full shadow-lg shadow-red-900/50 hover:bg-red-700 transition-all z-50 border border-red-500 animate-pulse"
+              title="Painel do Dono"
+            >
+              <ShieldAlert size={20} />
+            </button>
+          )}
+        </>
       )}
 
       <PremiumModal
