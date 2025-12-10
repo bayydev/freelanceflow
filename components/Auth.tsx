@@ -74,14 +74,21 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
           email,
           password,
           options: {
-            data: { phone: cleanPhone, isPremium: false }
+            data: { phone: cleanPhone, isPremium: false, emailVerified: false }
           }
         });
 
         if (error) throw error;
-        if (data.user && !data.session) {
-          setVerificationSent(true);
-          setLoading(false);
+        
+        // Tenta fazer login automático após cadastro
+        if (data.user) {
+          const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+          if (loginError) {
+            // Se não conseguir logar (email requer confirmação), mostra mensagem melhorada
+            setVerificationSent(true);
+            setLoading(false);
+          }
+          // Se login funcionou, o onAuthStateChange no App.tsx vai capturar automaticamente
         }
       }
     } catch (err: any) {
@@ -114,7 +121,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
     }
   };
 
-  // TELA DE VERIFICAÇÃO DE EMAIL (APENAS CADASTRO NOVO)
+  // TELA DE VERIFICAÇÃO DE EMAIL (APENAS CADASTRO NOVO - MENSAGEM MELHORADA)
   if (verificationSent) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-cyber-dark p-4 relative overflow-hidden">
@@ -123,9 +130,16 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
             <Mail size={40} className="text-cyber-primary" />
           </div>
           <h2 className="text-2xl font-black text-white mb-2 uppercase">Verifique seu E-mail</h2>
-          <p className="text-slate-400 mb-6">Enviamos um link de confirmação para <strong>{email}</strong>.</p>
+          <p className="text-slate-400 mb-4">Enviamos um link de confirmação para <strong className="text-white">{email}</strong>.</p>
+          
+          {/* AVISO SOBRE SPAM */}
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
+            <p className="text-yellow-400 text-sm font-bold mb-2">⚠️ Não encontrou o email?</p>
+            <p className="text-yellow-200/80 text-xs">Verifique sua <strong>caixa de spam</strong> ou <strong>lixo eletrônico</strong>. O email pode demorar até 2 minutos para chegar.</p>
+          </div>
+          
           <button onClick={() => window.location.reload()} className="text-cyber-primary font-bold hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto uppercase text-xs tracking-widest">
-            <ArrowLeft size={14} /> Voltar para Login
+            <ArrowLeft size={14} /> Já confirmei, voltar para Login
           </button>
         </div>
       </div>

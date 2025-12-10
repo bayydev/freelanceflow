@@ -8,6 +8,7 @@ import LandingPage from './components/LandingPage';
 import PremiumModal from './components/PremiumModal';
 import AdminConsole from './components/AdminConsole';
 import LearningHub from './components/LearningHub';
+import WelcomeTour from './components/WelcomeTour';
 import { User, NicheType, RoleType } from './types';
 import { Loader2, ShieldAlert } from 'lucide-react';
 
@@ -24,6 +25,7 @@ const App: React.FC = () => {
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isAdminConsoleOpen, setIsAdminConsoleOpen] = useState(false);
   const [showLearningHub, setShowLearningHub] = useState(false);
+  const [showWelcomeTour, setShowWelcomeTour] = useState(false);
 
   useEffect(() => {
     // 1. Verifica sessão ativa inicial
@@ -167,6 +169,12 @@ const App: React.FC = () => {
         onboarded: true
       }) : null);
 
+      // 4. Mostra o tour de boas-vindas
+      const hasSeenTour = localStorage.getItem('ff_tour_completed');
+      if (!hasSeenTour) {
+        setShowWelcomeTour(true);
+      }
+
     } catch (error: any) {
       console.error("Error updating profile:", error);
       alert(`Erro ao salvar perfil: ${error.message || "Erro desconhecido. Verifique o console."}`);
@@ -259,6 +267,17 @@ const App: React.FC = () => {
       />
 
       {isAdminConsoleOpen && <AdminConsole onClose={() => setIsAdminConsoleOpen(false)} />}
+
+      {/* Welcome Tour para novos usuários */}
+      {showWelcomeTour && (
+        <WelcomeTour
+          userName={user.name}
+          onComplete={() => {
+            localStorage.setItem('ff_tour_completed', 'true');
+            setShowWelcomeTour(false);
+          }}
+        />
+      )}
 
       {/* Vercel Web Analytics */}
       <Analytics />
