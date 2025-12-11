@@ -79,7 +79,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
         });
 
         if (error) throw error;
-        
+
         // Tenta fazer login automático após cadastro
         if (data.user) {
           const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
@@ -131,13 +131,13 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
           </div>
           <h2 className="text-2xl font-black text-white mb-2 uppercase">Verifique seu E-mail</h2>
           <p className="text-slate-400 mb-4">Enviamos um link de confirmação para <strong className="text-white">{email}</strong>.</p>
-          
+
           {/* AVISO SOBRE SPAM */}
           <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
             <p className="text-yellow-400 text-sm font-bold mb-2">⚠️ Não encontrou o email?</p>
             <p className="text-yellow-200/80 text-xs">Verifique sua <strong>caixa de spam</strong> ou <strong>lixo eletrônico</strong>. O email pode demorar até 2 minutos para chegar.</p>
           </div>
-          
+
           <button onClick={() => window.location.reload()} className="text-cyber-primary font-bold hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto uppercase text-xs tracking-widest">
             <ArrowLeft size={14} /> Já confirmei, voltar para Login
           </button>
@@ -164,7 +164,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
             </button>
           )}
           <h1 className="text-3xl font-black text-slate-100 tracking-tighter mb-2">
-            FREELANCE<span className="text-cyber-primary">FLOW</span>
+            <span className="text-cyber-primary">FLOW</span>
           </h1>
           <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
             <Target size={14} className="text-cyber-secondary" />
@@ -172,7 +172,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
           </p>
         </div>
 
-        <div className="bg-cyber-panel border border-cyber-border rounded-2xl p-8 shadow-2xl backdrop-blur-sm animate-fade-in relative overflow-hidden">
+        <div className="bg-cyber-panel border border-cyber-border rounded-2xl p-8 shadow-2xl backdrop-blur-sm animate-slide-up relative overflow-hidden">
 
           {/* HEADER DO CARD */}
           {isRecovering ? (
@@ -233,7 +233,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-cyber-dark border border-cyber-border rounded-lg py-3 pl-10 pr-4 text-slate-100 focus:outline-none focus:border-cyber-primary transition-all text-sm"
+                      className="w-full bg-cyber-dark border border-cyber-border rounded-lg py-3 pl-10 pr-4 text-slate-100 focus:outline-none focus:border-cyber-primary transition-all text-sm input-glow"
                       placeholder="seu@email.com"
                       required
                     />
@@ -251,7 +251,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
                             type="tel"
                             value={phone}
                             onChange={handlePhoneChange}
-                            className="w-full bg-cyber-dark border border-cyber-border rounded-lg py-3 pl-10 pr-4 text-slate-100 focus:outline-none focus:border-cyber-primary transition-all text-sm"
+                            className="w-full bg-cyber-dark border border-cyber-border rounded-lg py-3 pl-10 pr-4 text-slate-100 focus:outline-none focus:border-cyber-primary transition-all text-sm input-glow"
                             placeholder="(11) 99999-9999"
                             required
                           />
@@ -278,7 +278,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
                           type="password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="w-full bg-cyber-dark border border-cyber-border rounded-lg py-3 pl-10 pr-4 text-slate-100 focus:outline-none focus:border-cyber-primary transition-all text-sm"
+                          className="w-full bg-cyber-dark border border-cyber-border rounded-lg py-3 pl-10 pr-4 text-slate-100 focus:outline-none focus:border-cyber-primary transition-all text-sm input-glow"
                           placeholder="******"
                           required
                         />
@@ -292,7 +292,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-cyber-primary text-cyber-dark font-bold py-3 rounded-lg hover:bg-cyan-400 hover:shadow-neon-cyan transition-all flex items-center justify-center gap-2 mt-6"
+              className="w-full bg-cyber-primary text-cyber-dark font-bold py-3 rounded-lg hover:bg-cyan-400 hover:shadow-neon-cyan transition-all flex items-center justify-center gap-2 mt-6 ripple"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : (
                 <>

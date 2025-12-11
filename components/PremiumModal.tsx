@@ -107,7 +107,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onSuccess,
 
     const handleWhatsAppConfirm = () => {
         const planType = isFoundingMember ? 'MEMBRO FUNDADOR (R$ 19,90 Vitalício)' : 'PRO (R$ 29,90)';
-        const message = `Olá! Sou o ${userName}, acabei de fazer a assinatura do FreelanceFlow ${planType}. Segue o comprovante! Meu email de cadastro é: ${userEmail}`;
+        const message = `Olá! Sou o ${userName}, acabei de fazer a assinatura do Flow ${planType}. Segue o comprovante! Meu email de cadastro é: ${userEmail}`;
         const waLink = `https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(message)}`;
 
         window.open(waLink, '_blank');

@@ -203,7 +203,7 @@ R: Save (Ctrl+S) salva o arquivo editável (.PSD). Export cria uma cópia otimiz
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -432,7 +432,7 @@ R: Sim! Grupos aninhados são úteis para projetos grandes. Ex: header > logo + 
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -682,7 +682,7 @@ R: Character controla a aparência das letras (fonte, tamanho, cor). Paragraph c
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -930,7 +930,7 @@ R: É o "halo" do fundo original. Use Shift Edge negativo (-10 a -30%) no Seleci
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -1169,7 +1169,7 @@ R: Verifique se "Transparency" está marcado em Exportar Como e se não há laye
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -1438,7 +1438,7 @@ R: Use Matiz/Saturacao (Ctrl+U) ou Vibrance Camada de Ajuste para reduzir satura
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -1687,7 +1687,7 @@ R: Arraste as Camadas de Ajuste de um documento para outro, ou use Actions para 
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -1950,7 +1950,7 @@ R: Em geral sim, significa que você tem range tonal completo. Mas depende da in
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -2207,7 +2207,7 @@ R: Matiz/Saturacao muda a cor em si. Cor Seletiva ajusta os componentes CMYK de 
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -2476,7 +2476,7 @@ R: Preenchimento Sensivel ao Conteudo (Editar > Fill) é automático para seleç
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -2738,7 +2738,7 @@ R: Sim! É útil para organização complexa, mas pode ficar confuso. Use com mo
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -3001,7 +3001,7 @@ R: Sombra Interna branco 50% opacity em cima, gradiente sutil, background blur �
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -3246,7 +3246,7 @@ R: Incluído na assinatura Creative Cloud. Há limite de gerações mensais depe
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -3478,7 +3478,7 @@ R: Sim, é uma layer editável. Você pode deletar e refazer se necessário.
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -3724,7 +3724,7 @@ R: Use Pincel de Recuperacao ou Carimbo para finalizar manualmente.
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -3981,7 +3981,7 @@ R: Sim! Para web/redes sociais, sempre sRGB. Outros perfis de cor podem parecer 
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -4271,7 +4271,7 @@ R: Google Drive (15GB grátis), WeTransfer (2GB grátis), Dropbox, ou seu própr
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -4539,7 +4539,7 @@ R: Converter textos em formas (shapes). Texto > Convert to Shape. Evita problema
 
 ---
 
-**Criado por:** Cauã - FreelanceFlow
+**Criado por:** Cauã - Flow
 **Última atualização:** Dezembro 2025
 `;
 
@@ -4875,7 +4875,7 @@ Todo mês, responda:
 - Qual foi meu faturamento?
 - O que funcionou e o que preciso melhorar?
 
-**Dica:** Use uma planilha simples ou o CRM da FreelanceFlow para rastrear.
+**Dica:** Use uma planilha simples ou o CRM da Flow para rastrear.
     `
     }
 ];
@@ -5052,7 +5052,7 @@ const LearningHub: React.FC<LearningHubProps> = ({ user, onBack, onRequestUpgrad
                             </div>
                             <div>
                                 <h1 className="font-black text-white text-lg uppercase tracking-wide">Academia</h1>
-                                <p className="text-[10px] text-slate-500 uppercase tracking-widest">FreelanceFlow Learning</p>
+                                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Flow Learning</p>
                             </div>
                         </div>
                     </div>

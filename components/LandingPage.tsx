@@ -55,7 +55,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         },
         {
             icon: GraduationCap,
-            title: "Academia FreelanceFlow",
+            title: "Academia Flow",
             description: "Photoshop (18 aulas grátis) + Mentoria de Vendas (9 aulas). Aprenda e venda.",
             color: "from-indigo-500 to-purple-500"
         }
@@ -88,8 +88,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         <div className="flex items-center gap-3">
-                            <img src="/freelanceflowlogo.png" alt="FreelanceFlow" className="w-12 h-12" />
-                            <span className="font-black text-xl tracking-tight">FreelanceFlow</span>
+                            <img src="/freelanceflowlogo.png" alt="Flow" className="w-12 h-12" />
+                            <span className="font-black text-xl tracking-tight">Flow</span>
                         </div>
                         <button
                             onClick={onGetStarted}
@@ -129,7 +129,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8 animate-fade-in">
                         <button
                             onClick={onGetStarted}
-                            className="group w-full sm:w-auto bg-gradient-to-r from-cyber-primary to-cyan-400 text-black font-black px-10 py-5 rounded-xl text-lg transition-all neon-glow hover:scale-105 flex items-center justify-center gap-3"
+                            className="group w-full sm:w-auto bg-gradient-to-r from-cyber-primary to-cyan-400 text-black font-black px-10 py-5 rounded-xl text-lg transition-all neon-glow hover:scale-105 flex items-center justify-center gap-3 pulse-glow ripple"
                         >
                             Começar Gratuitamente
                             <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
@@ -271,8 +271,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     {/* Bento Grid Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Card 1: Gestão de Projetos */}
-                        <div className="glass rounded-2xl p-8 hover:border-cyber-primary/50 transition-all hover:-translate-y-1 group">
-                            <div className="w-16 h-16 bg-gradient-to-br from-cyber-primary to-cyan-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <div className="glass rounded-2xl p-8 hover:border-cyber-primary/50 transition-all group card-3d">
+                            <div className="w-16 h-16 bg-gradient-to-br from-cyber-primary to-cyan-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform hover-bounce">
                                 <LayoutGrid size={32} className="text-black" />
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-3">Gestão de Projetos</h3>
@@ -282,8 +282,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         </div>
 
                         {/* Card 2: Financeiro Descomplicado */}
-                        <div className="glass rounded-2xl p-8 hover:border-cyber-secondary/50 transition-all hover:-translate-y-1 group">
-                            <div className="w-16 h-16 bg-gradient-to-br from-cyber-secondary to-purple-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <div className="glass rounded-2xl p-8 hover:border-cyber-secondary/50 transition-all group card-3d">
+                            <div className="w-16 h-16 bg-gradient-to-br from-cyber-secondary to-purple-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform hover-bounce">
                                 <DollarSign size={32} className="text-white" />
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-3">Financeiro Descomplicado</h3>
@@ -312,9 +312,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         {features.map((feature, idx) => (
                             <div
                                 key={idx}
-                                className="group bg-slate-900/50 border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition-all hover:-translate-y-1"
+                                className="group bg-slate-900/50 border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition-all card-3d stagger-item"
                             >
-                                <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                                <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform hover-bounce`}>
                                     <feature.icon size={28} className="text-white" />
                                 </div>
                                 <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
@@ -335,7 +335,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     <div className="text-center mb-12">
                         <div className="inline-flex items-center gap-2 bg-cyber-secondary/20 border border-cyber-secondary/30 text-cyber-secondary px-4 py-2 rounded-full text-sm font-bold mb-6">
                             <GraduationCap size={18} />
-                            O DIFERENCIAL DO FREELANCEFLOW
+                            O DIFERENCIAL DO FLOW
                         </div>
                         <h2 className="text-4xl sm:text-5xl font-black mb-6">
                             Mentoria & Carreira<br />
@@ -534,7 +534,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-3xl sm:text-4xl font-black mb-6">
                         Por que Freelancers Escolhem o
-                        <span className="bg-gradient-to-r from-cyber-primary to-cyber-secondary bg-clip-text text-transparent"> FreelanceFlow</span>?
+                        <span className="bg-gradient-to-r from-cyber-primary to-cyber-secondary bg-clip-text text-transparent"> Flow</span>?
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                         <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
@@ -597,7 +597,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         </div>
 
                         {/* Pro Plan */}
-                        <div className="relative bg-gradient-to-b from-cyber-primary/10 to-cyber-secondary/10 border-2 border-cyber-primary rounded-2xl p-8 shadow-[0_0_40px_rgba(6,182,212,0.15)]">
+                        <div className="relative bg-gradient-to-b from-cyber-primary/10 to-cyber-secondary/10 border-2 border-cyber-primary rounded-2xl p-8 shadow-[0_0_40px_rgba(6,182,212,0.15)] shimmer-effect">
                             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyber-primary to-cyan-400 text-black font-bold text-xs px-4 py-1 rounded-full uppercase tracking-wider">
                                 Recomendado
                             </div>
@@ -635,8 +635,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                     <div className="flex flex-col md:flex-row justify-between items-center gap-8">
                         {/* Logo */}
                         <div className="flex items-center gap-3">
-                            <img src="/freelanceflowlogo.png" alt="FreelanceFlow" className="w-10 h-10" />
-                            <span className="font-bold text-lg">FreelanceFlow</span>
+                            <img src="/freelanceflowlogo.png" alt="Flow" className="w-10 h-10" />
+                            <span className="font-bold text-lg">Flow</span>
                         </div>
 
                         {/* Links */}
@@ -665,7 +665,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
                     <div className="mt-8 pt-8 border-t border-slate-800/50 text-center">
                         <p className="text-slate-500 text-sm">
-                            © 2025 FreelanceFlow. Todos os direitos reservados.
+                            © 2025 Flow. Todos os direitos reservados.
                         </p>
                     </div>
                 </div>
@@ -676,7 +676,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 showTerms && (
                     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
                         <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowTerms(false)} />
-                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-slide-up">
                             <div className="p-6 border-b border-slate-700 flex justify-between items-center">
                                 <h2 className="text-xl font-black text-white">Termos de Uso</h2>
                                 <button onClick={() => setShowTerms(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
@@ -685,25 +685,25 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                                 <p className="text-slate-400 text-xs">Última atualização: Dezembro de 2025</p>
 
                                 <h3 className="text-cyber-primary font-bold">1. Aceitação dos Termos</h3>
-                                <p>Ao acessar e usar o FreelanceFlow, você concorda com estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não poderá acessar o serviço.</p>
+                                <p>Ao acessar e usar o Flow, você concorda com estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não poderá acessar o serviço.</p>
 
                                 <h3 className="text-cyber-primary font-bold">2. Descrição do Serviço</h3>
-                                <p>O FreelanceFlow é uma plataforma de produtividade para freelancers criativos que oferece ferramentas de gestão de projetos, clientes, finanças e desenvolvimento de carreira.</p>
+                                <p>O Flow é uma plataforma de produtividade para freelancers criativos que oferece ferramentas de gestão de projetos, clientes, finanças e desenvolvimento de carreira.</p>
 
                                 <h3 className="text-cyber-primary font-bold">3. Contas de Usuário</h3>
                                 <p>Você é responsável por manter a confidencialidade de sua conta e senha. Você concorda em notificar imediatamente sobre qualquer uso não autorizado de sua conta.</p>
 
                                 <h3 className="text-cyber-primary font-bold">4. Planos e Pagamentos</h3>
-                                <p>O FreelanceFlow oferece planos gratuitos e pagos. Os pagamentos são processados de forma segura através de nossos parceiros de pagamento. Você pode cancelar sua assinatura a qualquer momento.</p>
+                                <p>O Flow oferece planos gratuitos e pagos. Os pagamentos são processados de forma segura através de nossos parceiros de pagamento. Você pode cancelar sua assinatura a qualquer momento.</p>
 
                                 <h3 className="text-cyber-primary font-bold">5. Uso Aceitável</h3>
                                 <p>Você concorda em usar o serviço apenas para fins legais e de acordo com estes termos. É proibido usar o serviço para qualquer atividade ilegal ou não autorizada.</p>
 
                                 <h3 className="text-cyber-primary font-bold">6. Propriedade Intelectual</h3>
-                                <p>Todo o conteúdo, funcionalidades e design do FreelanceFlow são protegidos por direitos autorais e outras leis de propriedade intelectual.</p>
+                                <p>Todo o conteúdo, funcionalidades e design do Flow são protegidos por direitos autorais e outras leis de propriedade intelectual.</p>
 
                                 <h3 className="text-cyber-primary font-bold">7. Limitação de Responsabilidade</h3>
-                                <p>O FreelanceFlow é fornecido "como está". Não garantimos que o serviço será ininterrupto, seguro ou livre de erros.</p>
+                                <p>O Flow é fornecido "como está". Não garantimos que o serviço será ininterrupto, seguro ou livre de erros.</p>
 
                                 <h3 className="text-cyber-primary font-bold">8. Contato</h3>
                                 <p>Para dúvidas sobre estes termos, entre em contato conosco através do suporte.</p>
@@ -718,7 +718,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 showSupport && (
                     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
                         <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowSupport(false)} />
-                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
+                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
                             <div className="p-6 border-b border-slate-700 flex justify-between items-center">
                                 <h2 className="text-xl font-black text-white">Suporte</h2>
                                 <button onClick={() => setShowSupport(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
@@ -751,7 +751,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 showPrivacy && (
                     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
                         <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowPrivacy(false)} />
-                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+                        <div className="relative bg-cyber-panel border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-slide-up">
                             <div className="p-6 border-b border-slate-700 flex justify-between items-center">
                                 <h2 className="text-xl font-black text-white">Política de Privacidade</h2>
                                 <button onClick={() => setShowPrivacy(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Lead, LeadStatus, NicheType, ContractData } from '../types';
-import { Plus, DollarSign, User, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, MapPin, Calendar as CalendarIcon, Fingerprint } from 'lucide-react';
+import { Plus, DollarSign, User, Users, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, MapPin, Calendar as CalendarIcon, Fingerprint } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import { supabase } from '../services/supabase';
 
@@ -476,11 +476,11 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.setFont("helvetica", "normal");
-      doc.text("Documento gerado e autenticado via FreelanceFlow OS", 105, 290, { align: "center" });
+      doc.text("Documento gerado e autenticado via Flow OS", 105, 290, { align: "center" });
     }
 
     // Salvar PDF
-    doc.save(`Contrato_${json.client.name.replace(/\s+/g, '_')}_FreelanceFlow.pdf`);
+    doc.save(`Contrato_${json.client.name.replace(/\s+/g, '_')}_Flow.pdf`);
     setShowContractForm(false);
   };
 
@@ -522,22 +522,36 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
           value={newLeadName}
           onChange={(e) => setNewLeadName(e.target.value)}
           placeholder="Nome do novo cliente..."
-          className="flex-1 bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyber-primary"
+          className="flex-1 bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyber-primary input-glow"
         />
         <button
           type="submit"
-          className="p-2 rounded-lg transition-colors bg-slate-800 text-slate-200 hover:bg-slate-700"
+          className="p-2 rounded-lg transition-colors bg-slate-800 text-slate-200 hover:bg-slate-700 ripple"
         >
           <Plus size={18} />
         </button>
       </form>
 
       <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
-        {loading && <div className="text-center py-4"><Loader2 className="animate-spin inline text-cyber-primary" /></div>}
-        {!loading && leads.length === 0 && <p className="text-xs text-center text-slate-600">Nenhum cliente na mira.</p>}
+        {loading && (
+          <div className="space-y-3">
+            <div className="skeleton skeleton-card"></div>
+            <div className="skeleton skeleton-card"></div>
+            <div className="skeleton skeleton-card"></div>
+          </div>
+        )}
+        {!loading && leads.length === 0 && (
+          <div className="empty-state py-8">
+            <div className="empty-state-icon">
+              <Users size={28} className="text-slate-500" />
+            </div>
+            <p className="text-sm font-bold text-slate-400 mb-1">Nenhum cliente ainda</p>
+            <p className="text-xs text-slate-600 max-w-[200px]">Adicione seu primeiro lead acima para começar a gerenciar seu pipeline</p>
+          </div>
+        )}
 
         {leads.map(lead => (
-          <div key={lead.id} className="bg-slate-900/50 p-3 rounded-lg border border-slate-800 group">
+          <div key={lead.id} className="bg-slate-900/50 p-3 rounded-lg border border-slate-800 group stagger-item">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <User size={14} className="text-slate-500 shrink-0" />
@@ -547,7 +561,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
                 <select
                   value={lead.status}
                   onChange={(e) => updateStatus(lead.id, e.target.value as LeadStatus)}
-                  className={`text-[10px] font-bold uppercase rounded px-2 py-1 border outline-none cursor-pointer ${getStatusColor(lead.status)}`}
+                  className={`text-[10px] font-bold uppercase rounded px-2 py-1 border outline-none cursor-pointer status-transition ${getStatusColor(lead.status)}`}
                 >
                   <option value="NEW">Novo</option>
                   <option value="CONTACTED">Contatado</option>
@@ -627,7 +641,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
       {showScripts && isPremium && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowScripts(false)} />
-          <div className="relative bg-cyber-panel border border-cyber-primary w-full max-w-4xl rounded-2xl shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh] animate-fade-in">
+          <div className="relative bg-cyber-panel border border-cyber-primary w-full max-w-4xl rounded-2xl shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh] animate-slide-up">
 
             {/* Header */}
             <div className="p-4 sm:p-6 border-b border-slate-700 bg-slate-900/50 flex justify-between items-start">

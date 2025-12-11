@@ -1,8 +1,8 @@
-# 🚀 FreelanceFlow
+# 🚀 Flow
 
 <div align="center">
 
-![FreelanceFlow](https://img.shields.io/badge/Micro--SaaS-FreelanceFlow-06b6d4?style=for-the-badge)
+![Flow](https://img.shields.io/badge/Micro--SaaS-Flow-06b6d4?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript)
 ![Supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20DB-3ECF8E?style=flat-square&logo=supabase)
@@ -18,7 +18,7 @@
 
 ## 📋 Sobre
 
-O **FreelanceFlow** é um Micro-SaaS desenvolvido especificamente para **designers gráficos**, **motion designers** e **editores de vídeo** que trabalham como freelancers. O sistema combina gestão de tempo inteligente, CRM de clientes, calculadora de preços e módulo financeiro em uma única plataforma com design cyberpunk moderno.
+O **Flow** é um Micro-SaaS desenvolvido especificamente para **designers gráficos**, **motion designers** e **editores de vídeo** que trabalham como freelancers. O sistema combina gestão de tempo inteligente, CRM de clientes, calculadora de preços e módulo financeiro em uma única plataforma com design cyberpunk moderno.
 
 ### 🎯 Para quem é?
 
@@ -175,7 +175,7 @@ freelanceflow/
 
 ## 🔐 Autenticação
 
-O FreelanceFlow utiliza **Supabase Auth** com suporte a:
+O Flow utiliza **Supabase Auth** com suporte a:
 - ✉️ Magic Link (Login por e-mail)
 - 🔑 Senha tradicional
 - 📱 Verificação por telefone (opcional)
@@ -248,6 +248,6 @@ Desenvolvido com 💜 por **Cauã**
 
 <div align="center">
 
-**FreelanceFlow** — Transformando freelancers em profissionais de elite ⚡
+**Flow** — Transformando freelancers em profissionais de elite ⚡
 
 </div>

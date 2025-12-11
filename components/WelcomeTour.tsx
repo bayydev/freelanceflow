@@ -12,7 +12,7 @@ const WelcomeTour: React.FC<WelcomeTourProps> = ({ userName, onComplete }) => {
     const steps = [
         {
             icon: Rocket,
-            title: `Bem-vindo ao FreelanceFlow, ${userName.split(' ')[0]}!`,
+            title: `Bem-vindo ao Flow, ${userName.split(' ')[0]}!`,
             description: 'Essa plataforma foi criada para você, freelancer criativo, organizar sua vida profissional em um só lugar.',
             highlight: 'Vamos fazer um tour rápido?',
             color: 'from-cyber-primary to-cyan-400'
@@ -47,7 +47,7 @@ const WelcomeTour: React.FC<WelcomeTourProps> = ({ userName, onComplete }) => {
         },
         {
             icon: GraduationCap,
-            title: 'Academia FreelanceFlow',
+            title: 'Academia Flow',
             description: 'Acesse o curso de Photoshop (18 aulas gratuitas) e a Mentoria de Vendas (9 aulas) para aprender a criar e vender como profissional.',
             highlight: 'Conhecimento prático para você sair do zero!',
             color: 'from-indigo-500 to-purple-500'
