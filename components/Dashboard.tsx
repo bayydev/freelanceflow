@@ -8,7 +8,6 @@ import DailyWin from './DailyWin';
 import Pipeline from './Pipeline';
 import FinanceModule from './FinanceModule';
 import PricingCalculator from './PricingCalculator';
-import LeadQualifier from './LeadQualifier';
 import confetti from 'canvas-confetti';
 import { supabase } from '../services/supabase';
 
@@ -41,7 +40,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [activeBlock, setActiveBlock] = useState<TimeBlock | null>(null);
-  const [rightPanelTab, setRightPanelTab] = useState<'TOOLS' | 'CRM' | 'FINANCE' | 'QUALIFIER'>('TOOLS');
+  const [rightPanelTab, setRightPanelTab] = useState<'TOOLS' | 'CRM' | 'FINANCE'>('TOOLS');
   const [customBlockTask, setCustomBlockTask] = useState('');
 
   const [isStandbyMode, setIsStandbyMode] = useState(false);
@@ -352,13 +351,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
               <LayoutDashboard size={14} />
               <span className="hidden lg:inline">Ferramentas</span>
             </button>
-            <button onClick={() => setRightPanelTab('QUALIFIER')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'QUALIFIER' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
-              <Target size={14} />
-              <span className="hidden lg:inline">Qualificador</span>
-            </button>
             <button onClick={() => setRightPanelTab('CRM')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'CRM' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
               <Users size={14} />
-              <span className="hidden lg:inline">CRM</span>
+              <span className="hidden lg:inline">Clientes</span>
             </button>
             <button onClick={() => setRightPanelTab('FINANCE')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'FINANCE' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
               <Wallet size={14} />
@@ -387,11 +382,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
           <button onClick={() => setRightPanelTab('TOOLS')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'TOOLS' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
             <LayoutDashboard size={12} /> Ferramentas
           </button>
-          <button onClick={() => setRightPanelTab('QUALIFIER')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'QUALIFIER' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
-            <Target size={12} /> Qualificador
-          </button>
           <button onClick={() => setRightPanelTab('CRM')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'CRM' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
-            <Users size={12} /> CRM
+            <Users size={12} /> Clientes
           </button>
           <button onClick={() => setRightPanelTab('FINANCE')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'FINANCE' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
             <Wallet size={12} /> Finanças
@@ -404,13 +396,31 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
         {/* TOOLS VIEW - Protocolo do Dia + Mini Ferramentas */}
         {rightPanelTab === 'TOOLS' && (
           <div className="animate-fade-in">
+            {/* Banner Motivacional do Dia */}
+            <div className="bg-gradient-to-r from-cyber-panel to-slate-900 border border-cyber-border rounded-xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-slate-400 text-sm">
+                  {new Date().getHours() < 12 ? 'Bom dia' : new Date().getHours() < 18 ? 'Boa tarde' : 'Boa noite'}, <span className="text-cyber-primary font-bold">{user.name.split(' ')[0]}</span>
+                </p>
+                <p className="text-xs text-slate-500 mt-1">
+                  {schedule.filter(b => b.status === 'COMPLETED').length}/{schedule.length} blocos concluídos hoje. Continue focado.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="text-right">
+                  <p className="text-[10px] text-slate-500 uppercase">Modo</p>
+                  <p className="text-sm font-bold text-cyber-primary">{user.niche === 'B2B' ? 'Empresas' : 'Consumidor'}</p>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Protocolo do Dia */}
               <section className="lg:col-span-2 space-y-6">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
                     <Target className="text-cyber-primary" size={20} />
-                    Protocolo do Dia
+                    Sua Rotina de Vendas
                   </h2>
                   <button onClick={toggleNiche} className="group flex items-center gap-2 text-xs font-mono bg-slate-900 border border-slate-700 px-3 py-1.5 rounded hover:border-cyber-primary hover:text-cyber-primary transition-all">
                     <span className={user.niche === NicheType.B2B ? 'text-cyber-primary' : 'text-slate-500'}>B2B</span>
@@ -544,17 +554,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
           </div>
         )}
 
-        {/* QUALIFIER VIEW - Full Width */}
-        {rightPanelTab === 'QUALIFIER' && (
-          <div className="animate-fade-in">
-            <LeadQualifier
-              userId={user.id}
-              isPremium={user.isPremium}
-              onRequestUpgrade={onRequestUpgrade}
-              onMoveToCRM={() => setRightPanelTab('CRM')}
-            />
-          </div>
-        )}
+
 
         {/* CRM VIEW - Full Width */}
         {rightPanelTab === 'CRM' && (

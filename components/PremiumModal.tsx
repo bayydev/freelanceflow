@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { X, Check, Lock, ExternalLink, MessageCircle, Coffee, Clock, Crown, Sparkles } from 'lucide-react';
+import { X, Check, Lock, ExternalLink, MessageCircle, Coffee, Clock, Crown, Sparkles, AlertTriangle, Gift } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { supabase } from '../services/supabase';
 
 // CONFIGURAÇÃO DE PAGAMENTO
 const CHECKOUT_URL = "https://www.asaas.com/c/x1ix3uihag9xv6to";
 const FOUNDING_MEMBERS_URL = "https://www.asaas.com/c/rnuenctc37b68vyd";
+const DOWNSELL_URL = "https://www.asaas.com/c/118xvz9beukbbmcn";
 
 // Número do dono para receber o comprovante (55 + DDD + Numero)
 const OWNER_PHONE = "5527992241844";
@@ -25,11 +26,12 @@ interface PremiumModalProps {
 }
 
 const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onSuccess, userName, userEmail }) => {
-    const [step, setStep] = useState<'OFFER' | 'CONFIRMATION'>('OFFER');
+    const [step, setStep] = useState<'OFFER' | 'DOWNSELL' | 'CONFIRMATION'>('OFFER');
     const [timeLeft, setTimeLeft] = useState(600); // 10 minutos em segundos
     const [foundingMembersCount, setFoundingMembersCount] = useState<number | null>(null);
     const [isFoundingMember, setIsFoundingMember] = useState(false);
     const [loadingCount, setLoadingCount] = useState(true);
+    const [hasSeenOffer, setHasSeenOffer] = useState(false); // Para controlar se já viu a oferta principal
 
     // Fetch user count to check founding member eligibility
     useEffect(() => {
@@ -67,6 +69,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onSuccess,
         if (isOpen) {
             setStep('OFFER');
             setTimeLeft(600);
+            setHasSeenOffer(true);
         }
     }, [isOpen]);
 
@@ -87,6 +90,26 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onSuccess,
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
         return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    // Interceptar fechamento para mostrar downsell
+    const handleClose = () => {
+        // Se está na oferta principal e não é membro fundador, mostra downsell
+        if (step === 'OFFER' && hasSeenOffer && !isFoundingMember) {
+            setStep('DOWNSELL');
+        } else if (step === 'DOWNSELL') {
+            // Se já está no downsell e quer fechar de novo, fecha de verdade
+            onClose();
+        } else {
+            // Membro fundador ou outras situações, fecha direto
+            onClose();
+        }
+    };
+
+    // Checkout do downsell
+    const handleDownsellCheckout = () => {
+        window.open(DOWNSELL_URL, '_blank');
+        setStep('CONFIRMATION');
     };
 
     if (!isOpen) return null;
@@ -126,10 +149,10 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onSuccess,
 
     return (
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-cyber-dark/90 backdrop-blur-sm" onClick={onClose} />
+            <div className="absolute inset-0 bg-cyber-dark/90 backdrop-blur-sm" onClick={handleClose} />
 
             <div className="relative bg-cyber-panel border border-cyber-primary w-full max-w-md rounded-2xl shadow-2xl shadow-cyan-500/20 overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
-                <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 hover:text-white z-10 bg-slate-900/50 rounded-full p-1">
+                <button onClick={handleClose} className="absolute top-4 right-4 text-slate-500 hover:text-white z-10 bg-slate-900/50 rounded-full p-1">
                     <X size={24} />
                 </button>
 
@@ -231,7 +254,73 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onSuccess,
                                 </>
                             )}
                         </div>
+                    ) : step === 'DOWNSELL' ? (
+                        /* TELA DE DOWNSELL - Última chance */
+                        <div className="p-6 sm:p-8 text-center animate-fade-in">
+                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-500/20 text-orange-400 mb-4 border border-orange-500 animate-pulse">
+                                <Gift size={32} />
+                            </div>
+
+                            <h2 className="text-xl sm:text-2xl font-black text-white italic uppercase leading-tight mb-2">
+                                Espera! <span className="text-orange-400">Última Chance</span>
+                            </h2>
+
+                            <p className="text-slate-400 text-sm mb-6">
+                                Entendo que R$ 29,90 pode parecer muito agora.<br />
+                                <strong className="text-white">Que tal uma oferta especial só pra você?</strong>
+                            </p>
+
+                            {/* Comparativo de preços */}
+                            <div className="bg-slate-900/50 border border-slate-700 rounded-xl p-4 mb-6">
+                                <div className="flex items-center justify-center gap-4 mb-3">
+                                    <div className="text-center">
+                                        <p className="text-slate-500 text-xs">Preço normal</p>
+                                        <p className="text-slate-400 line-through text-lg">R$ 29,90</p>
+                                    </div>
+                                    <div className="text-2xl">→</div>
+                                    <div className="text-center">
+                                        <p className="text-orange-400 text-xs font-bold">SÓ HOJE</p>
+                                        <p className="text-orange-400 font-black text-2xl">R$ 19,90</p>
+                                    </div>
+                                </div>
+                                <p className="text-emerald-400 text-xs font-bold">
+                                    💰 Economia de R$ 10,00!
+                                </p>
+                            </div>
+
+                            {/* Benefícios resumidos */}
+                            <div className="text-left space-y-2 mb-6">
+                                <div className="flex items-center gap-2 text-sm text-slate-300">
+                                    <Check size={16} className="text-emerald-400" />
+                                    <span>Acesso completo à plataforma</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-slate-300">
+                                    <Check size={16} className="text-emerald-400" />
+                                    <span>Scripts de vendas prontos</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm text-slate-300">
+                                    <Check size={16} className="text-emerald-400" />
+                                    <span>Mentoria completa (9 aulas)</span>
+                                </div>
+                            </div>
+
+                            {/* CTA Downsell */}
+                            <button
+                                onClick={handleDownsellCheckout}
+                                className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black py-4 rounded-xl hover:shadow-lg hover:shadow-orange-500/30 transition-all flex items-center justify-center gap-2 text-lg uppercase tracking-wider mb-4"
+                            >
+                                QUERO POR R$ 19,90 <ExternalLink size={20} />
+                            </button>
+
+                            <button
+                                onClick={onClose}
+                                className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
+                            >
+                                Não, obrigado. Prefiro continuar no plano gratuito.
+                            </button>
+                        </div>
                     ) : (
+                        /* TELA DE CONFIRMAÇÃO */
                         <div className="p-8 text-center animate-fade-in relative">
                             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/20 text-green-400 mb-4 border border-green-500 shadow-neon-cyan">
                                 <Check size={32} />

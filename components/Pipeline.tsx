@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Lead, LeadStatus, NicheType, ContractData } from '../types';
-import { Plus, DollarSign, User, Users, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, MapPin, Calendar as CalendarIcon, Fingerprint } from 'lucide-react';
+import { Plus, DollarSign, User, Users, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, MapPin, Calendar as CalendarIcon, Fingerprint, Flame, ThermometerSun, Snowflake, Target, ChevronRight } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import { supabase } from '../services/supabase';
 
@@ -12,7 +12,70 @@ interface PipelineProps {
   onRequestUpgrade?: () => void;
 }
 
-const MAX_FREE_LEADS = 10; // Legacy constant - not used anymore (CRM is now free)
+const MAX_FREE_CONTRACTS = 1;
+const MAX_FREE_SCRIPTS = 1;
+
+// Tipos de temperatura do lead
+type LeadTemperature = 'HOT' | 'WARM' | 'COLD' | null;
+
+// Perguntas de qualificacao claras e didáticas
+const QUICK_QUALIFICATION = [
+  {
+    key: 'needsHelp',
+    question: '📱 O Instagram/site desse cliente precisa de melhorias?',
+    description: 'Analise o perfil ou site do cliente',
+    options: [
+      { value: 'yes', label: '🔴 Sim, está bem amador', points: 35 },
+      { value: 'maybe', label: '🟡 Mais ou menos, pode melhorar', points: 20 },
+      { value: 'no', label: '🟢 Não, já está profissional', points: 0 }
+    ]
+  },
+  {
+    key: 'hasUrgency',
+    question: '⏰ O cliente demonstrou urgência ou prazo?',
+    description: 'Ex: lançamento, evento, promoção',
+    options: [
+      { value: 'yes', label: '🔥 Sim, precisa pra ontem!', points: 35 },
+      { value: 'maybe', label: '📅 Tem prazo, mas flexível', points: 15 },
+      { value: 'no', label: '🐢 Sem pressa nenhuma', points: 5 }
+    ]
+  },
+  {
+    key: 'canPay',
+    question: '💰 Esse cliente parece ter dinheiro pra investir?',
+    description: 'Baseado no negócio/perfil dele',
+    options: [
+      { value: 'yes', label: '💎 Sim, empresa estruturada', points: 30 },
+      { value: 'maybe', label: '🤔 Talvez, preciso descobrir', points: 15 },
+      { value: 'no', label: '😬 Parece apertado', points: 0 }
+    ]
+  }
+];
+
+const getTemperature = (score: number): LeadTemperature => {
+  if (score >= 70) return 'HOT';
+  if (score >= 40) return 'WARM';
+  return 'COLD';
+};
+
+const TemperatureBadge: React.FC<{ temperature: LeadTemperature }> = ({ temperature }) => {
+  if (!temperature) return null;
+
+  const config = {
+    HOT: { icon: Flame, color: 'text-orange-500 bg-orange-500/10 border-orange-500/30', label: 'Quente' },
+    WARM: { icon: ThermometerSun, color: 'text-yellow-500 bg-yellow-500/10 border-yellow-500/30', label: 'Morno' },
+    COLD: { icon: Snowflake, color: 'text-blue-400 bg-blue-400/10 border-blue-400/30', label: 'Frio' }
+  };
+
+  const { icon: Icon, color, label } = config[temperature];
+
+  return (
+    <span className={`flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded border ${color}`}>
+      <Icon size={10} />
+      {label}
+    </span>
+  );
+};
 
 // --- SALES PLAYBOOK JSON ---
 const SALES_PLAYBOOK = {
@@ -81,6 +144,9 @@ const SALES_PLAYBOOK = {
 const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, onRequestUpgrade }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [newLeadName, setNewLeadName] = useState('');
+  const [newLeadInstagram, setNewLeadInstagram] = useState('');
+  const [newLeadWhatsapp, setNewLeadWhatsapp] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Scripts State
@@ -95,6 +161,16 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
   // Contract State
   const [showContractForm, setShowContractForm] = useState(false);
   const [contractLead, setContractLead] = useState<Lead | null>(null);
+  const [contractsGenerated, setContractsGenerated] = useState(0);
+  const [scriptsViewed, setScriptsViewed] = useState(0);
+
+  // Qualification State (Chatbot style)
+  const [qualifyingLead, setQualifyingLead] = useState<Lead | null>(null);
+  const [qualificationStep, setQualificationStep] = useState(0);
+  const [qualificationScore, setQualificationScore] = useState(0);
+  const [chatMessages, setChatMessages] = useState<{ type: 'bot' | 'user', text: string }[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const chatContainerRef = React.useRef<HTMLDivElement>(null);
 
   // Extra state for contract generation logic
   const [validityDays, setValidityDays] = useState(7);
@@ -160,7 +236,27 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
   // Fetch Leads on Mount
   useEffect(() => {
     fetchLeads();
+    fetchUsageCounters();
   }, [userId]);
+
+  // Carregar contadores do Supabase
+  const fetchUsageCounters = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('contracts_used, scripts_used')
+        .eq('id', userId)
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setContractsGenerated(data.contracts_used || 0);
+        setScriptsViewed(data.scripts_used || 0);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar contadores:', error);
+    }
+  };
 
   const fetchLeads = async () => {
     try {
@@ -179,6 +275,26 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
     }
   };
 
+  // Formatar telefone brasileiro: (21) 96607-8380
+  const formatPhone = (value: string): string => {
+    const numbers = value.replace(/\D/g, '').slice(0, 11);
+    if (numbers.length <= 2) return numbers;
+    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
+  };
+
+  // Scroll automático do chat
+  const scrollChatToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  };
+
+  // Scroll quando mensagens mudam
+  useEffect(() => {
+    scrollChatToBottom();
+  }, [chatMessages, isTyping]);
+
   // Auto-detect Sales Mode based on Time
   useEffect(() => {
     if (showScripts) {
@@ -196,22 +312,57 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
     e.preventDefault();
     if (!newLeadName.trim()) return;
 
-    if (!isPremium && leads.length >= MAX_FREE_LEADS) {
-      onRequestUpgrade?.();
-      return;
-    }
+    // CRM agora é gratuito sem limite de leads
 
     try {
-      const { error } = await supabase.from('leads').insert([
+      // Salvar instagram com @ e whatsapp apenas números
+      const instagramClean = newLeadInstagram ? `@${newLeadInstagram.replace('@', '')}` : null;
+      const whatsappClean = newLeadWhatsapp ? newLeadWhatsapp.replace(/\D/g, '') : null;
+
+      const { data, error } = await supabase.from('leads').insert([
         {
           user_id: userId,
           name: newLeadName,
+          instagram: instagramClean,
+          whatsapp: whatsappClean,
           status: 'NEW',
           value: 0
         }
-      ]);
+      ]).select().single();
+
       if (error) throw error;
+
+      // Limpar formulário
       setNewLeadName('');
+      setNewLeadInstagram('');
+      setNewLeadWhatsapp('');
+      setShowAddForm(false);
+
+      // Iniciar qualificação em estilo chatbot com efeito digitando
+      if (data) {
+        setQualifyingLead(data as Lead);
+        setQualificationStep(0);
+        setQualificationScore(0);
+        setChatMessages([]);
+        setIsTyping(true);
+
+        // Mensagem 1 após 500ms
+        setTimeout(() => {
+          setChatMessages([{ type: 'bot', text: `Opa! Vamos qualificar o lead "${data.name}" rapidinho? 🎯` }]);
+        }, 500);
+
+        // Mensagem 2 após 1200ms
+        setTimeout(() => {
+          setChatMessages(prev => [...prev, { type: 'bot', text: QUICK_QUALIFICATION[0].question }]);
+        }, 1200);
+
+        // Mensagem 3 após 1800ms e desativar digitando
+        setTimeout(() => {
+          setChatMessages(prev => [...prev, { type: 'bot', text: `💡 ${QUICK_QUALIFICATION[0].description}` }]);
+          setIsTyping(false);
+        }, 1800);
+      }
+
       fetchLeads(); // Refresh list
     } catch (error) {
       console.error("Erro ao adicionar lead:", error);
@@ -266,7 +417,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
   };
 
   const openContractModal = () => {
-    if (!isPremium) {
+    // Permitir 1 contrato gratuito
+    if (!isPremium && contractsGenerated >= MAX_FREE_CONTRACTS) {
       onRequestUpgrade?.();
       return;
     }
@@ -280,6 +432,129 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
       }));
     }
     setShowContractForm(true);
+  };
+
+  // Função para incrementar contador de contratos após geração
+  const handleContractGenerated = async () => {
+    if (!isPremium) {
+      const newCount = contractsGenerated + 1;
+      setContractsGenerated(newCount);
+
+      try {
+        await supabase
+          .from('profiles')
+          .update({ contracts_used: newCount })
+          .eq('id', userId);
+      } catch (error) {
+        console.error('Erro ao salvar contador de contratos:', error);
+      }
+    }
+  };
+
+  // Funções de Qualificação
+  const startQualification = (lead: Lead) => {
+    setQualifyingLead(lead);
+    setQualificationStep(0);
+    setQualificationScore(0);
+  };
+
+  const handleQualificationAnswer = async (points: number) => {
+    if (!qualifyingLead) return;
+
+    const newScore = qualificationScore + points;
+    setQualificationScore(newScore);
+
+    if (qualificationStep < QUICK_QUALIFICATION.length - 1) {
+      // Adicionar resposta do usuário ao chat
+      const selectedOption = QUICK_QUALIFICATION[qualificationStep].options.find(o => o.points === points);
+      setChatMessages(prev => [
+        ...prev,
+        { type: 'user', text: selectedOption?.label || 'Respondido' }
+      ]);
+
+      // Mostrar "digitando" e próxima pergunta com delay
+      setIsTyping(true);
+
+      setTimeout(() => {
+        const nextStep = qualificationStep + 1;
+        setChatMessages(prev => [
+          ...prev,
+          { type: 'bot', text: QUICK_QUALIFICATION[nextStep].question }
+        ]);
+      }, 800);
+
+      setTimeout(() => {
+        const nextStep = qualificationStep + 1;
+        setChatMessages(prev => [
+          ...prev,
+          { type: 'bot', text: `💡 ${QUICK_QUALIFICATION[nextStep].description}` }
+        ]);
+        setQualificationStep(nextStep);
+        setIsTyping(false);
+      }, 1400);
+    } else {
+      // Ultima pergunta - salvar temperatura no Supabase
+      const temperature = getTemperature(newScore);
+      const selectedOption = QUICK_QUALIFICATION[qualificationStep].options.find(o => o.points === points);
+
+      // Adicionar resposta do usuário
+      setChatMessages(prev => [
+        ...prev,
+        { type: 'user', text: selectedOption?.label || 'Respondido' }
+      ]);
+
+      // Mostrar resultado com efeito digitando
+      setIsTyping(true);
+      const tempLabel = temperature === 'HOT' ? '🔥 QUENTE' : temperature === 'WARM' ? '🌡️ MORNO' : '❄️ FRIO';
+
+      setTimeout(() => {
+        setChatMessages(prev => [
+          ...prev,
+          { type: 'bot', text: `✅ Lead qualificado como ${tempLabel}!` }
+        ]);
+      }, 600);
+
+      setTimeout(() => {
+        setChatMessages(prev => [
+          ...prev,
+          { type: 'bot', text: `Score: ${newScore} pontos. Boa sorte na abordagem! 🚀` }
+        ]);
+        setIsTyping(false);
+      }, 1200);
+
+      // Salvar no Supabase
+      try {
+        const { error } = await supabase
+          .from('leads')
+          .update({ temperature, score: newScore })
+          .eq('id', qualifyingLead.id);
+
+        if (error) throw error;
+
+        // Atualizar localmente
+        setLeads(leads.map(l =>
+          l.id === qualifyingLead.id
+            ? { ...l, temperature, score: newScore }
+            : l
+        ));
+      } catch (error) {
+        console.error('Erro ao salvar qualificação:', error);
+      }
+
+      // Fechar após 2.5 segundos
+      setTimeout(() => {
+        setQualifyingLead(null);
+        setChatMessages([]);
+      }, 2500);
+    }
+  };
+
+  const cancelQualification = () => {
+    setQualifyingLead(null);
+    setQualificationStep(0);
+    setQualificationScore(0);
+    setChatMessages([]);
+    setIsTyping(false);
   };
 
   const handleScopeChange = (index: number, value: string) => {
@@ -481,6 +756,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
 
     // Salvar PDF
     doc.save(`Contrato_${json.client.name.replace(/\s+/g, '_')}_Flow.pdf`);
+    handleContractGenerated();
     setShowContractForm(false);
   };
 
@@ -516,20 +792,64 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
         </span>
       </div>
 
-      <form onSubmit={addLead} className="flex gap-2 mb-6">
-        <input
-          type="text"
-          value={newLeadName}
-          onChange={(e) => setNewLeadName(e.target.value)}
-          placeholder="Nome do novo cliente..."
-          className="flex-1 bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyber-primary input-glow"
-        />
-        <button
-          type="submit"
-          className="p-2 rounded-lg transition-colors bg-slate-800 text-slate-200 hover:bg-slate-700 ripple"
-        >
-          <Plus size={18} />
-        </button>
+      <form onSubmit={addLead} className="mb-6">
+        {!showAddForm ? (
+          <button
+            type="button"
+            onClick={() => setShowAddForm(true)}
+            className="w-full flex items-center justify-center gap-2 p-3 bg-cyber-dark border border-dashed border-slate-700 rounded-lg text-slate-400 hover:border-cyber-primary hover:text-cyber-primary transition-all"
+          >
+            <Plus size={18} />
+            Adicionar novo cliente
+          </button>
+        ) : (
+          <div className="bg-slate-900/50 border border-slate-700 rounded-lg p-4 space-y-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-bold text-slate-300">Novo Cliente</span>
+              <button type="button" onClick={() => setShowAddForm(false)} className="text-slate-500 hover:text-white">
+                <X size={16} />
+              </button>
+            </div>
+
+            <input
+              type="text"
+              value={newLeadName}
+              onChange={(e) => setNewLeadName(e.target.value)}
+              placeholder="Nome do cliente ou empresa *"
+              className="w-full bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyber-primary"
+              required
+            />
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-pink-400 text-sm">@</span>
+                <input
+                  type="text"
+                  value={newLeadInstagram}
+                  onChange={(e) => setNewLeadInstagram(e.target.value.replace('@', ''))}
+                  placeholder="instagram"
+                  className="w-full bg-cyber-dark border border-cyber-border rounded-lg pl-7 pr-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-pink-500"
+                />
+              </div>
+              <input
+                type="text"
+                value={formatPhone(newLeadWhatsapp)}
+                onChange={(e) => setNewLeadWhatsapp(e.target.value.replace(/\D/g, ''))}
+                placeholder="(21) 96607-8380"
+                className="bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-green-500"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={!newLeadName.trim()}
+              className="w-full py-2 bg-cyber-primary text-white font-bold rounded-lg hover:bg-cyber-primary/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              <Plus size={16} />
+              Adicionar e Qualificar
+            </button>
+          </div>
+        )}
       </form>
 
       <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
@@ -556,6 +876,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <User size={14} className="text-slate-500 shrink-0" />
                 <span className="font-bold text-sm text-slate-200 truncate">{lead.name}</span>
+                {(lead as any).temperature && <TemperatureBadge temperature={(lead as any).temperature} />}
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
                 <select
@@ -580,18 +901,53 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
               </div>
             </div>
 
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs text-slate-500">Valor estimado:</span>
-              <input
-                type="number"
-                value={lead.value}
-                onBlur={(e) => updateValue(lead.id, parseFloat(e.target.value) || 0)}
-                onChange={(e) => {
-                  const newVal = parseFloat(e.target.value) || 0;
-                  setLeads(leads.map(l => l.id === lead.id ? { ...l, value: newVal } : l));
-                }}
-                className="bg-transparent border-b border-slate-700 w-24 text-xs text-slate-300 focus:border-emerald-500 outline-none"
-              />
+            {/* Links de contato */}
+            {((lead as any).instagram || (lead as any).whatsapp) && (
+              <div className="flex items-center gap-3 mt-2 mb-2">
+                {(lead as any).instagram && (
+                  <a
+                    href={`https://instagram.com/${(lead as any).instagram.replace('@', '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-[10px] text-pink-400 hover:text-pink-300 transition-colors"
+                  >
+                    📷 {(lead as any).instagram}
+                  </a>
+                )}
+                {(lead as any).whatsapp && (
+                  <a
+                    href={`https://wa.me/55${(lead as any).whatsapp}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-[10px] text-green-400 hover:text-green-300 transition-colors"
+                  >
+                    💬 {formatPhone((lead as any).whatsapp)}
+                  </a>
+                )}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between gap-2 mt-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-500">R$</span>
+                <input
+                  type="number"
+                  value={lead.value}
+                  onBlur={(e) => updateValue(lead.id, parseFloat(e.target.value) || 0)}
+                  onChange={(e) => {
+                    const newVal = parseFloat(e.target.value) || 0;
+                    setLeads(leads.map(l => l.id === lead.id ? { ...l, value: newVal } : l));
+                  }}
+                  className="bg-transparent border-b border-slate-700 w-20 text-xs text-slate-300 focus:border-emerald-500 outline-none"
+                />
+              </div>
+
+              {/* Score do lead qualificado */}
+              {(lead as any).score && (
+                <span className="text-[10px] text-slate-500 font-mono">
+                  Score: {(lead as any).score}
+                </span>
+              )}
             </div>
           </div>
         ))}
@@ -602,30 +958,49 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={openContractModal}
-            className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all group ${isPremium
+            className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all group ${(isPremium || contractsGenerated < MAX_FREE_CONTRACTS)
               ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-cyber-primary cursor-pointer'
               : 'bg-slate-900/40 border-slate-800 opacity-60 hover:opacity-100 cursor-pointer'
               }`}
-            title={isPremium ? "Baixar Contrato Modelo" : "Funcionalidade PRO"}
+            title={(isPremium || contractsGenerated < MAX_FREE_CONTRACTS) ? "Baixar Contrato Modelo" : "Limite atingido - Funcionalidade PRO"}
           >
-            {isPremium ? <Download size={16} className="text-slate-400 group-hover:text-cyber-primary" /> : <Lock size={16} className="text-slate-500 group-hover:text-cyber-secondary" />}
+            {(isPremium || contractsGenerated < MAX_FREE_CONTRACTS)
+              ? <Download size={16} className="text-slate-400 group-hover:text-cyber-primary" />
+              : <Lock size={16} className="text-slate-500 group-hover:text-cyber-secondary" />}
             <span className="text-[10px] font-bold text-slate-500">GERAR CONTRATO</span>
+            {!isPremium && <span className="text-[8px] text-slate-600">{contractsGenerated}/{MAX_FREE_CONTRACTS} usado</span>}
           </button>
 
           <button
-            onClick={() => {
-              if (isPremium) setShowScripts(true);
-              else onRequestUpgrade?.();
+            onClick={async () => {
+              // Permitir 1 script gratuito
+              if (isPremium || scriptsViewed < MAX_FREE_SCRIPTS) {
+                setShowScripts(true);
+                if (!isPremium) {
+                  const newCount = scriptsViewed + 1;
+                  setScriptsViewed(newCount);
+                  try {
+                    await supabase
+                      .from('profiles')
+                      .update({ scripts_used: newCount })
+                      .eq('id', userId);
+                  } catch (error) {
+                    console.error('Erro ao salvar contador de scripts:', error);
+                  }
+                }
+              } else {
+                onRequestUpgrade?.();
+              }
             }}
-            className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all group ${isPremium
+            className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all group ${(isPremium || scriptsViewed < MAX_FREE_SCRIPTS)
               ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-cyber-primary cursor-pointer'
               : 'bg-slate-900/40 border-slate-800 opacity-60 hover:opacity-100 cursor-pointer'
               }`}
-            title="Funcionalidade PRO"
+            title={(isPremium || scriptsViewed < MAX_FREE_SCRIPTS) ? "Ver Scripts de Vendas" : "Limite atingido - Funcionalidade PRO"}
           >
             <div className="relative">
-              <MessageSquare size={16} className={`${isPremium ? 'text-slate-400 group-hover:text-cyber-primary' : 'text-slate-500 group-hover:text-cyber-secondary'}`} />
-              {!isPremium && <Lock size={10} className="absolute -top-1 -right-1 text-slate-600" />}
+              <MessageSquare size={16} className={`${(isPremium || scriptsViewed < MAX_FREE_SCRIPTS) ? 'text-slate-400 group-hover:text-cyber-primary' : 'text-slate-500 group-hover:text-cyber-secondary'}`} />
+              {!isPremium && scriptsViewed >= MAX_FREE_SCRIPTS && <Lock size={10} className="absolute -top-1 -right-1 text-slate-600" />}
             </div>
             <div className="text-center">
               <span className="text-[10px] font-bold text-slate-500 block">SCRIPTS DE VENDAS</span>
@@ -637,8 +1012,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
         </div>
       </div>
 
-      {/* SALES PLAYBOOK MODAL */}
-      {showScripts && isPremium && createPortal(
+      {/* SALES PLAYBOOK MODAL - Agora acessível para free também (1x) */}
+      {showScripts && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => setShowScripts(false)} />
           <div className="relative bg-cyber-panel border border-cyber-primary w-full max-w-4xl rounded-2xl shadow-2xl p-0 overflow-hidden flex flex-col max-h-[90vh] animate-slide-up">
@@ -809,7 +1184,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
       )}
 
       {/* Contract Generator Form Modal */}
-      {showContractForm && isPremium && createPortal(
+      {showContractForm && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-cyber-dark/90 backdrop-blur-sm" onClick={() => setShowContractForm(false)} />
           <div className="relative bg-cyber-panel border border-cyber-primary w-full max-w-2xl rounded-2xl shadow-2xl p-6 overflow-y-auto max-h-[90vh] animate-fade-in">
@@ -989,6 +1364,79 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
               >
                 <Fingerprint size={20} /> GERAR CONTRATO COM ASSINATURA DIGITAL
               </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Modal de Qualificação - Estilo Chatbot */}
+      {qualifyingLead && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="absolute inset-0 bg-cyber-dark/90 backdrop-blur-sm" onClick={cancelQualification} />
+          <div className="relative bg-cyber-panel border border-cyber-primary w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl shadow-2xl animate-fade-in flex flex-col max-h-[80vh] sm:max-h-[600px]">
+
+            {/* Header */}
+            <div className="flex justify-between items-center p-4 border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyber-primary to-cyber-secondary flex items-center justify-center">
+                  <MessageSquare size={20} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">Flow Assistant</h3>
+                  <p className="text-[10px] text-green-400">● Online</p>
+                </div>
+              </div>
+              <button onClick={cancelQualification} className="text-slate-500 hover:text-white p-2">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Chat Messages */}
+            <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3">
+              {chatMessages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] px-4 py-2 rounded-2xl text-sm ${msg.type === 'user'
+                      ? 'bg-cyber-primary text-white rounded-br-md'
+                      : 'bg-slate-800 text-slate-200 rounded-bl-md'
+                      }`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+
+              {/* Indicador de digitando */}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-slate-800 text-slate-400 px-4 py-2 rounded-2xl rounded-bl-md flex items-center gap-1">
+                    <span className="animate-bounce" style={{ animationDelay: '0ms' }}>●</span>
+                    <span className="animate-bounce" style={{ animationDelay: '150ms' }}>●</span>
+                    <span className="animate-bounce" style={{ animationDelay: '300ms' }}>●</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Response Options */}
+            <div className="p-4 border-t border-slate-800 space-y-2">
+              <p className="text-[10px] text-slate-500 text-center mb-2">
+                Escolha uma opção ({qualificationStep + 1}/{QUICK_QUALIFICATION.length})
+              </p>
+              {QUICK_QUALIFICATION[qualificationStep].options.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => handleQualificationAnswer(option.points)}
+                  className="w-full p-3 text-left bg-slate-800/50 hover:bg-slate-700 border border-slate-700 hover:border-cyber-primary rounded-xl transition-all flex items-center justify-between group"
+                >
+                  <span className="text-sm text-slate-200">{option.label}</span>
+                  <ChevronRight size={16} className="text-slate-600 group-hover:text-cyber-primary" />
+                </button>
+              ))}
             </div>
           </div>
         </div>,
