@@ -835,7 +835,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
                 type="text"
                 value={formatPhone(newLeadWhatsapp)}
                 onChange={(e) => setNewLeadWhatsapp(e.target.value.replace(/\D/g, ''))}
-                placeholder="(21) 96607-8380"
+                placeholder="(00) 00000-0000"
                 className="bg-cyber-dark border border-cyber-border rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-green-500"
               />
             </div>
