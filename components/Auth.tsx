@@ -20,7 +20,6 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
   const [showOtpInput, setShowOtpInput] = useState(false); // Modo "Digitar Código"
 
   const [error, setError] = useState<string | null>(null);
-  const [verificationSent, setVerificationSent] = useState(false); // Apenas para cadastro novo que requer confirmação
 
   // Regex para validação
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -80,14 +79,10 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
 
         if (error) throw error;
 
-        // Tenta fazer login automático após cadastro
+        // Login automático após cadastro (Confirm Email desabilitado no Supabase)
         if (data.user) {
           const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
-          if (loginError) {
-            // Se não conseguir logar (email requer confirmação), mostra mensagem melhorada
-            setVerificationSent(true);
-            setLoading(false);
-          }
+          if (loginError) throw loginError;
           // Se login funcionou, o onAuthStateChange no App.tsx vai capturar automaticamente
         }
       }
@@ -121,30 +116,7 @@ const Auth: React.FC<AuthProps> = ({ onBack }) => {
     }
   };
 
-  // TELA DE VERIFICAÇÃO DE EMAIL (APENAS CADASTRO NOVO - MENSAGEM MELHORADA)
-  if (verificationSent) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-cyber-dark p-4 relative overflow-hidden">
-        <div className="max-w-md w-full z-10 bg-cyber-panel border border-cyber-primary rounded-2xl p-8 shadow-2xl text-center animate-fade-in">
-          <div className="w-20 h-20 bg-cyber-primary/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-cyber-primary shadow-neon-cyan">
-            <Mail size={40} className="text-cyber-primary" />
-          </div>
-          <h2 className="text-2xl font-black text-white mb-2 uppercase">Verifique seu E-mail</h2>
-          <p className="text-slate-400 mb-4">Enviamos um link de confirmação para <strong className="text-white">{email}</strong>.</p>
-
-          {/* AVISO SOBRE SPAM */}
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
-            <p className="text-yellow-400 text-sm font-bold mb-2">⚠️ Não encontrou o email?</p>
-            <p className="text-yellow-200/80 text-xs">Verifique sua <strong>caixa de spam</strong> ou <strong>lixo eletrônico</strong>. O email pode demorar até 2 minutos para chegar.</p>
-          </div>
-
-          <button onClick={() => window.location.reload()} className="text-cyber-primary font-bold hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto uppercase text-xs tracking-widest">
-            <ArrowLeft size={14} /> Já confirmei, voltar para Login
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Verificação de email removida - Supabase com "Confirm Email" desabilitado
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-cyber-dark p-4 relative overflow-hidden">

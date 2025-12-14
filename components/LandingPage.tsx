@@ -112,17 +112,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                 <div className="relative max-w-5xl mx-auto text-center">
                     {/* Headline */}
                     <h1 className="text-4xl sm:text-5xl md:text-7xl font-black leading-tight mb-6 animate-fade-in">
-                        Gerencie seu Freelance no
+                        Gerencie projetos.
+                        <br />
+                        Feche contratos.
                         <br />
                         <span className="bg-gradient-to-r from-cyber-primary via-cyan-300 to-cyber-secondary bg-clip-text text-transparent">
-                            Flow, não no Caos
+                            Aprenda a vender.
                         </span>
                     </h1>
 
                     {/* Subheadline */}
                     <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in">
-                        A plataforma tudo-em-um para organizar projetos, pagamentos e clientes.
-                        <span className="text-white font-semibold"> Simplifique sua vida profissional.</span>
+                        O único CRM para designers com scripts de venda, calculadora de preços
+                        <span className="text-white font-semibold"> e contratos com assinatura digital.</span>
                     </p>
 
                     {/* CTA Buttons */}
@@ -131,7 +133,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                             onClick={onGetStarted}
                             className="group w-full sm:w-auto bg-gradient-to-r from-cyber-primary to-cyan-400 text-black font-black px-10 py-5 rounded-xl text-lg transition-all neon-glow hover:scale-105 flex items-center justify-center gap-3 pulse-glow ripple"
                         >
-                            Começar Gratuitamente
+                            Acessar Ferramentas Gratuitas
                             <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
@@ -361,14 +363,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
                     {/* Os 9 Módulos organizados em 3 grupos */}
                     <div className="space-y-6 mb-12">
-                        {/* Módulo 1: Prospecção */}
+                        {/* Módulo 1: Fundamentos */}
                         <div>
-                            <p className="text-cyber-primary text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 1: Prospecção (Grátis)</p>
+                            <p className="text-cyber-primary text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 1: Fundamentos (Grátis)</p>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {[
-                                    { num: "01", title: "Como Prospectar Clientes" },
-                                    { num: "02", title: "Comunicação com Clientes" },
-                                    { num: "03", title: "Seu Estilo Pessoal" }
+                                    { num: "01", title: "O Método e Seleção de Nicho" },
+                                    { num: "02", title: "Meta Ads Library" },
+                                    { num: "03", title: "Portfólio Before/After" }
                                 ].map((mod, idx) => (
                                     <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
                                         <span className="text-xl font-black text-emerald-400">{mod.num}</span>
@@ -378,14 +380,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                             </div>
                         </div>
 
-                        {/* Módulo 2: Qualificação */}
+                        {/* Módulo 2: Execução */}
                         <div>
-                            <p className="text-slate-500 text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 2: Qualificação (PRO)</p>
+                            <p className="text-slate-500 text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 2: Execução (PRO)</p>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {[
-                                    { num: "04", title: "Descobrindo Seu Cliente Ideal" },
-                                    { num: "05", title: "Qualificação BANT" },
-                                    { num: "06", title: "Qualificação CHAMP" }
+                                    { num: "04", title: "Lista de Prospects" },
+                                    { num: "05", title: "Abordagem Inicial" },
+                                    { num: "06", title: "Fechamento de Vendas" }
                                 ].map((mod, idx) => (
                                     <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/50 border border-slate-800">
                                         <span className="text-xl font-black text-slate-600">{mod.num}</span>
@@ -395,14 +397,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                             </div>
                         </div>
 
-                        {/* Módulo 3: Conversão */}
+                        {/* Módulo 3: Escalabilidade */}
                         <div>
-                            <p className="text-slate-500 text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 3: Conversão (PRO)</p>
+                            <p className="text-slate-500 text-xs uppercase tracking-widest font-bold mb-3 px-2">Módulo 3: Escalabilidade (PRO)</p>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {[
-                                    { num: "07", title: "Portfólio e Apresentação" },
-                                    { num: "08", title: "Nicho de Mercado" },
-                                    { num: "09", title: "Métricas e Validação" }
+                                    { num: "07", title: "Oferta e Precificação" },
+                                    { num: "08", title: "Prospecção em Escala" },
+                                    { num: "09", title: "Crescendo Seu Negócio" }
                                 ].map((mod, idx) => (
                                     <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/50 border border-slate-800">
                                         <span className="text-xl font-black text-slate-600">{mod.num}</span>

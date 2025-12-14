@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { User, TimeBlock, Task, NicheType, BlockStatus } from '../types';
 import { generateSchedule, BLOCK_ICONS, BLOCK_COLORS } from '../constants';
-import { LogOut, Plus, Trash2, CheckCircle2, Circle, Star, Target, LayoutDashboard, ListTodo, RefreshCw, Crown, Wallet, Calendar, Clock, X, XCircle, AlertCircle, Moon, ArrowRight, Sunrise, Zap, Users, GraduationCap } from 'lucide-react';
+import { LogOut, Plus, Trash2, CheckCircle2, Circle, Star, Target, LayoutDashboard, ListTodo, RefreshCw, Crown, Wallet, Calendar, Clock, X, XCircle, AlertCircle, Moon, ArrowRight, Sunrise, Zap, Users, GraduationCap, Calculator } from 'lucide-react';
 import Pomodoro from './Pomodoro';
 import DailyWin from './DailyWin';
 import Pipeline from './Pipeline';
@@ -17,6 +17,7 @@ interface DashboardProps {
   onUpdateNiche: (niche: NicheType) => void;
   onRequestUpgrade: () => void;
   onOpenLearningHub: () => void;
+  initialTab?: 'TOOLS' | 'CRM' | 'FINANCE';
 }
 
 const getTodayDateKey = () => {
@@ -35,12 +36,12 @@ const getInitials = (name: string) => {
   return name.substring(0, 2).toUpperCase();
 };
 
-const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, onRequestUpgrade, onOpenLearningHub }) => {
+const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, onRequestUpgrade, onOpenLearningHub, initialTab }) => {
   const [schedule, setSchedule] = useState<TimeBlock[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [activeBlock, setActiveBlock] = useState<TimeBlock | null>(null);
-  const [rightPanelTab, setRightPanelTab] = useState<'TOOLS' | 'CRM' | 'FINANCE'>('TOOLS');
+  const [rightPanelTab, setRightPanelTab] = useState<'TOOLS' | 'CRM' | 'FINANCE'>(initialTab || 'TOOLS');
   const [customBlockTask, setCustomBlockTask] = useState('');
 
   const [isStandbyMode, setIsStandbyMode] = useState(false);
@@ -414,6 +415,31 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
               </div>
             </div>
 
+            {/* Action Cards - Lead Magnets */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <button
+                onClick={onOpenLearningHub}
+                className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-xl p-5 text-left hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/10 transition-all group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <GraduationCap className="text-purple-400 group-hover:scale-110 transition-transform" size={24} />
+                  <span className="text-lg font-bold text-white">Acessar Scripts de Venda</span>
+                </div>
+                <p className="text-sm text-slate-400">Playbook de Vendas & Photoshop (Texto Prático)</p>
+              </button>
+
+              <button
+                onClick={() => setRightPanelTab('FINANCE')}
+                className="bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-xl p-5 text-left hover:border-yellow-400 hover:shadow-lg hover:shadow-yellow-500/10 transition-all group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Calculator className="text-yellow-400 group-hover:scale-110 transition-transform" size={24} />
+                  <span className="text-lg font-bold text-white">Calculadora de Preços</span>
+                </div>
+                <p className="text-sm text-slate-400">Descubra seu valor hora</p>
+              </button>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Protocolo do Dia */}
               <section className="lg:col-span-2 space-y-6">
@@ -559,7 +585,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
         {/* CRM VIEW - Full Width */}
         {rightPanelTab === 'CRM' && (
           <div className="animate-fade-in">
-            <Pipeline userId={user.id} niche={user.niche} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} />
+            <Pipeline userId={user.id} niche={user.niche} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} userName={user.name} />
           </div>
         )}
 

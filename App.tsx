@@ -26,6 +26,7 @@ const App: React.FC = () => {
   const [isAdminConsoleOpen, setIsAdminConsoleOpen] = useState(false);
   const [showLearningHub, setShowLearningHub] = useState(false);
   const [showWelcomeTour, setShowWelcomeTour] = useState(false);
+  const [initialDashboardTab, setInitialDashboardTab] = useState<'TOOLS' | 'CRM' | 'FINANCE' | null>(null);
 
   useEffect(() => {
     // 1. Verifica sessão ativa inicial
@@ -54,6 +55,27 @@ const App: React.FC = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Deep Linking via Query Params
+  useEffect(() => {
+    if (!session || !user?.onboarded) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get('view');
+
+    if (view === 'academy') {
+      setShowLearningHub(true);
+    } else if (view === 'upgrade') {
+      setIsPremiumModalOpen(true);
+    } else if (view === 'calculator') {
+      setInitialDashboardTab('FINANCE');
+    }
+
+    // Limpar parâmetro da URL
+    if (view) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [session, user]);
 
   // Nova função que busca dados da tabela 'profiles' (Fonte da verdade)
   const fetchProfileAndMapUser = async (session: any) => {
@@ -243,6 +265,7 @@ const App: React.FC = () => {
             onLogout={handleLogout}
             onRequestUpgrade={() => setIsPremiumModalOpen(true)}
             onOpenLearningHub={() => setShowLearningHub(true)}
+            initialTab={initialDashboardTab || undefined}
           />
 
           {/* Botão Admin - Só aparece se o email estiver na lista ADMIN_EMAILS */}

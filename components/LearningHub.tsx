@@ -4543,339 +4543,572 @@ R: Converter textos em formas (shapes). Texto > Convert to Shape. Evita problema
 **Última atualização:** Dezembro 2025
 `;
 
-// ==================== CONTEÚDO: MENTORIA (migrado do CareerModule) ====================
+// ==================== CONTEÚDO: MENTORIA - Método de Prospecção para Designers ====================
 const MENTORIA_LESSONS: Lesson[] = [
-    // Módulo 1: Prospecção
+    // MÓDULO 1: FUNDAMENTOS (GRATUITO)
     {
         id: "mentoria_01",
-        title: "Como Prospectar Clientes",
+        title: "Entendendo o Método e Seleção de Nicho",
         isFree: true,
-        module: "Prospecção",
+        module: "Fundamentos",
         content: `
-### O que é Prospecção de Clientes?
+### Por que este Método Funciona
 
-A prospecção é o processo estratégico de **identificar, atrair e iniciar contato com potenciais clientes** que demonstram interesse ou possível demanda pelos seus serviços de design. Não é um processo aleatório, mas sim uma atividade estruturada que aumenta suas chances de fechar projetos rentáveis.
+Este método é fundamentado em princípios psicológicos e estratégias comerciais comprovadas:
 
-### Técnicas Validadas de Prospecção para Designers
+**1. Identificação via Meta Ads Library**
+A Biblioteca de Anúncios do Facebook/Meta é uma ferramenta transparente e legal que permite visualizar todos os anúncios ativos. Negócios que investem em publicidade demonstram intenção de crescimento — características críticas para fechar vendas de design.
 
-#### 1. Prospecção via Redes Sociais (Instagram)
+**2. Poder das Imagens Before/After**
+Pesquisas mostram que galerias com transformações visuais geram **54% mais conversões**. Quando você recria anúncios "feios" com seu estilo, você elimina dúvidas sobre suas capacidades.
 
-O Instagram é a plataforma mais poderosa para designers prospectarem clientes, devido ao forte apelo visual.
+**3. Cold Outreach Personalizado**
+Mensagens personalizadas aumentam taxas de resposta em **mais de 30%** comparado a templates genéricos.
 
-**Passo a Passo:**
-- Identifique o nicho de cliente ideal (ex: restaurantes, consultórios, agências de marketing)
-- Use hashtags e palavras-chave específicas para encontrar potenciais clientes
-- Analise perfis que se encaixam no seu ICP (Ideal Customer Profile)
-- Envie mensagens diretas personalizadas referenciando trabalhos recentes ou conteúdos deles
-- Mencione um projeto específico seu que possa resolver um problema que identifica no perfil
+---
 
-**Dica Importante:** A abordagem deve ser genuína e contextualizada. Referenciar um trabalho recente do prospect ou mencionar algo específico sobre o negócio dele aumenta significativamente as chances de resposta.
+### Seleção de Nicho e Sub-nicho
 
-#### 2. Prospecção via Grupos de Interesse (Facebook e WhatsApp)
+**Passo 1:** Escolher um nicho (exemplo: Alimentação)
+**Passo 2:** Afunilar para sub-nicho (exemplo: Açaí, Pizzaria, Hamburgueria)
+**Passo 3:** Definir público-alvo claro (região, tipo de estabelecimento)
 
-Grupos específicos reúnem seu cliente ideal em um único lugar.
+**Exemplos de nichos lucrativos:**
+- Saúde e Fitness
+- Beleza e Estética
+- Serviços Locais
+- Gastronomia
 
-**Como Funciona:**
-- Participe ativamente de grupos onde seu cliente ideal está presente
-- Não apenas divulgue seus serviços; **produza conteúdo de valor** para a comunidade
-- Compartilhe seu portfólio naturalmente quando relevante
-- Responda perguntas e dúvidas dos membros com generosidade
+**Por que começar com um único sub-nicho:**
+- Reduz número de variáveis
+- Permite especialização rápida
+- Facilita networking dentro do segmento
+- Possibilita case studies fortes
 
-#### 3. Networking Presencial e Online
+---
 
-Construir relacionamentos reais gera as melhores conversões.
+### Prática Proposta
 
-**Atividades Recomendadas:**
-- Participar de eventos, palestras, workshops e meetups da área
-- Apresentar seus trabalhos e ouvir necessidades do público-alvo direto
-- Oferecer workshops ou talks sobre design
-
-### Erros Comuns na Prospecção
-
-❌ Abordagem genérica ("Olá, faço design gráfico")
-❌ Não pesquisar sobre o cliente antes de abordar
-❌ Focar apenas em vender, sem oferecer valor
-❌ Não ter exemplos de portfólio para mostrar
-❌ Desistir após poucas tentativas
-
-✅ O correto é ser específico, pesquisar, oferecer valor, ter portfolio pronto e persistir.
+- [ ] Escolher 1 nicho e 1 sub-nicho para trabalhar
+- [ ] Definir sua região geográfica de atuação
+- [ ] Documentar por escrito por que esse nicho é viável
     `
     },
     {
         id: "mentoria_02",
-        title: "Como se Comunicar com Clientes",
+        title: "Navegando a Meta Ads Library",
         isFree: true,
-        module: "Prospecção",
+        module: "Fundamentos",
         content: `
-### A Importância da Comunicação Eficaz
+### Acesso à Plataforma
 
-A capacidade de **comunicar ideias de forma objetiva** é tão importante quanto suas habilidades técnicas de design. Designers que se comunicam bem:
-- Ganham confiança dos clientes
-- Reduzem conflitos e mal-entendidos
-- Conseguem mais indicações
-- Cobram mais pelos seus serviços
+Acesse: **facebook.com/ads/library**
+- Não requer permissões especiais
+- Funciona globalmente para qualquer negócio com anúncios ativos
 
-### Princípios Fundamentais da Comunicação com Clientes
+---
 
-#### 1. Escuta Ativa
+### Técnica de Busca Estratégica
 
-Antes de falar, você precisa ouvir profundamente.
+1. Pesquisar por palavras-chave exatas do sub-nicho (ex: "Açaí")
+2. Usar filtros de localização para sua região
+3. Ajustar intervalos de data para encontrar anúncios recentes
+4. Categorizar anúncios por tipo: redes sociais, website, catálogo
 
-**Como Implementar:**
-- Faça perguntas abertas para entender o negócio do cliente
-- Não interrompa — deixe o cliente falar completamente
-- Tome notas sobre dores, objetivos e expectativas
-- Demonstre interesse genuíno no que ele está contando
+---
 
-#### 2. Clareza e Simplicidade
+### Identificando Anúncios "Feios" (Oportunidades Reais)
 
-Nunca use jargão de design sem explicar.
+Procure por:
+- Design amador
+- Cores desarmônicas
+- Tipografia fraca
+- Composição pobre
 
-**Boas Práticas:**
-- Explique conceitos técnicos em linguagem simples
-- Evite termos como "kerning", "paleta de cores", sem contexto
-- Prepare apresentações visuais de suas ideias, não apenas verbais
+**Por que são oportunidades:**
+- Revelam que o proprietário NÃO tem acesso a designer profissional
+- Investem em publicidade mas têm design ruim = cliente perfeito
+- Quantidade de anúncios diferentes = indicativo de testes
 
-#### 3. Justificativa de Decisões de Design
+---
 
-Nunca diga "é bonito" — diga "é estratégico".
+### Análise de Concorrência
 
-**Exemplo:**
-❌ "Usei essa cor porque combina bem"
-✅ "Usei essa cor porque ela transmite confiabilidade — pesquisas mostram que 78% de consumidores associam azul com profissionalismo. Isso é importante porque seu público-alvo é executivos B2B"
+- Estudar design de competidores diretos
+- Entender padrão visual do nicho
+- Identificar oportunidades de diferenciação
+
+---
+
+### Prática Proposta
+
+- [ ] Buscar 30+ anúncios no seu sub-nicho escolhido
+- [ ] Documentar 5-7 "piores" (melhores oportunidades)
+- [ ] Analisar padrões visuais comuns
+- [ ] Preparar 3 linhas de estilo diferentes para testar
     `
     },
     {
         id: "mentoria_03",
-        title: "Compreensão e Expressão do Seu Estilo",
+        title: "Criando Seu Portfólio Before/After",
         isFree: true,
-        module: "Prospecção",
+        module: "Fundamentos",
         content: `
-### O que é Estilo de Arte em Design?
+### O Poder Psicológico das Imagens Before/After
 
-Seu estilo é a **forma singular como você se expressa visualmente**. É o que faz seus trabalhos serem reconhecidos e diferenciados no mercado.
+- Geram **4.5x mais engajamento** que fotos padrão
+- Eliminam dúvida sobre capacidade do designer
+- Criam visualização imediata de resultado
+- Reduzem barreiras psicológicas para fechar venda
 
-### Os 20+ Estilos Principais em Design Gráfico (2025)
+---
 
-#### Estilos Minimalistas
-- **Minimalismo Puro**: Menos é mais. Poucos elementos, muito espaço em branco.
-- **Flat Design**: Sem profundidade, cores sólidas, formas geométricas simples.
+### Recriando Anúncios "Ruins" com Seu Estilo
 
-#### Estilos Nostálgicos e Retrô
-- **Vintage/Retrô**: Evoca décadas passadas (70s, 80s, 90s).
-- **Vaporwave**: Estética Y2K, cores pastel, referências futuristas.
+1. Baixar imagem original do anúncio
+2. Respeitar a mensagem e produto original
+3. Aplicar seus princípios de design:
+   - Cores harmônicas
+   - Tipografia clara
+   - Hierarquia visual
+4. Manter identidade visual do estabelecimento
+5. Melhorar composição e impacto visual
 
-### Como Descobrir Seu Estilo Pessoal?
+---
 
-#### Passo 1: Análise de Preferências
-- Observe os trabalhos que você mais gosta.
-- Identifique padrões: cores que você usa frequentemente.
+### Estrutura de Apresentação Before/After
 
-#### Passo 2: Experimente Conscientemente
-- Escolha um estilo e faça 5-10 projetos (mesmo fictícios) naquele estilo.
-- Crie um "projeto de assinatura" que seja totalmente você.
+- **Lado esquerdo:** Anúncio original (retirado da Meta Ads Library)
+- **Lado direito:** Sua versão redesenhada
+- Manter proporções de anúncio comum (quadrado, vertical, horizontal)
+- Watermark discreto com seu logo ou nome
 
-**Diferencial Competitivo:**
-Um designer com estilo claro é **imediatamente reconhecível**. Clientes procuram por essa singularidade.
+---
+
+### Seleção de Seus Melhores Trabalhos
+
+- Começar com 5-7 antes/depois de diferentes estilos
+- Focar em transformações visualmente óbvias
+- Incluir variedade: logo, banners, stories, cartazes
+
+---
+
+### Prática Proposta
+
+- [ ] Recriar 5 anúncios ruins encontrados na aula anterior
+- [ ] Criar apresentação com 5 imagens before/after
+- [ ] Preparar versão mobile (para WhatsApp/Messenger)
+- [ ] Preparar versão desktop (para email)
     `
     },
-    // Módulo 2: Qualificação
+    // MÓDULO 2: EXECUÇÃO (PAGO)
     {
         id: "mentoria_04",
-        title: "Descobrindo Seu Cliente Ideal",
+        title: "Estruturando Sua Lista de Prospects",
         isFree: false,
-        module: "Qualificação",
+        module: "Execução",
         content: `
-### Por Que Conhecer o Cliente Ideal é Crucial?
+### Compilando Contatos da Meta Ads Library
 
-Tentar vender para "todo mundo" é a forma mais cara e ineficiente de conseguir clientes. Designers bem-sucedidos **focam em clientes específicos**.
+1. Extrair nome do negócio para cada anúncio identificado
+2. Localizar página do Facebook/Instagram do estabelecimento
+3. Anotar URL e informações relevantes
+4. Classificar por interesse (A = alta, B = média, C = possível)
 
-### O Que É ICP (Ideal Customer Profile)?
+---
 
-O **ICP é uma descrição detalhada do cliente perfeito** para seus serviços. Ele inclui:
-- Características da empresa/negócio (tamanho, setor)
-- Desafios e dores específicas
-- Orçamento disponível
+### Encontrando Informações de Contato
 
-### Os 5 Passos para Definir Seu Cliente Ideal
+- Visitar página oficial do negócio (Facebook, Instagram, website)
+- Extrair número de WhatsApp/Telefone
+- Buscar email de contato (geralmente em "Sobre" ou footer)
+- Pesquisar no Google: "[nome estabelecimento] contato"
 
-#### Passo 1: Analise Seus Melhores Clientes Atuais
-Se você tem clientes satisfeitos, eles são seu mapa do tesouro. Liste os 5 melhores e procure padrões.
+---
 
-#### Passo 2: Mapeie as Dores e Necessidades
-Clientes não compram design — **compram solução para um problema**.
-- Identifique dores comuns: Falta de identidade visual, presença fraca em redes sociais.
+### Organização em Planilha
 
-#### Passo 3: Crie Sua Persona
-Dê um nome ao seu cliente ideal e "humanize-o".
-Exemplo: **Marina Andrade**, dona de Clínica Odontológica, busca modernidade, tem budget de 8k.
+| Coluna | Conteúdo |
+|--------|----------|
+| 1 | Nome do Estabelecimento |
+| 2 | Tipo de Negócio |
+| 3 | Localização |
+| 4 | WhatsApp |
+| 5 | Email |
+| 6 | URL da Página |
+| 7 | Status |
+| 8 | Data do Contato |
+| 9 | Notas |
+
+---
+
+### Qualificação de Leads
+
+- Verificar atividade recente na página (publicações frequentes = ativo)
+- Conferir se realmente está com anúncios pagos
+- Descartar negócios sem orçamento claro
+- Focar em negócios com 50+ seguidores
+
+---
+
+### Segmentação para Abordagem
+
+- **Tier 1:** Alto faturamento (restaurantes, franquias) = cobrar premium
+- **Tier 2:** Pequenos estabelecimentos = cobrar standard
+- **Tier 3:** Microempresas = desconto/pacote inicial
+
+---
+
+### Prática Proposta
+
+- [ ] Compilar lista de 50+ prospects viáveis
+- [ ] Organizar em planilha com todas as colunas
+- [ ] Validar contatos (WhatsApp funciona, email válido)
+- [ ] Segmentar em Tier 1, 2, 3
     `
     },
     {
         id: "mentoria_05",
-        title: "Qualificação de Leads (BANT)",
+        title: "A Abordagem Inicial e Qualificação",
         isFree: false,
-        module: "Qualificação",
+        module: "Execução",
         content: `
-### O que É Qualificação de Leads?
+### Psicologia do Primeiro Contato
 
-É o processo de **avaliar cada contato para determinar se ele é realmente um bom prospecto**.
+- Prospect recebe centenas de mensagens genéricas
+- Personalização aumenta resposta em **30%+**
+- Simplicidade funciona: "Oi" é melhor que monólogo de venda
+- Objetivo inicial: APENAS iniciar conversa, não vender ainda
 
-### Metodologia BANT
+---
 
-#### 1. BUDGET (Orçamento)
-"Qual é seu orçamento disponível para este projeto?"
-O cliente tem recursos financeiros? O orçamento é realista?
+### A Estratégia da Mensagem Simples
 
-#### 2. AUTHORITY (Autoridade)
-"Quem toma a decisão final para contratação?"
-Você está falando com a pessoa certa?
+**Primeira mensagem:** "Oi" ou "Oi, tudo bem?" (simples, desarmado)
 
-#### 3. NEED (Necessidade)
-"Qual é o principal problema que você quer resolver com design?"
-O cliente realmente precisa do seu serviço? A dor é urgente?
+**Objetivo:** Confirmar que é pessoa real respondendo, não bot
 
-#### 4. TIMELINE (Cronograma)
-"Qual é o prazo para executar este projeto?"
-É urgente ou indefinido?
+**Não envie** textos longos na primeira mensagem
 
-**Matriz de Qualificação:**
-Um lead é **bem qualificado** quando atende a pelo menos 3 dos 4 critérios fortemente.
+---
+
+### Identificando Bot vs. Humano
+
+- Bots respondem com mensagens pré-gravadas automáticas
+- Respostas humanas têm variabilidade
+- Se bot: responder com "Quero falar com atendente"
+- Se sem resposta em 24h: mover para segunda tentativa
+
+---
+
+### Sinais de Qualificação na Resposta
+
+- "Pois não?" = Pessoa real e interessada ✅
+- "Oi, boa tarde" = Resposta genuína, continuar ✅
+- Respostas vagas = Preparar before/after para despertar interesse
+- Silêncio = Tentar novamente após 3 dias
+
+---
+
+### Sequência de Abertura
+
+**Mensagem 2 (após resposta positiva):**
+"Olá! Meu nome é [seu nome]. Sou designer gráfico especializado em [seu nicho]. Analisando seus anúncios, vi oportunidade de amplificar seu impacto visual."
+
+**Mensagem 3:**
+Enviar before/after relevante + "Essas transformações aumentam a taxa de conversão dos anúncios"
+
+---
+
+### Gerenciando Objeções Iniciais
+
+| Objeção | Resposta |
+|---------|----------|
+| "Quanto custa?" | Não responda preço agora, pergunte orçamento deles |
+| "Estou ocupado" | Agendar para ligar depois |
+| "Já temos designer" | Perguntar se está satisfeito, oferecer segunda opinião |
+| Silêncio | Não é "não", é "ainda não" — seguir com follow-up |
     `
     },
     {
         id: "mentoria_06",
-        title: "Qualificação de Leads (CHAMP)",
+        title: "Apresentação do Before/After e Fechamento",
         isFree: false,
-        module: "Qualificação",
+        module: "Execução",
         content: `
-### O que É CHAMP?
+### Momento Crítico: O Impacto Visual
 
-Metodologia **focada nos desafios do cliente**. Muito usada em design.
+- Você já confirmou que é humano e criou curiosidade
+- Agora precisa PROVAR capacidade
+- Imagem before/after é seu argumento mais poderoso
+- Prospect visualiza resultado concreto em 2 segundos
 
-#### C - CHALLENGES (Desafios)
-Qual é o desafio/problema que o cliente enfrenta?
-"Meu site não converte visitantes em clientes".
+---
 
-#### H - AUTHORITY (Autoridade)
-Quem aprova a decisão?
+### Selecionando o Before/After Correto
 
-#### A - ABILITY/APPROVAL (Capacidade)
-Tem recursos para resolver? Podem investir agora?
+- Escolher aquele que mais se parece com negócio do prospect
+- Se vender açaí, mostrar before/after de açaí (se tiver)
+- Se não tiver exato, mostrar categoria similar
+- Qualidade deve ser MUITO MELHOR que original
+- Transformação deve ser óbvia (não sutil)
 
-#### M - MOTIVATION/METRICS (Motivação)
-Qual é a urgência? Como medem sucesso?
-"Se não resolver esse desafio, qual o impacto?"
+---
 
-**BANT vs CHAMP:**
-Para designers, **CHAMP geralmente é mais efetivo** porque demonstra profundidade no entendimento do problema.
+### Contextualizando a Apresentação
+
+**Não enviar só a imagem, contextualizar:**
+
+"Vê essa imagem acima? É um anúncio que estava rodando no Facebook. Recriei com técnicas que aumentam CTR e conversão. Seus anúncios atuais têm potencial similar."
+
+**Criar urgência:** "Quantos clientes você deixa de ganhar com design fraco?"
+
+---
+
+### Sinais de Compra
+
+- Prospect pede mais exemplos = MUITO BOM
+- Prospect faz pergunta sobre seu processo = EXCELENTE
+- Prospect pergunta preço/disponibilidade = FECHAR AGORA
+- Silêncio = Usar follow-up estratégico
+
+---
+
+### Follow-Up Estratégico
+
+- Se silêncio: enviar mensagem após 48h
+- "Você viu o exemplo? Dúvidas?"
+- Após nova rejeição: agendar call de consultoria gratuita
+- Nunca desista no primeiro "não"
+
+---
+
+### Transição para Venda
+
+Quando indicador de compra aparece:
+1. Parar soft-selling
+2. Ser direto: "Faço redesign de seus anúncios por [valor]"
+3. Oferecer opções: 1 anúncio, 3 anúncios, pacote completo
+4. Pedir WhatsApp para agendar reunião
+5. Usar urgência: "Consigo entregar em 3-5 dias"
     `
     },
-    // Módulo 3: Conversão
+    // MÓDULO 3: ESCALABILIDADE E MAESTRIA (PAGO)
     {
         id: "mentoria_07",
-        title: "Portfólio e Apresentação",
+        title: "Estruturando Oferta e Precificação",
         isFree: false,
-        module: "Conversão",
+        module: "Escalabilidade",
         content: `
-### Por Que Portfólio É Sua Ferramenta de Venda Mais Poderosa
+### Diferença Entre Preço e Valor
 
-Seu portfólio é sua **credibilidade visual** e seu **argumento de venda mais forte**.
+- Você não vende "desenhar" — vende "aumentar conversão de anúncios"
+- Seu preço deve refletir resultado (não trabalho)
+- Exemplo: se design aumenta vendas em 20%, seu preço é parte desse ganho
+- **Nunca compita por preço — compita por resultados**
 
-### Estrutura de Portfólio Eficaz
+---
 
-#### Elemento 1: Introdução Pessoal
-Quem você é, seu nicho e o que faz diferente.
+### Estrutura de Ofertas (Precificação em 3 Níveis)
 
-#### Elemento 2: Seleção de 10-15 Projetos Principais
-Qualidade > Quantidade.
+**🥈 Silver: R$ 150-250**
+- 1 anúncio redesenhado
+- Ideal para micro-empreendedores
+- Rápida entrega = conversão rápida
 
-#### Elemento 3: Case Study Detalhado
-Estrutura para cada projeto:
-1. **Título Descritivo**
-2. **Desafio** (O que precisava mudar)
-3. **Solução** (Sua abordagem de design)
-4. **Resultado** (Impacto no cliente)
-5. **Imagens** (Mockups profissionais)
+**🥇 Gold: R$ 400-600**
+- 3-5 anúncios redesenhados
+- Ideal para pequenos negócios
+- Inclui 1 rodada de revisão
+- Entrega em 5 dias
 
-**Otimização Visual:**
-✅ Use cores que refletem seu estilo
-✅ Tipografia profissional
-✅ Muito espaço em branco (breath)
+**💎 Platinum: R$ 1.000+**
+- Pacote mensal ou projeto customizado
+- Ideal para restaurantes/franquias
+- Redesign mensal + gestão de anúncios
+- Suporte prioritário
+
+---
+
+### Justificando Seu Preço
+
+- "Design profissional aumenta conversão em até 54%"
+- "Se seus anúncios gastam R$ 1.000/mês, melhorar design em 20% = R$ 2.400/ano"
+- "Meu investimento é 10% desse ganho"
+- Exemplo: "Se você vende 2 pratos de açaí a mais por dia = R$ 60/dia = R$ 1.800/mês"
+
+---
+
+### Criando Senso de Urgência
+
+- "Fechei 5 slots esse mês, já estou em 3"
+- "Entrego em 3 dias se contratar até amanhã"
+- "Só trabalho com 1 negócio por nicho para não criar concorrência visual"
+- "Preço sobe após 5 projetos no mês"
+
+---
+
+### Opções de Pagamento
+
+- 50% na assinatura, 50% na entrega (standard)
+- PIX como padrão (rápido, sem taxa)
+- Para mensal: 1º mês adiantado
+- **Não entregue sem 100% do pagamento**
     `
     },
     {
         id: "mentoria_08",
-        title: "Nicho de Mercado",
+        title: "Prospecção em Larga Escala",
         isFree: false,
-        module: "Conversão",
+        module: "Escalabilidade",
         content: `
-### Por Que Ter um Nicho É Crítico?
+### Funil Estruturado
 
-Designers generalistas competem por preço. Designers nichos competem por valor.
+**Semana 1:** Compilar 100 prospects
+**Semana 2:** Enviar primeira mensagem (100 contatos)
+**Semana 3:** Esperar respostas, enviar before/after
+**Semana 4:** Follow-up, fechar projetos
 
-**Benefícios:**
-- 💰 Cobra 30-50% mais.
-- 🎯 Mais fácil de prospectar.
-- 📚 Constrói expertise real.
+**Resultado esperado:** 5-10% de conversão = 5-10 projetos/semana
 
-### Os 3 Tipos de Nicho
+---
 
-#### Tipo 1: Nicho por Cliente
-"Trabalho apenas com clínicas odontológicas". Conhece profundamente os problemas dessa indústria.
+### O Jogo da Probabilidade
 
-#### Tipo 2: Nicho por Tipo de Serviço
-"Especialista em Rebranding". Expertise profunda em um tipo de projeto.
+| Etapa | Quantidade |
+|-------|------------|
+| Mensagens iniciais "Oi" | 100 |
+| ~30% respondem | 30 pessoas |
+| ~70% interessam no before/after | 21 pessoas |
+| ~33% viram cliente | **7 projetos** |
 
-#### Tipo 3: Nicho por Estilo Visual
-"Designer minimalista moderno". Identidade clara e reconhecível.
+**Para 20 projetos/mês:** Contatar 300 pessoas/mês
 
-### Como Escolher Seu Nicho?
-1. Analise seus projetos passados (quais gostou mais?).
-2. Pesquise demanda no mercado.
-3. Teste sem se comprometer (faça 5 projetos fictícios).
+---
+
+### Mantendo Personalização em Escala
+
+- Não envie template genérico para 100 pessoas
+- Use variações: "Oi", "E aí", "Olá", "Oi, tudo certo?"
+- Mudar horário de envio
+- Esperar 24h entre envios para mesma plataforma
+
+---
+
+### Otimizando Seu Tempo
+
+| Dia | Atividade |
+|-----|-----------|
+| Segunda | Compilar 50 novos prospects |
+| Terça | Enviar primeira mensagem para 50 |
+| Quarta | Responder + enviar before/after |
+| Quinta | Conversar com interessados |
+| Sexta | Fechar projetos + pagamentos |
+| Sábado/Domingo | Descansar ou design |
+
+---
+
+### Métricas para Rastrear
+
+- **Taxa de resposta:** % que respondeu ao "Oi"
+- **Taxa de interesse:** % que abriu before/after
+- **Taxa de conversão:** % que virou cliente
+- **Ticket médio:** receita total / número de projetos
+- **LTV:** quanto cada cliente gasta em 1 ano
+
+---
+
+### Ajustando Baseado em Dados
+
+- Taxa resposta < 20%: mudar abordagem ou horário
+- Taxa interesse < 50%: mudar before/after ou nicho
+- Taxa conversão < 20%: melhorar apresentação ou preço
+- Ticket < desejado: focar em Tier 2/3 ou aumentar preço
     `
     },
     {
         id: "mentoria_09",
-        title: "Métricas e Validação",
+        title: "Crescendo Seu Negócio",
         isFree: false,
-        module: "Conversão",
+        module: "Escalabilidade",
         content: `
-### Por Que Medir Seus Resultados?
+### Criando Programa de Indicações
 
-O que não é medido não pode ser melhorado. Designers profissionais **rastreiam suas métricas** para escalar com consistência.
+Depois de projeto sucesso:
+- "Conhece outro estabelecimento que precisaria de design?"
+- Oferecer desconto em próximo projeto por indicação
+- Clientes estão sempre rodeados de outros clientes em potencial
 
-### Métricas Essenciais para Freelancers
+---
 
-#### 1. Taxa de Conversão
-Quantos leads viram clientes? Fórmula: (Clientes / Leads) x 100
+### Construindo Presença Online
 
-**Benchmarks:**
-- Abaixo de 5%: Problema na qualificação ou na proposta
-- 5-15%: Média de mercado
-- Acima de 15%: Excelente, escale a operação
+- **Portfolio no Instagram:** postar before/afters dos projetos
+- **Reel viral:** "Redesign de anúncios ruins" gera engagement
+- **Hashtags locais:** #[suacidade]designer, #[seunicho][suacidade]
+- **Bio:** "Quer redesign seu anúncio? Chama no DM"
 
-#### 2. Ticket Médio
-Quanto você fatura por cliente em média?
+---
 
-**Como aumentar:**
-- Venda pacotes em vez de serviços avulsos
-- Adicione upsells (ex: manual da marca)
-- Nicho em clientes maiores
+### Conteúdo que Vende
 
-#### 3. Tempo até Fechamento
-Quantos dias do primeiro contato até o pagamento?
+- Post semanal: 1 before/after do seu trabalho
+- Story semanal: "Dicas de design" (1-2 minutos)
+- Reels mensais: "10 erros de design que matam anúncio"
 
-### Validação Mensal
+---
 
-Todo mês, responda:
-- Quantos leads prospectei?
-- Quantos clientes fechei?
-- Qual foi meu faturamento?
-- O que funcionou e o que preciso melhorar?
+### Parcerias Estratégicas
 
-**Dica:** Use uma planilha simples ou o CRM da Flow para rastrear.
+- Agências de publicidade local: parceria win-win
+- Produtoras de vídeo: você faz design, eles fazem vídeo
+- Outras especialidades: SEO, atendimento, gestão de redes
+
+---
+
+### Metas Realistas de Crescimento
+
+| Mês | Meta |
+|-----|------|
+| 1 | 3-5 projetos, conhecer processo |
+| 2 | 7-10 projetos, refinar abordagem |
+| 3 | 12-15 projetos, otimizar sistema |
+| 4+ | 20+ projetos, pensar em escalabilidade |
+
+**Receita em 4 meses:** R$ 793 x 4 = mínimo R$ 3.200 (baseado em resultado real de 15 dias)
+
+---
+
+### Mindset de Empreendedor
+
+- Prospecção não é "chato" — é seu negócio funcionando
+- Cada "não" é feedback, não rejeição pessoal
+- Consistência bate talento: 5 contatos/dia > 50 contatos em 1 dia
+- Você está oferecendo crescimento, não mendigando projeto
+
+---
+
+### Próximos Passos Após Dominar o Método
+
+- Criar curso para outros designers
+- Transformar em agência (contratando designers)
+- Oferecer gestão de anúncios (design + media buying)
+- Criar produto digital: templates de antes/depois
+- Oferecer consultoria para outros nichos
+
+---
+
+### Mensagem Final
+
+Este método gerou **R$ 793,96 em 15 dias** saindo do zero absoluto. Não é teórico — é testado no mercado real.
+
+Seu sucesso depende de:
+1. Escolha de nicho (fácil)
+2. Qualidade de design (seu trabalho importa)
+3. Consistência em contatar (5 pessoas/dia)
+4. Confiança na abordagem (ela funciona)
+
+**Comece hoje. 30 dias. Depois você me conta os resultados.**
     `
     }
 ];

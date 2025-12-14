@@ -10,10 +10,12 @@ interface PipelineProps {
   niche: NicheType | null;
   isPremium?: boolean;
   onRequestUpgrade?: () => void;
+  userName?: string;
 }
 
 const MAX_FREE_CONTRACTS = 1;
 const MAX_FREE_SCRIPTS = 1;
+const MAX_FREE_LEADS = 3;
 
 // Tipos de temperatura do lead
 type LeadTemperature = 'HOT' | 'WARM' | 'COLD' | null;
@@ -141,7 +143,7 @@ const SALES_PLAYBOOK = {
   }
 };
 
-const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, onRequestUpgrade }) => {
+const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, onRequestUpgrade, userName }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [newLeadName, setNewLeadName] = useState('');
   const [newLeadInstagram, setNewLeadInstagram] = useState('');
@@ -178,7 +180,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
 
   const [formData, setFormData] = useState<ContractData>({
     contractor: {
-      name: "", // Vazio para permitir placeholder
+      name: userName || "", // Preenche com o nome do usuário automático
       document: "",
       address: "" // Vazio para permitir placeholder
     },
@@ -312,7 +314,12 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
     e.preventDefault();
     if (!newLeadName.trim()) return;
 
-    // CRM agora é gratuito sem limite de leads
+    // Limite de 3 projetos ativos para FREE
+    const activeLeads = leads.filter(l => l.status !== 'LOST' && l.status !== 'CLOSED');
+    if (!isPremium && activeLeads.length >= MAX_FREE_LEADS) {
+      onRequestUpgrade?.();
+      return;
+    }
 
     try {
       // Salvar instagram com @ e whatsapp apenas números
