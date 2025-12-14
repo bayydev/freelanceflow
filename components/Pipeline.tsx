@@ -152,8 +152,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
   const [showAddForm, setShowAddForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Scripts State
-  const [showScripts, setShowScripts] = useState(openScriptsOnMount || false);
+  // Scripts State - NÃO inicializa com openScriptsOnMount, aguarda verificação de limite
+  const [showScripts, setShowScripts] = useState(false);
   const [activeScriptMode, setActiveScriptMode] = useState<string>('b2b_corporate');
   const [scriptVars, setScriptVars] = useState({
     decisor: '',
@@ -166,6 +166,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
   const [contractLead, setContractLead] = useState<Lead | null>(null);
   const [contractsGenerated, setContractsGenerated] = useState(0);
   const [scriptsViewed, setScriptsViewed] = useState(0);
+  const [usageLoaded, setUsageLoaded] = useState(false);
 
   // Qualification State (Chatbot style)
   const [qualifyingLead, setQualifyingLead] = useState<Lead | null>(null);
@@ -242,6 +243,19 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
     fetchUsageCounters();
   }, [userId]);
 
+  // Verificar se pode abrir scripts via URL APÓS carregar contadores
+  useEffect(() => {
+    if (usageLoaded && openScriptsOnMount) {
+      // Só abre scripts automaticamente se usuário é PRO ou ainda tem uso FREE
+      if (isPremium || scriptsViewed < MAX_FREE_SCRIPTS) {
+        setShowScripts(true);
+      } else {
+        // Usuário FREE sem créditos - abre modal de upgrade
+        onRequestUpgrade?.();
+      }
+    }
+  }, [usageLoaded, openScriptsOnMount, isPremium, scriptsViewed]);
+
   // Carregar contadores do Supabase
   const fetchUsageCounters = async () => {
     try {
@@ -258,6 +272,8 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
       }
     } catch (error) {
       console.error('Erro ao carregar contadores:', error);
+    } finally {
+      setUsageLoaded(true);
     }
   };
 

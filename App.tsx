@@ -21,6 +21,45 @@ const ADMIN_EMAILS = [
 // Componente simples para redirecionar para /app
 const NavigateToApp = () => <Navigate to="/app" replace />;
 
+// Componente para visitantes tentando acessar rotas protegidas
+const ProtectedRouteInvite: React.FC<{ onContinue: () => void }> = ({ onContinue }) => {
+  const location = useLocation();
+
+  // Detecta qual recurso o visitante tentou acessar
+  const getResourceName = () => {
+    const path = location.pathname;
+    if (path.includes('/scripts')) return 'os Scripts de Vendas';
+    if (path.includes('/crm')) return 'o CRM de Bolso';
+    if (path.includes('/finance')) return 'o Módulo Financeiro';
+    if (path.includes('/academy')) return 'a Academia Flow';
+    return 'este recurso exclusivo';
+  };
+
+  return (
+    <div className="min-h-screen bg-cyber-dark flex items-center justify-center p-4">
+      <div className="bg-cyber-panel border border-cyber-border rounded-2xl p-8 max-w-md text-center animate-fade-in">
+        <div className="w-16 h-16 bg-cyber-primary/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-cyber-primary">
+          <Loader2 className="text-cyber-primary" size={32} />
+        </div>
+        <h2 className="text-2xl font-black text-white mb-3">Calma aí! 🚀</h2>
+        <p className="text-slate-400 mb-6 leading-relaxed">
+          Eu sei que você se interessou por <span className="text-cyber-primary font-bold">{getResourceName()}</span>,
+          mas antes, que tal se registrar para aproveitar todos os benefícios?
+        </p>
+        <button
+          onClick={onContinue}
+          className="w-full bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white font-bold py-3 px-6 rounded-xl hover:shadow-neon-cyan transition-all"
+        >
+          CRIAR MINHA CONTA GRÁTIS
+        </button>
+        <p className="text-xs text-slate-600 mt-4">
+          Leva menos de 1 minuto • Sem cartão de crédito
+        </p>
+      </div>
+    </div>
+  );
+};
+
 // Componente interno que tem acesso ao router
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
@@ -243,6 +282,10 @@ const AppContent: React.FC = () => {
     return (
       <Routes>
         <Route path="/login" element={<Auth onBack={() => navigate('/')} />} />
+        {/* Rotas protegidas - mostra convite para visitante */}
+        <Route path="/app/*" element={<ProtectedRouteInvite onContinue={() => navigate('/login')} />} />
+        <Route path="/academy" element={<ProtectedRouteInvite onContinue={() => navigate('/login')} />} />
+        {/* Landing page para rota raiz e outras */}
         <Route path="*" element={<LandingPage onGetStarted={() => navigate('/login')} />} />
       </Routes>
     );

@@ -67,6 +67,17 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
     setRightPanelTab(getTabFromPath());
   }, [location.pathname]);
 
+  // Limpa /scripts da URL após processar para evitar reaberturas indesejadas
+  useEffect(() => {
+    if (shouldOpenScripts) {
+      // Pequeno delay para garantir que o Pipeline recebeu a prop
+      const timer = setTimeout(() => {
+        navigate('/app/crm', { replace: true });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [shouldOpenScripts]);
+
   // Função para navegar e atualizar URL
   const navigateToTab = (tab: 'TOOLS' | 'CRM' | 'FINANCE') => {
     setRightPanelTab(tab);
