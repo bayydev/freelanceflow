@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { supabase } from './services/supabase';
 import Onboarding from './components/Onboarding';
@@ -17,6 +17,9 @@ import { Loader2, ShieldAlert } from 'lucide-react';
 const ADMIN_EMAILS = [
   'cauacoutinho121@gmail.com',
 ];
+
+// Componente simples para redirecionar para /app
+const NavigateToApp = () => <Navigate to="/app" replace />;
 
 // Componente interno que tem acesso ao router
 const AppContent: React.FC = () => {
@@ -289,7 +292,8 @@ const AppContent: React.FC = () => {
             </>
           }
         />
-        <Route path="*" element={<LandingPage onGetStarted={() => navigate('/login')} />} />
+        {/* Redireciona qualquer outra rota para /app quando logado */}
+        <Route path="*" element={<NavigateToApp />} />
       </Routes>
 
       <PremiumModal
