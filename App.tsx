@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { HashRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { supabase } from './services/supabase';
 import Onboarding from './components/Onboarding';
@@ -17,16 +18,17 @@ const ADMIN_EMAILS = [
   'cauacoutinho121@gmail.com',
 ];
 
-const App: React.FC = () => {
+// Componente interno que tem acesso ao router
+const AppContent: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [showLanding, setShowLanding] = useState(true);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isAdminConsoleOpen, setIsAdminConsoleOpen] = useState(false);
-  const [showLearningHub, setShowLearningHub] = useState(false);
   const [showWelcomeTour, setShowWelcomeTour] = useState(false);
-  const [initialDashboardTab, setInitialDashboardTab] = useState<'TOOLS' | 'CRM' | 'FINANCE' | null>(null);
 
   useEffect(() => {
     // 1. Verifica sessão ativa inicial
@@ -56,26 +58,12 @@ const App: React.FC = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Deep Linking via Query Params
+  // Abre modal de upgrade quando navega para /upgrade
   useEffect(() => {
-    if (!session || !user?.onboarded) return;
-
-    const params = new URLSearchParams(window.location.search);
-    const view = params.get('view');
-
-    if (view === 'academy') {
-      setShowLearningHub(true);
-    } else if (view === 'upgrade') {
+    if (location.pathname === '/upgrade' && session && user?.onboarded) {
       setIsPremiumModalOpen(true);
-    } else if (view === 'calculator') {
-      setInitialDashboardTab('FINANCE');
     }
-
-    // Limpar parâmetro da URL
-    if (view) {
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, [session, user]);
+  }, [location.pathname, session, user]);
 
   // Nova função que busca dados da tabela 'profiles' (Fonte da verdade)
   const fetchProfileAndMapUser = async (session: any) => {
@@ -197,6 +185,9 @@ const App: React.FC = () => {
         setShowWelcomeTour(true);
       }
 
+      // 5. Navega para o dashboard
+      navigate('/app');
+
     } catch (error: any) {
       console.error("Error updating profile:", error);
       alert(`Erro ao salvar perfil: ${error.message || "Erro desconhecido. Verifique o console."}`);
@@ -217,11 +208,17 @@ const App: React.FC = () => {
     setUser({ ...user, isPremium: true });
     await supabase.from('profiles').update({ is_premium: true }).eq('id', user.id);
     setIsPremiumModalOpen(false);
+    navigate('/app');
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    navigate('/');
+  };
+
+  const handleRequestUpgrade = () => {
+    setIsPremiumModalOpen(true);
   };
 
   if (loading) {
@@ -235,55 +232,75 @@ const App: React.FC = () => {
     );
   }
 
+  // Verifica se é admin baseado no Email
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email);
+
+  // Se não tem sessão, mostra landing ou auth
   if (!session) {
-    if (showLanding) {
-      return <LandingPage onGetStarted={() => setShowLanding(false)} />;
-    }
-    return <Auth onBack={() => setShowLanding(true)} />;
+    return (
+      <Routes>
+        <Route path="/login" element={<Auth onBack={() => navigate('/')} />} />
+        <Route path="*" element={<LandingPage onGetStarted={() => navigate('/login')} />} />
+      </Routes>
+    );
   }
 
+  // Se tem sessão mas não fez onboarding
   if (!user || !user.onboarded) {
     return <Onboarding onComplete={handleOnboardingComplete} />;
   }
 
-  // Verifica se é admin baseado no Email
-  const isAdmin = user.email && ADMIN_EMAILS.includes(user.email);
-
+  // Usuário logado e onboardado - rotas protegidas
   return (
     <>
-      {showLearningHub ? (
-        <LearningHub
-          user={user}
-          onBack={() => setShowLearningHub(false)}
-          onRequestUpgrade={() => setIsPremiumModalOpen(true)}
+      <Routes>
+        <Route
+          path="/academy"
+          element={
+            <LearningHub
+              user={user}
+              onBack={() => navigate('/app')}
+              onRequestUpgrade={handleRequestUpgrade}
+            />
+          }
         />
-      ) : (
-        <>
-          <Dashboard
-            user={user}
-            onUpdateNiche={handleUpdateNiche}
-            onLogout={handleLogout}
-            onRequestUpgrade={() => setIsPremiumModalOpen(true)}
-            onOpenLearningHub={() => setShowLearningHub(true)}
-            initialTab={initialDashboardTab || undefined}
-          />
+        <Route
+          path="/app/*"
+          element={
+            <>
+              <Dashboard
+                user={user}
+                onUpdateNiche={handleUpdateNiche}
+                onLogout={handleLogout}
+                onRequestUpgrade={handleRequestUpgrade}
+                onOpenLearningHub={() => navigate('/academy')}
+              />
 
-          {/* Botão Admin - Só aparece se o email estiver na lista ADMIN_EMAILS */}
-          {isAdmin && (
-            <button
-              onClick={() => setIsAdminConsoleOpen(true)}
-              className="fixed bottom-4 left-4 bg-red-900 text-red-100 p-3 rounded-full shadow-lg shadow-red-900/50 hover:bg-red-700 transition-all z-50 border border-red-500 animate-pulse"
-              title="Painel do Dono"
-            >
-              <ShieldAlert size={20} />
-            </button>
-          )}
-        </>
-      )}
+              {/* Botão Admin - Só aparece se o email estiver na lista ADMIN_EMAILS */}
+              {isAdmin && (
+                <button
+                  onClick={() => setIsAdminConsoleOpen(true)}
+                  className="fixed bottom-4 left-4 bg-red-900 text-red-100 p-3 rounded-full shadow-lg shadow-red-900/50 hover:bg-red-700 transition-all z-50 border border-red-500 animate-pulse"
+                  title="Painel do Dono"
+                >
+                  <ShieldAlert size={20} />
+                </button>
+              )}
+            </>
+          }
+        />
+        <Route path="*" element={<LandingPage onGetStarted={() => navigate('/login')} />} />
+      </Routes>
 
       <PremiumModal
         isOpen={isPremiumModalOpen}
-        onClose={() => setIsPremiumModalOpen(false)}
+        onClose={() => {
+          setIsPremiumModalOpen(false);
+          // Remove /upgrade da URL se estiver lá
+          if (location.pathname === '/upgrade') {
+            navigate('/app');
+          }
+        }}
         onSuccess={handleUpgradeSuccess}
         userName={user.name}
         userEmail={user.email || ''}
@@ -305,6 +322,15 @@ const App: React.FC = () => {
       {/* Vercel Web Analytics */}
       <Analytics />
     </>
+  );
+};
+
+// Componente App que envolve tudo com HashRouter
+const App: React.FC = () => {
+  return (
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
   );
 };
 

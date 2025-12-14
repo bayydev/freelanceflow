@@ -11,6 +11,7 @@ interface PipelineProps {
   isPremium?: boolean;
   onRequestUpgrade?: () => void;
   userName?: string;
+  openScriptsOnMount?: boolean;
 }
 
 const MAX_FREE_CONTRACTS = 1;
@@ -143,7 +144,7 @@ const SALES_PLAYBOOK = {
   }
 };
 
-const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, onRequestUpgrade, userName }) => {
+const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, onRequestUpgrade, userName, openScriptsOnMount }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [newLeadName, setNewLeadName] = useState('');
   const [newLeadInstagram, setNewLeadInstagram] = useState('');
@@ -152,7 +153,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
   const [loading, setLoading] = useState(true);
 
   // Scripts State
-  const [showScripts, setShowScripts] = useState(false);
+  const [showScripts, setShowScripts] = useState(openScriptsOnMount || false);
   const [activeScriptMode, setActiveScriptMode] = useState<string>('b2b_corporate');
   const [scriptVars, setScriptVars] = useState({
     decisor: '',

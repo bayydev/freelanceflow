@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { User, TimeBlock, Task, NicheType, BlockStatus } from '../types';
 import { generateSchedule, BLOCK_ICONS, BLOCK_COLORS } from '../constants';
-import { LogOut, Plus, Trash2, CheckCircle2, Circle, Star, Target, LayoutDashboard, ListTodo, RefreshCw, Crown, Wallet, Calendar, Clock, X, XCircle, AlertCircle, Moon, ArrowRight, Sunrise, Zap, Users, GraduationCap, Calculator } from 'lucide-react';
+import { LogOut, Plus, Trash2, CheckCircle2, Circle, Star, Target, LayoutDashboard, ListTodo, RefreshCw, Crown, Wallet, Calendar, Clock, X, XCircle, AlertCircle, Moon, ArrowRight, Sunrise, Zap, Users, GraduationCap, Calculator, MessageSquare } from 'lucide-react';
 import Pomodoro from './Pomodoro';
 import DailyWin from './DailyWin';
 import Pipeline from './Pipeline';
@@ -37,15 +38,49 @@ const getInitials = (name: string) => {
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, onRequestUpgrade, onOpenLearningHub, initialTab }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Determina a aba ativa baseado na URL
+  const getTabFromPath = (): 'TOOLS' | 'CRM' | 'FINANCE' => {
+    const path = location.pathname;
+    if (path.includes('/crm') || path.includes('/scripts')) return 'CRM';
+    if (path.includes('/finance')) return 'FINANCE';
+    return 'TOOLS';
+  };
+
+  // Estado para abrir scripts automaticamente via URL
+  const shouldOpenScripts = location.pathname.includes('/scripts');
+
   const [schedule, setSchedule] = useState<TimeBlock[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [activeBlock, setActiveBlock] = useState<TimeBlock | null>(null);
-  const [rightPanelTab, setRightPanelTab] = useState<'TOOLS' | 'CRM' | 'FINANCE'>(initialTab || 'TOOLS');
+  const [rightPanelTab, setRightPanelTab] = useState<'TOOLS' | 'CRM' | 'FINANCE'>(getTabFromPath());
   const [customBlockTask, setCustomBlockTask] = useState('');
 
   const [isStandbyMode, setIsStandbyMode] = useState(false);
   const [isOvertime, setIsOvertime] = useState(false);
+
+  // Sincroniza a tab com a URL quando ela muda
+  useEffect(() => {
+    setRightPanelTab(getTabFromPath());
+  }, [location.pathname]);
+
+  // Função para navegar e atualizar URL
+  const navigateToTab = (tab: 'TOOLS' | 'CRM' | 'FINANCE') => {
+    setRightPanelTab(tab);
+    switch (tab) {
+      case 'CRM':
+        navigate('/app/crm');
+        break;
+      case 'FINANCE':
+        navigate('/app/finance');
+        break;
+      default:
+        navigate('/app');
+    }
+  };
 
   const fetchDailyProgress = async (baseSchedule: TimeBlock[]): Promise<TimeBlock[]> => {
     const todayKey = getTodayDateKey();
@@ -348,15 +383,15 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
 
           {/* NAVIGATION TABS - Moved from sidebar */}
           <div className="hidden md:flex items-center gap-1 bg-cyber-panel border border-cyber-border rounded-lg p-1">
-            <button onClick={() => setRightPanelTab('TOOLS')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'TOOLS' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
+            <button onClick={() => navigateToTab('TOOLS')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'TOOLS' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
               <LayoutDashboard size={14} />
               <span className="hidden lg:inline">Ferramentas</span>
             </button>
-            <button onClick={() => setRightPanelTab('CRM')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'CRM' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
+            <button onClick={() => navigateToTab('CRM')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'CRM' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
               <Users size={14} />
               <span className="hidden lg:inline">Clientes</span>
             </button>
-            <button onClick={() => setRightPanelTab('FINANCE')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'FINANCE' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
+            <button onClick={() => navigateToTab('FINANCE')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-bold transition-all ${rightPanelTab === 'FINANCE' ? 'bg-slate-700 text-white' : 'text-slate-500 hover:text-slate-300'}`}>
               <Wallet size={14} />
               <span className="hidden lg:inline">Finanças</span>
             </button>
@@ -380,13 +415,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
 
         {/* Mobile Navigation Tabs */}
         <div className="md:hidden flex p-2 border-t border-cyber-border overflow-x-auto">
-          <button onClick={() => setRightPanelTab('TOOLS')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'TOOLS' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
+          <button onClick={() => navigateToTab('TOOLS')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'TOOLS' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
             <LayoutDashboard size={12} /> Ferramentas
           </button>
-          <button onClick={() => setRightPanelTab('CRM')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'CRM' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
+          <button onClick={() => navigateToTab('CRM')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'CRM' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
             <Users size={12} /> Clientes
           </button>
-          <button onClick={() => setRightPanelTab('FINANCE')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'FINANCE' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
+          <button onClick={() => navigateToTab('FINANCE')} className={`flex items-center gap-1 px-3 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${rightPanelTab === 'FINANCE' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}>
             <Wallet size={12} /> Finanças
           </button>
         </div>
@@ -418,18 +453,18 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
             {/* Action Cards - Lead Magnets */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <button
-                onClick={onOpenLearningHub}
+                onClick={() => navigate('/app/crm/scripts')}
                 className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-xl p-5 text-left hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/10 transition-all group"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <GraduationCap className="text-purple-400 group-hover:scale-110 transition-transform" size={24} />
+                  <MessageSquare className="text-purple-400 group-hover:scale-110 transition-transform" size={24} />
                   <span className="text-lg font-bold text-white">Acessar Scripts de Venda</span>
                 </div>
-                <p className="text-sm text-slate-400">Playbook de Vendas & Photoshop (Texto Prático)</p>
+                <p className="text-sm text-slate-400">Playbook de Vendas (Texto Prático)</p>
               </button>
 
               <button
-                onClick={() => setRightPanelTab('FINANCE')}
+                onClick={() => navigateToTab('FINANCE')}
                 className="bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-xl p-5 text-left hover:border-yellow-400 hover:shadow-lg hover:shadow-yellow-500/10 transition-all group"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -585,7 +620,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout, onUpdateNiche, on
         {/* CRM VIEW - Full Width */}
         {rightPanelTab === 'CRM' && (
           <div className="animate-fade-in">
-            <Pipeline userId={user.id} niche={user.niche} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} userName={user.name} />
+            <Pipeline userId={user.id} niche={user.niche} isPremium={user.isPremium} onRequestUpgrade={onRequestUpgrade} userName={user.name} openScriptsOnMount={shouldOpenScripts} />
           </div>
         )}
 
