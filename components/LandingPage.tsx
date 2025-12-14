@@ -63,19 +63,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
 
     const freeFeatures = [
         "Curso Photoshop Essencial (18 aulas)",
-        "3 Módulos da Mentoria de Vendas",
+        "3 Aulas da Mentoria de Vendas (Módulo 1)",
         "Protocolo do Dia completo",
-        "Calculadora de Preços",
         "Qualificador de Leads ilimitado",
-        "CRM de Bolso ilimitado",
-        "Timer Pomodoro"
+        "CRM de Bolso (até 3 leads)",
+        "Calculadora de Preços (3 cálculos/dia)",
+        "1 Contrato + 1 Script de Vendas"
     ];
 
     const proFeatures = [
         "Tudo do plano Free +",
-        "+6 Módulos Avançados da Mentoria",
-        "Scripts de Vendas (Sales Playbook)",
-        "Gerador de Contratos PDF",
+        "+6 Aulas da Mentoria (Módulos 2 e 3)",
+        "CRM Ilimitado + Calculadora Ilimitada",
+        "Scripts de Vendas Ilimitados",
+        "Gerador de Contratos Ilimitado",
         "Módulo Financeiro Completo",
         "Suporte Prioritário via WhatsApp"
     ];
