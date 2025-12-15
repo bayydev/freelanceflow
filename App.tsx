@@ -69,6 +69,7 @@ const AppContent: React.FC = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
+  const [premiumModalMode, setPremiumModalMode] = useState<'PRO' | 'AGENCY'>('PRO');
   const [isAdminConsoleOpen, setIsAdminConsoleOpen] = useState(false);
   const [showWelcomeTour, setShowWelcomeTour] = useState(false);
 
@@ -100,11 +101,31 @@ const AppContent: React.FC = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Abre modal de upgrade quando navega para /upgrade
+  // Abre modal de upgrade quando navega para /upgrade OU tem intenção de compra
+  // Abre modal de upgrade quando navega para /upgrade OU tem intenção de compra
   useEffect(() => {
+    // 1. Check URL
     if (location.pathname === '/upgrade' && session && user?.onboarded) {
+      setPremiumModalMode('PRO');
       setIsPremiumModalOpen(true);
     }
+
+    // 2. Check LocalStorage Intent (Agency Plan)
+    const checkIntent = () => {
+      const intendedPlan = localStorage.getItem('intended_plan');
+      console.log('Checking intent:', intendedPlan, 'Session:', !!session, 'Onboarded:', user?.onboarded);
+      if (intendedPlan === 'agency' && session && user?.onboarded) {
+        setPremiumModalMode('AGENCY');
+        setIsPremiumModalOpen(true);
+        localStorage.removeItem('intended_plan'); // Clear after triggering
+      }
+    };
+
+    // Run check immediately and set a small timeout to ensure state propagation
+    checkIntent();
+    const timer = setTimeout(checkIntent, 1000); // Retry after 1s just in case
+
+    return () => clearTimeout(timer);
   }, [location.pathname, session, user]);
 
   // Nova função que busca dados da tabela 'profiles' (Fonte da verdade)
@@ -147,6 +168,7 @@ const AppContent: React.FC = () => {
         workDays: profile?.work_days || [],
         workStart: profile?.work_start || '09:00',
         workEnd: profile?.work_end || '18:00',
+        monthlyGoal: profile?.monthly_goal || 0,
       });
 
     } catch (e) {
@@ -172,11 +194,11 @@ const AppContent: React.FC = () => {
     }
   };
 
-  const handleOnboardingComplete = async (niche: NicheType, name: string, workDays: string[], workStart: string, workEnd: string, roles: RoleType[]) => {
+  const handleOnboardingComplete = async (niche: NicheType, name: string, workDays: string[], workStart: string, workEnd: string, roles: RoleType[], monthlyGoal: number) => {
     try {
       // 1. Atualiza Metadata (Auth) - Backup
       const { error: authError } = await supabase.auth.updateUser({
-        data: { niche, name, roles }
+        data: { niche, name, roles, monthlyGoal }
       });
 
       if (authError) {
@@ -195,7 +217,8 @@ const AppContent: React.FC = () => {
             roles,
             work_days: workDays,
             work_start: workStart,
-            work_end: workEnd
+            work_end: workEnd,
+            monthly_goal: monthlyGoal
           });
 
         if (error) {
@@ -218,6 +241,7 @@ const AppContent: React.FC = () => {
         workDays,
         workStart,
         workEnd,
+        monthlyGoal,
         onboarded: true
       }) : null);
 
@@ -260,6 +284,7 @@ const AppContent: React.FC = () => {
   };
 
   const handleRequestUpgrade = () => {
+    setPremiumModalMode('PRO');
     setIsPremiumModalOpen(true);
   };
 
@@ -351,6 +376,7 @@ const AppContent: React.FC = () => {
         onSuccess={handleUpgradeSuccess}
         userName={user.name}
         userEmail={user.email || ''}
+        initialMode={premiumModalMode}
       />
 
       {isAdminConsoleOpen && <AdminConsole onClose={() => setIsAdminConsoleOpen(false)} />}

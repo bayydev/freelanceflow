@@ -37,6 +37,8 @@ export interface User {
   workDays?: string[];
   workStart?: string;
   workEnd?: string;
+  // Meta financeira
+  monthlyGoal?: number;
 }
 
 export interface Task {

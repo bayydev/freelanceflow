@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Lead, LeadStatus, NicheType, ContractData } from '../types';
-import { Plus, DollarSign, User, Users, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, MapPin, Calendar as CalendarIcon, Fingerprint, Flame, ThermometerSun, Snowflake, Target, ChevronRight } from 'lucide-react';
+import { Plus, DollarSign, User, Users, Lock, Trash2, MessageSquare, FileText, Check, X, Download, Copy, Sun, Moon, Briefcase, Zap, Loader2, MapPin, Calendar as CalendarIcon, Fingerprint, Flame, ThermometerSun, Snowflake, Target, ChevronRight, ClipboardList, Palette, Video, Camera, PenTool, Sparkles, FileDown } from 'lucide-react';
 import { jsPDF } from "jspdf";
 import { supabase } from '../services/supabase';
 
@@ -17,6 +17,7 @@ interface PipelineProps {
 const MAX_FREE_CONTRACTS = 1;
 const MAX_FREE_SCRIPTS = 1;
 const MAX_FREE_LEADS = 3;
+const MAX_FREE_BRIEFINGS = 1;
 
 // Tipos de temperatura do lead
 type LeadTemperature = 'HOT' | 'WARM' | 'COLD' | null;
@@ -144,6 +145,108 @@ const SALES_PLAYBOOK = {
   }
 };
 
+// --- BRIEFING QUESTIONS BY NICHE (Button-based for lazy freelancers) ---
+type QuestionType = 'text' | 'textarea' | 'buttons' | 'select';
+interface BriefingQuestion {
+  id: string;
+  label: string;
+  type: QuestionType;
+  placeholder?: string;
+  options?: string[];
+}
+
+const BRIEFING_NICHES: Record<string, {
+  label: string;
+  icon: any;
+  color: string;
+  questions: BriefingQuestion[];
+}> = {
+  design: {
+    label: 'Design Gráfico / Identidade Visual',
+    icon: Palette,
+    color: 'from-purple-500 to-pink-500',
+    questions: [
+      { id: 'company_name', label: 'Nome da empresa/projeto', type: 'text', placeholder: 'Ex: Studio Alpha' },
+      { id: 'segment', label: 'Segmento', type: 'select', options: ['Moda', 'Gastronomia', 'Tecnologia', 'Saúde', 'Educação', 'Beleza', 'Fitness', 'Varejo', 'Serviços', 'Outro'] },
+      { id: 'style', label: 'Estilo visual desejado', type: 'buttons', options: ['Minimalista', 'Moderno', 'Luxuoso', 'Divertido', 'Corporativo', 'Artístico'] },
+      { id: 'has_colors', label: 'Já tem cores definidas?', type: 'buttons', options: ['Sim', 'Não', 'Preciso de sugestões'] },
+      { id: 'colors', label: 'Quais cores? (se sim)', type: 'text', placeholder: 'Ex: Azul e dourado' },
+      { id: 'applications', label: 'Onde será aplicado?', type: 'buttons', options: ['Redes Sociais', 'Cartão de Visita', 'Fachada', 'Embalagem', 'Uniforme', 'Website'] },
+      { id: 'has_references', label: 'Tem referências visuais?', type: 'buttons', options: ['Sim', 'Não'] },
+      { id: 'references', label: 'Cole os links de referência', type: 'textarea', placeholder: 'Links do Pinterest, Behance, sites...' },
+      { id: 'urgency', label: 'Urgência', type: 'buttons', options: ['Urgente (até 3 dias)', 'Normal (1-2 semanas)', 'Flexível'] },
+      { id: 'budget', label: 'Faixa de orçamento', type: 'buttons', options: ['Até R$ 300', 'R$ 300-600', 'R$ 600-1000', 'Acima de R$ 1000', 'A combinar'] }
+    ]
+  },
+  motion: {
+    label: 'Motion Design / Animação',
+    icon: Video,
+    color: 'from-cyan-500 to-blue-500',
+    questions: [
+      { id: 'project_name', label: 'Nome do projeto', type: 'text', placeholder: 'Ex: Vídeo institucional' },
+      { id: 'video_type', label: 'Tipo de vídeo', type: 'buttons', options: ['Institucional', 'Explainer', 'Redes Sociais', 'Vinheta/Logo', 'Lyric Video', 'Outro'] },
+      { id: 'duration', label: 'Duração estimada', type: 'buttons', options: ['Até 15s', '15-30s', '30s-1min', '1-2min', 'Mais de 2min'] },
+      { id: 'style', label: 'Estilo de animação', type: 'buttons', options: ['2D Flat', '3D', 'Motion Graphics', 'Kinetic Text', 'Whiteboard', 'Misto'] },
+      { id: 'has_script', label: 'Já tem roteiro?', type: 'buttons', options: ['Sim, completo', 'Tenho ideias', 'Preciso de ajuda'] },
+      { id: 'has_voiceover', label: 'Terá locução?', type: 'buttons', options: ['Sim, vocês fazem', 'Sim, eu envio', 'Não terá'] },
+      { id: 'music_style', label: 'Estilo da trilha', type: 'buttons', options: ['Corporativo', 'Animado', 'Épico', 'Eletrônico', 'Calmo', 'Sem trilha'] },
+      { id: 'delivery_format', label: 'Formato de entrega', type: 'buttons', options: ['Horizontal 16:9', 'Vertical 9:16', 'Quadrado 1:1', 'Todos'] },
+      { id: 'urgency', label: 'Urgência', type: 'buttons', options: ['Urgente', 'Normal (2 semanas)', 'Flexível'] },
+      { id: 'budget', label: 'Faixa de orçamento', type: 'buttons', options: ['Até R$ 500', 'R$ 500-1000', 'R$ 1000-2000', 'Acima de R$ 2000', 'A combinar'] }
+    ]
+  },
+  video: {
+    label: 'Edição de Vídeo',
+    icon: Camera,
+    color: 'from-red-500 to-orange-500',
+    questions: [
+      { id: 'video_type', label: 'Tipo de vídeo', type: 'buttons', options: ['YouTube', 'Reels/TikTok', 'Podcast', 'Institucional', 'Casamento', 'Outro'] },
+      { id: 'raw_footage', label: 'Já tem o material gravado?', type: 'buttons', options: ['Sim', 'Ainda não', 'Parcialmente'] },
+      { id: 'send_method', label: 'Como vai enviar?', type: 'buttons', options: ['Google Drive', 'WeTransfer', 'Dropbox', 'Outro'] },
+      { id: 'duration', label: 'Duração final estimada', type: 'buttons', options: ['Até 1min', '1-5min', '5-10min', '10-20min', 'Mais de 20min'] },
+      { id: 'style', label: 'Estilo de edição', type: 'buttons', options: ['Dinâmico', 'Clean', 'Cinematográfico', 'Memes/Trends', 'Documental'] },
+      { id: 'add_subtitles', label: 'Adicionar legendas?', type: 'buttons', options: ['Sim', 'Não'] },
+      { id: 'add_graphics', label: 'Adicionar grafismos/textos?', type: 'buttons', options: ['Sim', 'Não', 'Simples'] },
+      { id: 'color_grade', label: 'Color grading?', type: 'buttons', options: ['Sim, cinematográfico', 'Sim, leve', 'Não precisa'] },
+      { id: 'delivery_format', label: 'Formato final', type: 'buttons', options: ['Horizontal', 'Vertical', 'Quadrado', 'Múltiplos'] },
+      { id: 'urgency', label: 'Urgência', type: 'buttons', options: ['Urgente (até 3 dias)', 'Normal (1 semana)', 'Flexível'] }
+    ]
+  },
+  social: {
+    label: 'Social Media / Posts',
+    icon: PenTool,
+    color: 'from-pink-500 to-rose-500',
+    questions: [
+      { id: 'business_name', label: 'Nome do negócio/perfil', type: 'text', placeholder: 'Ex: @lojaxyz' },
+      { id: 'segment', label: 'Nicho', type: 'select', options: ['Gastronomia', 'Moda', 'Fitness', 'Beleza', 'Educação', 'Tech', 'Saúde', 'Varejo', 'Serviços', 'Outro'] },
+      { id: 'platforms', label: 'Plataformas', type: 'buttons', options: ['Instagram', 'TikTok', 'LinkedIn', 'Facebook', 'Pinterest', 'Todas'] },
+      { id: 'quantity', label: 'Quantidade mensal', type: 'buttons', options: ['5-10 posts', '10-15 posts', '15-20 posts', '20+ posts', 'A definir'] },
+      { id: 'has_brand', label: 'Tem identidade visual?', type: 'buttons', options: ['Sim, completa', 'Sim, básica', 'Não tenho'] },
+      { id: 'content_type', label: 'Tipos de conteúdo', type: 'buttons', options: ['Posts estáticos', 'Carrosséis', 'Reels', 'Stories', 'Tudo'] },
+      { id: 'tone', label: 'Tom de voz', type: 'buttons', options: ['Descontraído', 'Profissional', 'Divertido', 'Técnico', 'Inspirador'] },
+      { id: 'include_captions', label: 'Criar legendas?', type: 'buttons', options: ['Sim', 'Não, eu faço'] },
+      { id: 'references', label: 'Perfis de referência', type: 'text', placeholder: 'Ex: @nike, @nubank...' },
+      { id: 'budget', label: 'Faixa de orçamento mensal', type: 'buttons', options: ['Até R$ 300', 'R$ 300-600', 'R$ 600-1000', 'Acima de R$ 1000', 'A combinar'] }
+    ]
+  },
+  general: {
+    label: 'Projeto Geral / Outro',
+    icon: Sparkles,
+    color: 'from-emerald-500 to-teal-500',
+    questions: [
+      { id: 'project_name', label: 'Nome do projeto', type: 'text', placeholder: 'Ex: Website, App, Apresentação...' },
+      { id: 'project_type', label: 'Tipo de projeto', type: 'buttons', options: ['Website', 'Apresentação', 'Impressos', 'App/UI', 'Consultoria', 'Outro'] },
+      { id: 'description', label: 'Descreva brevemente', type: 'textarea', placeholder: 'O que você precisa?' },
+      { id: 'objective', label: 'Objetivo principal', type: 'buttons', options: ['Vender mais', 'Lançar produto', 'Reposicionar marca', 'Presença digital', 'Outro'] },
+      { id: 'has_references', label: 'Tem referências?', type: 'buttons', options: ['Sim', 'Não'] },
+      { id: 'references', label: 'Links de referência', type: 'textarea', placeholder: 'Cole os links aqui...' },
+      { id: 'urgency', label: 'Urgência', type: 'buttons', options: ['Urgente', 'Normal (2 semanas)', 'Flexível'] },
+      { id: 'budget', label: 'Faixa de orçamento', type: 'buttons', options: ['Até R$ 300', 'R$ 300-800', 'R$ 800-1500', 'Acima de R$ 1500', 'A combinar'] }
+    ]
+  }
+};
+
+
 const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, onRequestUpgrade, userName, openScriptsOnMount }) => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [newLeadName, setNewLeadName] = useState('');
@@ -166,6 +269,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
   const [contractLead, setContractLead] = useState<Lead | null>(null);
   const [contractsGenerated, setContractsGenerated] = useState(0);
   const [scriptsViewed, setScriptsViewed] = useState(0);
+  const [briefingsGenerated, setBriefingsGenerated] = useState(0);
   const [usageLoaded, setUsageLoaded] = useState(false);
 
   // Qualification State (Chatbot style)
@@ -179,6 +283,11 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
   // Extra state for contract generation logic
   const [validityDays, setValidityDays] = useState(7);
   const [signingLocation, setSigningLocation] = useState("São Paulo");
+
+  // Briefing Generator State
+  const [showBriefing, setShowBriefing] = useState(false);
+  const [briefingNiche, setBriefingNiche] = useState<keyof typeof BRIEFING_NICHES | null>(null);
+  const [briefingAnswers, setBriefingAnswers] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState<ContractData>({
     contractor: {
@@ -261,7 +370,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('contracts_used, scripts_used')
+        .select('contracts_used, scripts_used, briefings_used')
         .eq('id', userId)
         .single();
 
@@ -269,6 +378,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
       if (data) {
         setContractsGenerated(data.contracts_used || 0);
         setScriptsViewed(data.scripts_used || 0);
+        setBriefingsGenerated(data.briefings_used || 0);
       }
     } catch (error) {
       console.error('Erro ao carregar contadores:', error);
@@ -802,6 +912,153 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
     alert("Script copiado!");
   };
 
+  // Briefing PDF Generator - PREMIUM DESIGN
+  const generateBriefingPDF = async () => {
+    if (!briefingNiche) return;
+
+    const nicheData = BRIEFING_NICHES[briefingNiche];
+    const doc = new jsPDF();
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const margin = 20;
+    const contentWidth = pageWidth - (margin * 2);
+
+    // Colors
+    const primaryColor = { r: 6, g: 182, b: 212 }; // Cyan
+    const secondaryColor = { r: 168, g: 85, b: 247 }; // Purple
+    const darkBg = { r: 15, g: 23, b: 42 }; // Slate 900
+    const cardBg = { r: 30, g: 41, b: 59 }; // Slate 800
+
+    // === HEADER WITH GRADIENT-STYLE DESIGN ===
+    // Dark header background
+    doc.setFillColor(darkBg.r, darkBg.g, darkBg.b);
+    doc.rect(0, 0, pageWidth, 50, 'F');
+
+    // Accent line
+    doc.setFillColor(primaryColor.r, primaryColor.g, primaryColor.b);
+    doc.rect(0, 50, pageWidth, 3, 'F');
+
+    // Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.setTextColor(255, 255, 255);
+    doc.text("BRIEFING", margin, 28);
+
+    // Subtitle - Niche type
+    doc.setFontSize(11);
+    doc.setTextColor(primaryColor.r, primaryColor.g, primaryColor.b);
+    doc.text(nicheData.label.toUpperCase(), margin, 40);
+
+    // Date badge (right side)
+    const dateText = new Date().toLocaleDateString('pt-BR');
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text(`Gerado em: ${dateText}`, pageWidth - margin, 40, { align: "right" });
+
+    // === BODY ===
+    let yPos = 70;
+    const lineHeight = 7;
+    const cardPadding = 8;
+
+    // Filter out empty answers and references if has_references is "Não"
+    const questionsToShow = nicheData.questions.filter(q => {
+      const answer = briefingAnswers[q.id];
+      if (!answer || answer === '-') return false;
+      // Hide references field if user said "Não" to has_references
+      if (q.id === 'references' && briefingAnswers['has_references'] === 'Não') return false;
+      if (q.id === 'colors' && briefingAnswers['has_colors'] === 'Não') return false;
+      return true;
+    });
+
+    // Get project name for header
+    const projectName = briefingAnswers['company_name'] || briefingAnswers['project_name'] || briefingAnswers['business_name'] || '';
+    if (projectName) {
+      doc.setFillColor(cardBg.r, cardBg.g, cardBg.b);
+      doc.roundedRect(margin, yPos, contentWidth, 20, 3, 3, 'F');
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(255, 255, 255);
+      doc.text(projectName, margin + cardPadding, yPos + 13);
+      yPos += 30;
+    }
+
+    // Questions in card-style layout
+    questionsToShow.forEach((q, index) => {
+      const answer = briefingAnswers[q.id] || '-';
+
+      // Calculate height needed
+      const answerLines = doc.splitTextToSize(answer, contentWidth - (cardPadding * 2));
+      const cardHeight = 24 + (answerLines.length > 1 ? (answerLines.length - 1) * lineHeight : 0);
+
+      // Check for page break
+      if (yPos + cardHeight > pageHeight - 30) {
+        doc.addPage();
+        yPos = 30;
+      }
+
+      // Card background with subtle border
+      doc.setFillColor(248, 250, 252); // Very light gray
+      doc.setDrawColor(226, 232, 240); // Slate 300
+      doc.roundedRect(margin, yPos, contentWidth, cardHeight, 2, 2, 'FD');
+
+      // Question label with accent color
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(primaryColor.r, primaryColor.g, primaryColor.b);
+      doc.text(q.label.toUpperCase(), margin + cardPadding, yPos + 10);
+
+      // Answer text
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.setTextColor(30, 41, 59); // Slate 800
+      doc.text(answerLines, margin + cardPadding, yPos + 18);
+
+      yPos += cardHeight + 6;
+    });
+
+    // === FOOTER ===
+    const pageCount = doc.internal.pages.length - 1;
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+
+      // Footer line
+      doc.setDrawColor(primaryColor.r, primaryColor.g, primaryColor.b);
+      doc.setLineWidth(0.5);
+      doc.line(margin, pageHeight - 20, pageWidth - margin, pageHeight - 20);
+
+      // Footer text
+      doc.setFontSize(8);
+      doc.setTextColor(100, 100, 100);
+      doc.setFont("helvetica", "normal");
+      doc.text("Documento gerado via Flow OS • flowos.app", margin, pageHeight - 12);
+      doc.text(`Página ${i} de ${pageCount}`, pageWidth - margin, pageHeight - 12, { align: "right" });
+    }
+
+    // Save
+    const fileName = projectName ? `Briefing_${projectName.replace(/\s+/g, '_')}_Flow.pdf` : 'Briefing_Flow.pdf';
+    doc.save(fileName);
+
+    // Increment usage counter for FREE users
+    if (!isPremium) {
+      const newCount = briefingsGenerated + 1;
+      setBriefingsGenerated(newCount);
+      try {
+        await supabase
+          .from('profiles')
+          .update({ briefings_used: newCount })
+          .eq('id', userId);
+      } catch (error) {
+        console.error('Erro ao salvar contador de briefings:', error);
+      }
+    }
+
+    // Reset and close
+    setShowBriefing(false);
+    setBriefingNiche(null);
+    setBriefingAnswers({});
+  };
+
   const potential = leads.reduce((acc, curr) => curr.status !== 'LOST' ? acc + curr.value : acc, 0);
 
   return (
@@ -979,7 +1236,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
 
       {/* PREMIUM ACTIONS */}
       <div className="mt-6 pt-4 border-t border-slate-800 space-y-3">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <button
             onClick={openContractModal}
             className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all group ${(isPremium || contractsGenerated < MAX_FREE_CONTRACTS)
@@ -991,8 +1248,7 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
             {(isPremium || contractsGenerated < MAX_FREE_CONTRACTS)
               ? <Download size={16} className="text-slate-400 group-hover:text-cyber-primary" />
               : <Lock size={16} className="text-slate-500 group-hover:text-cyber-secondary" />}
-            <span className="text-[10px] font-bold text-slate-500">GERAR CONTRATO</span>
-            {!isPremium && <span className="text-[8px] text-slate-600">{contractsGenerated}/{MAX_FREE_CONTRACTS} usado</span>}
+            <span className="text-[10px] font-bold text-slate-500">CONTRATO</span>
           </button>
 
           <button
@@ -1026,12 +1282,28 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
               <MessageSquare size={16} className={`${(isPremium || scriptsViewed < MAX_FREE_SCRIPTS) ? 'text-slate-400 group-hover:text-cyber-primary' : 'text-slate-500 group-hover:text-cyber-secondary'}`} />
               {!isPremium && scriptsViewed >= MAX_FREE_SCRIPTS && <Lock size={10} className="absolute -top-1 -right-1 text-slate-600" />}
             </div>
-            <div className="text-center">
-              <span className="text-[10px] font-bold text-slate-500 block">SCRIPTS DE VENDAS</span>
-              <span className="text-[9px] text-cyber-primary/60 font-mono">
-                SALES PLAYBOOK
-              </span>
+            <span className="text-[10px] font-bold text-slate-500">SCRIPTS</span>
+          </button>
+
+          <button
+            onClick={() => {
+              if (isPremium || briefingsGenerated < MAX_FREE_BRIEFINGS) {
+                setShowBriefing(true);
+              } else {
+                onRequestUpgrade?.();
+              }
+            }}
+            className={`flex flex-col items-center justify-center gap-2 p-3 rounded-lg border transition-all group ${(isPremium || briefingsGenerated < MAX_FREE_BRIEFINGS)
+              ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:text-cyber-secondary cursor-pointer'
+              : 'bg-slate-900/40 border-slate-800 opacity-60 hover:opacity-100 cursor-pointer'
+              }`}
+            title={(isPremium || briefingsGenerated < MAX_FREE_BRIEFINGS) ? "Gerar Briefing Automático" : "Limite atingido - Funcionalidade PRO"}
+          >
+            <div className="relative">
+              <ClipboardList size={16} className={`${(isPremium || briefingsGenerated < MAX_FREE_BRIEFINGS) ? 'text-slate-400 group-hover:text-cyber-secondary' : 'text-slate-500 group-hover:text-cyber-secondary'}`} />
+              {!isPremium && briefingsGenerated >= MAX_FREE_BRIEFINGS && <Lock size={10} className="absolute -top-1 -right-1 text-slate-600" />}
             </div>
+            <span className="text-[10px] font-bold text-slate-500">BRIEFING</span>
           </button>
         </div>
       </div>
@@ -1462,6 +1734,173 @@ const Pipeline: React.FC<PipelineProps> = ({ userId, niche, isPremium = false, o
                 </button>
               ))}
             </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* BRIEFING GENERATOR MODAL */}
+      {showBriefing && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-cyber-dark/95 backdrop-blur-md" onClick={() => { setShowBriefing(false); setBriefingNiche(null); setBriefingAnswers({}); }} />
+          <div className="relative bg-cyber-panel border border-cyber-secondary w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in">
+
+            {/* Header */}
+            <div className="p-6 border-b border-slate-700 bg-gradient-to-r from-cyber-secondary/20 to-purple-500/20">
+              <div className="flex justify-between items-start">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-cyber-secondary/20 rounded-xl">
+                    <ClipboardList size={24} className="text-cyber-secondary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-white">Gerador de Briefing</h3>
+                    <p className="text-xs text-slate-400">Monte o questionário perfeito para seu cliente</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => { setShowBriefing(false); setBriefingNiche(null); setBriefingAnswers({}); }}
+                  className="text-slate-500 hover:text-white p-2"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+
+              {/* Step 1: Select Niche */}
+              {!briefingNiche ? (
+                <div className="space-y-4">
+                  <h4 className="text-sm font-bold text-slate-300 mb-4">Selecione o tipo de projeto:</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    {(Object.keys(BRIEFING_NICHES) as Array<keyof typeof BRIEFING_NICHES>).map((nicheKey) => {
+                      const nicheData = BRIEFING_NICHES[nicheKey];
+                      const IconComponent = nicheData.icon;
+                      return (
+                        <button
+                          key={nicheKey}
+                          onClick={() => setBriefingNiche(nicheKey)}
+                          className="flex items-center gap-3 p-4 bg-slate-900/50 border border-slate-700 rounded-xl hover:border-cyber-secondary hover:bg-slate-800 transition-all group text-left"
+                        >
+                          <div className={`p-3 rounded-xl bg-gradient-to-br ${nicheData.color} group-hover:scale-110 transition-transform`}>
+                            <IconComponent size={20} className="text-white" />
+                          </div>
+                          <span className="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">
+                            {nicheData.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                /* Step 2: Fill Questionnaire */
+                <div className="space-y-4">
+                  {/* Back button */}
+                  <button
+                    onClick={() => { setBriefingNiche(null); setBriefingAnswers({}); }}
+                    className="text-xs text-slate-500 hover:text-cyber-secondary flex items-center gap-1 mb-2"
+                  >
+                    ← Voltar para seleção de nicho
+                  </button>
+
+                  {/* Niche Badge */}
+                  <div className="flex items-center gap-2 mb-4">
+                    {(() => {
+                      const nicheData = BRIEFING_NICHES[briefingNiche];
+                      const IconComponent = nicheData.icon;
+                      return (
+                        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${nicheData.color}/20 border border-${nicheData.color.split(' ')[0].replace('from-', '')}/30`}>
+                          <IconComponent size={14} className="text-white" />
+                          <span className="text-xs font-bold text-white">{nicheData.label}</span>
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Questions */}
+                  <div className="space-y-5">
+                    {BRIEFING_NICHES[briefingNiche].questions.map((q) => (
+                      <div key={q.id} className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase block">{q.label}</label>
+
+                        {/* BUTTONS TYPE */}
+                        {q.type === 'buttons' && q.options && (
+                          <div className="flex flex-wrap gap-2">
+                            {q.options.map((option) => (
+                              <button
+                                key={option}
+                                type="button"
+                                onClick={() => setBriefingAnswers({ ...briefingAnswers, [q.id]: option })}
+                                className={`px-3 py-2 text-sm rounded-lg border transition-all ${briefingAnswers[q.id] === option
+                                  ? 'bg-cyber-secondary text-white border-cyber-secondary'
+                                  : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-cyber-secondary hover:text-white'
+                                  }`}
+                              >
+                                {option}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* SELECT TYPE */}
+                        {q.type === 'select' && q.options && (
+                          <select
+                            value={briefingAnswers[q.id] || ''}
+                            onChange={(e) => setBriefingAnswers({ ...briefingAnswers, [q.id]: e.target.value })}
+                            className="w-full bg-black border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-cyber-secondary outline-none"
+                          >
+                            <option value="">Selecione...</option>
+                            {q.options.map((option) => (
+                              <option key={option} value={option}>{option}</option>
+                            ))}
+                          </select>
+                        )}
+
+                        {/* TEXTAREA TYPE */}
+                        {q.type === 'textarea' && (
+                          <textarea
+                            value={briefingAnswers[q.id] || ''}
+                            onChange={(e) => setBriefingAnswers({ ...briefingAnswers, [q.id]: e.target.value })}
+                            placeholder={q.placeholder}
+                            rows={3}
+                            className="w-full bg-black border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-cyber-secondary outline-none resize-none"
+                          />
+                        )}
+
+                        {/* TEXT TYPE */}
+                        {q.type === 'text' && (
+                          <input
+                            type="text"
+                            value={briefingAnswers[q.id] || ''}
+                            onChange={(e) => setBriefingAnswers({ ...briefingAnswers, [q.id]: e.target.value })}
+                            placeholder={q.placeholder}
+                            className="w-full bg-black border border-slate-700 rounded-lg p-3 text-sm text-white focus:border-cyber-secondary outline-none"
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer - Generate PDF Button */}
+            {briefingNiche && (
+              <div className="p-6 border-t border-slate-700 bg-slate-900/50">
+                <button
+                  onClick={generateBriefingPDF}
+                  className="w-full bg-gradient-to-r from-cyber-secondary to-purple-500 text-white font-black py-4 rounded-xl hover:shadow-neon-pink transition-all flex items-center justify-center gap-2 text-lg"
+                >
+                  <FileDown size={22} />
+                  GERAR PDF DO BRIEFING
+                </button>
+                <p className="text-[10px] text-slate-500 text-center mt-2">
+                  O PDF será gerado com todas as perguntas e respostas formatadas profissionalmente
+                </p>
+              </div>
+            )}
           </div>
         </div>,
         document.body

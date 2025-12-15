@@ -4,7 +4,7 @@ import { Briefcase, Utensils, ArrowRight, ArrowLeft, Clock, Calendar, PenTool, V
 import confetti from 'canvas-confetti';
 
 interface OnboardingProps {
-  onComplete: (niche: NicheType, name: string, workDays: string[], workStart: string, workEnd: string, roles: RoleType[]) => void;
+  onComplete: (niche: NicheType, name: string, workDays: string[], workStart: string, workEnd: string, roles: RoleType[], monthlyGoal: number) => void;
 }
 
 const DAYS_OF_WEEK = [
@@ -62,7 +62,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [workDays, setWorkDays] = useState<string[]>(['Seg', 'Ter', 'Qua', 'Qui', 'Sex']);
   const [workStart, setWorkStart] = useState('09:00');
   const [workEnd, setWorkEnd] = useState('18:00');
-  
+
   // Novos estados para steps adicionais
   const [hourlyRate, setHourlyRate] = useState('');
   const [monthlyGoal, setMonthlyGoal] = useState('');
@@ -90,10 +90,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         origin: { y: 0.6 },
         colors: ['#06b6d4', '#d946ef', '#22c55e']
       });
-      
+
       // Após 3 segundos, completa o onboarding
       setTimeout(() => {
-        onComplete(niche!, name, workDays, workStart, workEnd, selectedRoles);
+        onComplete(niche!, name, workDays, workStart, workEnd, selectedRoles, parseFloat(monthlyGoal) || 0);
       }, 3000);
     }
   };
@@ -134,38 +134,38 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       <div className="min-h-screen flex items-center justify-center bg-cyber-dark p-4 relative overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-[100px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-cyber-primary/20 rounded-full blur-[100px]" />
-        
+
         <div className="max-w-md w-full z-10 text-center animate-fade-in">
           <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500">
             <Rocket size={40} className="text-emerald-400" />
           </div>
-          
+
           <h1 className="text-3xl font-black text-white mb-4">
             Tudo Pronto, {name.split(' ')[0]}!
           </h1>
-          
+
           <p className="text-slate-400 mb-6">
             Sua estrutura de vendas está configurada. Agora é hora de prospectar seu primeiro cliente.
           </p>
-          
+
           <div className="bg-cyber-panel border border-cyber-border rounded-xl p-6 text-left space-y-3">
             <h3 className="text-sm font-bold text-cyber-primary uppercase tracking-wider mb-4">Seu Setup</h3>
-            
+
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Nicho:</span>
               <span className="text-slate-200 font-bold">{niche === 'B2B' ? 'Empresas' : 'Público Final'}</span>
             </div>
-            
+
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Atuação:</span>
               <span className="text-slate-200 font-bold">{selectedRoles.length} funções</span>
             </div>
-            
+
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Horário:</span>
               <span className="text-slate-200 font-bold">{workStart} - {workEnd}</span>
             </div>
-            
+
             {monthlyGoal && (
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Meta Mensal:</span>
@@ -173,7 +173,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
               </div>
             )}
           </div>
-          
+
           <p className="text-xs text-slate-600 mt-6">Entrando no painel em instantes...</p>
         </div>
       </div>
@@ -203,7 +203,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             <span className="text-xs text-cyber-primary font-mono">{Math.round((step / totalSteps) * 100)}%</span>
           </div>
           <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-cyber-primary to-cyber-secondary transition-all duration-500"
               style={{ width: `${(step / totalSteps) * 100}%` }}
             />
@@ -251,8 +251,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                 <button
                   onClick={() => setNiche(NicheType.B2B)}
                   className={`p-4 border rounded-xl flex items-center gap-4 transition-all group ${niche === NicheType.B2B
-                      ? 'bg-cyber-primary/10 border-cyber-primary shadow-neon-cyan'
-                      : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
+                    ? 'bg-cyber-primary/10 border-cyber-primary shadow-neon-cyan'
+                    : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
                     }`}
                 >
                   <div className={`p-3 rounded-lg ${niche === NicheType.B2B ? 'bg-cyber-primary text-cyber-dark' : 'bg-slate-800 text-slate-400'}`}>
@@ -267,8 +267,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                 <button
                   onClick={() => setNiche(NicheType.B2C)}
                   className={`p-4 border rounded-xl flex items-center gap-4 transition-all group ${niche === NicheType.B2C
-                      ? 'bg-cyber-secondary/10 border-cyber-secondary shadow-neon-pink'
-                      : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
+                    ? 'bg-cyber-secondary/10 border-cyber-secondary shadow-neon-pink'
+                    : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
                     }`}
                 >
                   <div className={`p-3 rounded-lg ${niche === NicheType.B2C ? 'bg-cyber-secondary text-cyber-dark' : 'bg-slate-800 text-slate-400'}`}>
@@ -308,8 +308,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                 <button
                   onClick={() => toggleRole('GRAPHIC_DESIGNER')}
                   className={`p-4 border rounded-xl flex items-center justify-between transition-all group ${selectedRoles.includes('GRAPHIC_DESIGNER')
-                      ? 'bg-purple-500/10 border-purple-500 shadow-neon-pink'
-                      : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
+                    ? 'bg-purple-500/10 border-purple-500 shadow-neon-pink'
+                    : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
                     }`}
                 >
                   <div className="flex items-center gap-4">
@@ -324,8 +324,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                 <button
                   onClick={() => toggleRole('MOTION_DESIGNER')}
                   className={`p-4 border rounded-xl flex items-center justify-between transition-all group ${selectedRoles.includes('MOTION_DESIGNER')
-                      ? 'bg-yellow-500/10 border-yellow-500 shadow-neon-cyan'
-                      : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
+                    ? 'bg-yellow-500/10 border-yellow-500 shadow-neon-cyan'
+                    : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
                     }`}
                 >
                   <div className="flex items-center gap-4">
@@ -340,8 +340,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                 <button
                   onClick={() => toggleRole('VIDEO_EDITOR')}
                   className={`p-4 border rounded-xl flex items-center justify-between transition-all group ${selectedRoles.includes('VIDEO_EDITOR')
-                      ? 'bg-blue-500/10 border-blue-500 shadow-neon-cyan'
-                      : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
+                    ? 'bg-blue-500/10 border-blue-500 shadow-neon-cyan'
+                    : 'bg-cyber-dark border-cyber-border hover:border-slate-500'
                     }`}
                 >
                   <div className="flex items-center gap-4">
@@ -483,8 +483,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                       key={day.id}
                       onClick={() => toggleDay(day.id)}
                       className={`flex-1 py-2 rounded text-xs font-bold transition-all border ${workDays.includes(day.id)
-                          ? 'bg-cyber-primary/20 border-cyber-primary text-cyber-primary'
-                          : 'bg-slate-900 border-slate-800 text-slate-500 hover:border-slate-600'
+                        ? 'bg-cyber-primary/20 border-cyber-primary text-cyber-primary'
+                        : 'bg-slate-900 border-slate-800 text-slate-500 hover:border-slate-600'
                         }`}
                     >
                       {day.label}
