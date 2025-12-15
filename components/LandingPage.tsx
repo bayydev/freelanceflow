@@ -319,7 +319,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         {/* Feedback 1 */}
                         <div className="bg-cyber-panel border border-cyber-border rounded-2xl p-4 hover:border-cyber-primary/30 transition-all">
                             <img
-                                src="/assets/Screenshot_4.png"
+                                src="/Screenshot_4.png"
                                 alt="Feedback de usuário"
                                 className="w-full rounded-xl"
                             />
@@ -328,7 +328,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                         {/* Feedback 2 */}
                         <div className="bg-cyber-panel border border-cyber-border rounded-2xl p-4 hover:border-cyber-primary/30 transition-all">
                             <img
-                                src="/assets/Screenshot_5.png"
+                                src="/Screenshot_5.png"
                                 alt="Feedback de usuário"
                                 className="w-full rounded-xl"
                             />
